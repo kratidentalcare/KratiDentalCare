@@ -1,8 +1,14 @@
 import type { Document, Types } from "mongoose";
 
 /**
- * Timestamp fields managed by Mongoose `timestamps: true`.
+ * Shared Mongoose document types for the database foundation.
+ * No business collection shapes are defined here.
+ *
  * @see docs/04-database-design.md §B
+ */
+
+/**
+ * Timestamp fields managed by Mongoose `timestamps: true`.
  */
 export type TimestampFields = {
   createdAt: Date;
@@ -10,7 +16,7 @@ export type TimestampFields = {
 };
 
 /**
- * Soft-delete column. `null` means the document is active in queries.
+ * Soft-delete column. `null` means the document is not deleted.
  */
 export type SoftDeleteFields = {
   deletedAt: Date | null;
@@ -37,12 +43,22 @@ export type BaseDocument = Document & BaseDocumentFields;
 
 /**
  * Soft-delete method surface attached by `softDeletePlugin`.
+ * Uses polymorphic `this` so intersecting document types keep precise returns.
  */
-export type SoftDeleteMethods = {
-  softDelete(): Promise<SoftDeleteDocument>;
-  restore(): Promise<SoftDeleteDocument>;
+export interface SoftDeleteMethods {
+  softDelete(): Promise<this>;
+  restore(): Promise<this>;
   isDeleted(): boolean;
-};
+}
+
+/**
+ * Query helpers attached by `softDeletePlugin`.
+ * Intersect with a Mongoose `Query` type at model definition time.
+ */
+export interface SoftDeleteQueryHelpers {
+  withDeleted(): this;
+  onlyDeleted(): this;
+}
 
 /**
  * Document supporting soft delete helpers (from softDeletePlugin).
@@ -60,3 +76,19 @@ export type ActivatableDocument = BaseDocument & ActiveFlagFields;
  * Soft-delete + isActive composition used by most master entities later.
  */
 export type SoftActivatableDocument = SoftDeleteDocument & ActiveFlagFields;
+
+/**
+ * Lean (plain object) form of a base document after `.lean()`.
+ */
+export type LeanBaseDocument = BaseDocumentFields;
+
+/**
+ * Lean soft-delete document shape.
+ */
+export type LeanSoftDeleteDocument = LeanBaseDocument & SoftDeleteFields;
+
+/**
+ * Lean soft-delete + isActive shape.
+ */
+export type LeanSoftActivatableDocument = LeanSoftDeleteDocument &
+  ActiveFlagFields;

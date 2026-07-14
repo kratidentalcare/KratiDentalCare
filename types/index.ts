@@ -13,10 +13,13 @@ export { buildPaginationMeta, getPaginationSkip } from "./pagination";
 
 export type {
   ActiveFlag,
+  BaseEntityDto,
   BaseTimestamps,
   LogLevel,
   LoggerContext,
   ObjectIdString,
+  SoftActivatableEntityDto,
+  SoftDeleteEntityDto,
   SoftDeleteFields,
 } from "./common";
 

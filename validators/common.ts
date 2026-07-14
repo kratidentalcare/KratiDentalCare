@@ -4,16 +4,25 @@ import {
   APPOINTMENT_STATUS_VALUES,
   CONTENT_STATUS_VALUES,
   DOCTOR_STATUS_VALUES,
+  OBJECT_ID_HEX_PATTERN,
   PATIENT_STATUS_VALUES,
   PRESCRIPTION_STATUS_VALUES,
   SLOT_STATUS_VALUES,
   USER_ROLE_VALUES,
 } from "@/constants";
 
-/** MongoDB ObjectId hex string. */
+/** MongoDB ObjectId hex string (API / Server Action boundary). */
 export const objectIdSchema = z
   .string()
-  .regex(/^[a-f\d]{24}$/i, "Invalid ObjectId");
+  .regex(OBJECT_ID_HEX_PATTERN, "Invalid ObjectId");
+
+/** Optional ObjectId that also accepts `null` / empty → `null`. */
+export const nullableObjectIdSchema = z
+  .union([objectIdSchema, z.literal(""), z.null()])
+  .transform((value) => (value === "" || value === null ? null : value));
+
+/** Non-empty list of ObjectIds (dedupe left to callers if needed). */
+export const objectIdArraySchema = z.array(objectIdSchema).min(1);
 
 export const emailSchema = z
   .email("Invalid email address")
@@ -33,6 +42,14 @@ export const nonEmptyStringSchema = z.string().trim().min(1, "Required");
 export const isoDateStringSchema = z.iso.datetime({
   message: "Invalid ISO date-time",
 });
+
+/** Soft-delete timestamp from persistence (ISO or Date coerced by callers). */
+export const deletedAtSchema = z.union([
+  z.iso.datetime(),
+  z.null(),
+]);
+
+export const isActiveSchema = z.boolean();
 
 export const userRoleSchema = z.enum(USER_ROLE_VALUES);
 export const appointmentStatusSchema = z.enum(APPOINTMENT_STATUS_VALUES);

@@ -1,3 +1,5 @@
+import "server-only";
+
 import { Schema, type SchemaDefinition, type SchemaOptions } from "mongoose";
 
 import {
@@ -42,6 +44,8 @@ export function createBaseSchema(
     ...baseSchemaOptions,
     ...schemaOptions,
     ...(collection ? { collection } : {}),
+    // Keep timestamps authoritative even if callers override schemaOptions.
+    timestamps: baseSchemaOptions.timestamps,
   };
 
   const schema = new Schema(

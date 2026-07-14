@@ -1,3 +1,5 @@
+import "server-only";
+
 import mongoose, {
   type InferSchemaType,
   type Model,

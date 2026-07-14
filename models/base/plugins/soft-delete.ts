@@ -1,6 +1,8 @@
 import type { Aggregate, HydratedDocument, Query, Schema } from "mongoose";
 
-const DELETED_AT_PATH = "deletedAt";
+import { DB_FIELDS } from "@/constants/db";
+
+const DELETED_AT_PATH = DB_FIELDS.DELETED_AT;
 
 type QueryWithSoftDeleteHelpers = Query<unknown, unknown> & {
   withDeleted(): QueryWithSoftDeleteHelpers;
@@ -17,7 +19,8 @@ function shouldBypassSoftDeleteFilter(query: Query<unknown, unknown>): boolean {
  * - Ensures `deletedAt` path exists
  * - Adds `softDelete` / `restore` / `isDeleted` document methods
  * - Adds `withDeleted` / `onlyDeleted` query helpers
- * - Default find/count/update queries exclude soft-deleted rows
+ * - Default find/count/update/delete queries exclude soft-deleted rows
+ * - Aggregations get a leading `$match` unless opted out
  *
  * Services may still apply additional `isActive` filters where required.
  */

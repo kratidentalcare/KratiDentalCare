@@ -1,11 +1,13 @@
 import type { SchemaOptions } from "mongoose";
 
+import { TIMESTAMP_SCHEMA_OPTIONS } from "@/models/base/timestamps";
+
 /**
  * Shared Schema options applied to every domain model.
  * Business schemas should apply these via `createBaseSchema`.
  */
 export const baseSchemaOptions: SchemaOptions = {
-  timestamps: true,
+  ...TIMESTAMP_SCHEMA_OPTIONS,
   versionKey: false,
   minimize: false,
   toJSON: {
