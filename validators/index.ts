@@ -107,3 +107,11 @@ export {
   type PrescriptionMedicationInput,
   type UpdatePrescriptionInput,
 } from "./prescription";
+
+export {
+  createServiceSchema,
+  serviceSlugSchema,
+  updateServiceSchema,
+  type CreateServiceInput,
+  type UpdateServiceInput,
+} from "./service";
