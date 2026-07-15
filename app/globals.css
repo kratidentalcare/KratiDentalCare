@@ -49,6 +49,19 @@
 }
 
 :root {
+  /*
+   * Public site spacing scale (mobile-first).
+   * Layout components + future sections (Hero, About, …) should prefer these tokens.
+   */
+  --container-padding-x: 1rem;
+  --container-max-sm: 40rem;
+  --container-max-md: 48rem;
+  --container-max-lg: 72rem;
+  --container-max-xl: 80rem;
+  --section-padding-y: 3rem;
+  --section-gap: 1.5rem;
+  --stack-gap: 1rem;
+
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
@@ -117,6 +130,24 @@
   --sidebar-ring: oklch(0.556 0 0);
 }
 
+@media (min-width: 40rem) {
+  :root {
+    --container-padding-x: 1.5rem;
+    --section-padding-y: 4rem;
+    --section-gap: 2rem;
+    --stack-gap: 1.25rem;
+  }
+}
+
+@media (min-width: 64rem) {
+  :root {
+    --container-padding-x: 2rem;
+    --section-padding-y: 5rem;
+    --section-gap: 2.5rem;
+    --stack-gap: 1.5rem;
+  }
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
@@ -126,5 +157,27 @@
   }
   html {
     @apply font-sans;
+  }
+}
+
+@layer utilities {
+  /** Horizontal rhythm for public marketing content. */
+  .public-container-x {
+    padding-inline: var(--container-padding-x);
+  }
+
+  /** Vertical rhythm for full-width public sections (Hero, About, …). */
+  .public-section-y {
+    padding-block: var(--section-padding-y);
+  }
+
+  /** Consistent gap between stacked public sections. */
+  .public-section-gap {
+    gap: var(--section-gap);
+  }
+
+  /** Consistent gap within a section’s content stack. */
+  .public-stack-gap {
+    gap: var(--stack-gap);
   }
 }
