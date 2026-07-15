@@ -7,6 +7,15 @@ export const ROUTES = {
   HOME: "/",
   SIGN_IN: "/sign-in",
   SIGN_UP: "/sign-up",
+  /** Public marketing site (single-page section anchors until dedicated routes ship). */
+  PUBLIC: {
+    HOME: "/",
+    ABOUT: "/#about",
+    SERVICES: "/#services",
+    DOCTORS: "/#doctors",
+    BOOK: "/#book",
+    CONTACT: "/#contact",
+  },
   PATIENT: {
     ROOT: "/patient",
   },

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 import { PublicShell } from "@/components/layout";
+import { Navbar } from "@/components/shared/navbar";
 import { APP_DESCRIPTION, APP_NAME } from "@/constants";
 
 /**
@@ -34,7 +35,7 @@ export const metadata: Metadata = {
 /**
  * Root layout for `app/(public)/*`.
  *
- * Slot contract (plug-in later without changing this file's structure):
+ * Slot contract:
  * - header → Navbar
  * - children → Hero, About, Services, Doctors, Testimonials, FAQ, Contact, …
  * - footer → Footer
@@ -44,5 +45,5 @@ export default function PublicLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return <PublicShell>{children}</PublicShell>;
+  return <PublicShell header={<Navbar />}>{children}</PublicShell>;
 }

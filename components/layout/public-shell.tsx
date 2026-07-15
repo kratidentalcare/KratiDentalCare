@@ -16,6 +16,7 @@ const MAIN_CONTENT_ID = "main-content";
 /**
  * Public marketing shell. Structural only: header / main / footer slots so
  * Navbar, page sections, and Footer can plug in without changing this layout.
+ * Sticky positioning and scroll chrome live inside the Navbar (header slot).
  */
 export function PublicShell({
   children,
@@ -37,9 +38,8 @@ export function PublicShell({
         Skip to main content
       </a>
 
-      {header ? (
-        <header className="sticky top-0 z-40 w-full">{header}</header>
-      ) : null}
+      {/* Navbar owns sticky chrome; slot stays structural only. */}
+      {header ?? null}
 
       <main
         id={MAIN_CONTENT_ID}
