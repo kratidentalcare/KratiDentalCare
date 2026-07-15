@@ -123,3 +123,11 @@ export {
   type CreateTestimonialInput,
   type UpdateTestimonialInput,
 } from "./testimonial";
+
+export {
+  createFaqSchema,
+  faqCategorySchema,
+  updateFaqSchema,
+  type CreateFaqInput,
+  type UpdateFaqInput,
+} from "./faq";

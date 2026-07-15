@@ -13,3 +13,4 @@ export * from "./appointment";
 export * from "./prescription";
 export * from "./service";
 export * from "./testimonial";
+export * from "./faq";
