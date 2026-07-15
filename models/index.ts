@@ -10,3 +10,4 @@ export * from "./patient";
 export * from "./holiday";
 export * from "./slot";
 export * from "./appointment";
+export * from "./prescription";

@@ -95,3 +95,15 @@ export {
   type CreateAppointmentInput,
   type UpdateAppointmentInput,
 } from "./appointment";
+
+export {
+  createPrescriptionSchema,
+  prescriptionDoctorSnapshotSchema,
+  prescriptionMedicationSchema,
+  prescriptionNumberSchema,
+  prescriptionPatientSnapshotSchema,
+  updatePrescriptionSchema,
+  type CreatePrescriptionInput,
+  type PrescriptionMedicationInput,
+  type UpdatePrescriptionInput,
+} from "./prescription";
