@@ -115,3 +115,11 @@ export {
   type CreateServiceInput,
   type UpdateServiceInput,
 } from "./service";
+
+export {
+  createTestimonialSchema,
+  testimonialRatingSchema,
+  updateTestimonialSchema,
+  type CreateTestimonialInput,
+  type UpdateTestimonialInput,
+} from "./testimonial";

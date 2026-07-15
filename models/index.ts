@@ -12,3 +12,4 @@ export * from "./slot";
 export * from "./appointment";
 export * from "./prescription";
 export * from "./service";
+export * from "./testimonial";
