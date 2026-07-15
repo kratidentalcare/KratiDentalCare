@@ -14,6 +14,8 @@ export const ERROR_CODES = {
   CONFIGURATION_ERROR: "CONFIGURATION_ERROR",
   /** Clerk session exists but Mongo `users` row cannot be resolved/created. */
   USER_NOT_SYNCED: "USER_NOT_SYNCED",
+  /** Mongo user exists but is inactive or soft-deleted. */
+  ACCOUNT_DISABLED: "ACCOUNT_DISABLED",
 } as const;
 
 export type ErrorCode = (typeof ERROR_CODES)[keyof typeof ERROR_CODES];

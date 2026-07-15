@@ -15,7 +15,8 @@ import type { SyncUserOptions } from "./types";
  * - No Clerk session → `null`
  * - Valid session → synchronize Clerk → Mongo and return the app user
  *
- * Does **not** enforce role or `isActive` (authorization is a later phase).
+ * Does **not** enforce role or `isActive` — use `requireAppUser` / `requireRole`
+ * from the authorization layer for those checks.
  */
 export async function getCurrentUser(
   options: SyncUserOptions = {},
@@ -50,7 +51,8 @@ export async function getCurrentUser(
  * Requires a valid Clerk session and a synchronized Mongo `users` document.
  * Throws `UnauthorizedError` when there is no session.
  *
- * Does **not** enforce role or `isActive` (authorization is a later phase).
+ * Does **not** enforce role or `isActive` — use `requireAppUser` / `requireRole`
+ * from the authorization layer for those checks.
  */
 export async function requireCurrentUser(
   options: SyncUserOptions = {},

@@ -1,6 +1,8 @@
 /**
- * Auth identity types for Clerk sessions and Mongo `users` sync.
+ * Auth identity types for Clerk sessions, Mongo sync, and authorization.
  */
+
+import type { UserRole } from "@/constants/roles";
 
 export type AuthSession = {
   userId: string;
@@ -29,3 +31,7 @@ export type SyncUserOptions = {
    */
   touchLastLogin?: boolean;
 };
+
+/** One or more roles accepted by `requireRole` / `hasAnyRole`. */
+export type RoleRequirement = UserRole | readonly UserRole[];
+
