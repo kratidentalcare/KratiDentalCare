@@ -1,26 +1,37 @@
 /**
- * Auth helpers — Clerk session, Mongo user sync, and authorization.
+ * Auth module — Clerk session, Mongo user sync, soft helpers, and authorization.
  *
- * Typical Server Action order:
- * 1. `requireAppUser()` / `requireRole(...)` / `authorize(...)`
- * 2. Zod validate
- * 3. service
+ * Soft helpers (`getCurrentUser`, `isAdmin`, …) → UI / optional chrome
+ * Hard gates (`requireAppUser`, `requireRole`, …) → layouts & Server Actions
  */
 
+// --- Session / soft authentication helpers (Phase 9.4) ---
+export { getSession, getSessionOrThrow, getAuthSession } from "./get-session";
+export { isAuthenticated } from "./is-authenticated";
 export {
-  getAuthSession,
+  assertActiveAppUser,
+  getActiveCurrentUser,
+  getAppUser,
+  getCurrentUser,
+  getCurrentUserOrThrow,
+  requireSyncedUser,
+} from "./get-current-user";
+export { getCurrentUserRole } from "./get-current-user-role";
+export { isAdmin } from "./is-admin";
+export { isPatient } from "./is-patient";
+export { isDoctor } from "./is-doctor";
+
+// --- Clerk session gates (compat) ---
+export {
   getClerkUserId,
-  isAuthenticated,
   requireAuth,
   requireAuthRedirect,
 } from "./session";
 
-export {
-  getAppUser,
-  getCurrentUser,
-  requireCurrentUser,
-} from "./current-user";
+/** @deprecated Prefer `requireSyncedUser` or `getCurrentUserOrThrow`. */
+export { requireCurrentUser } from "./current-user";
 
+// --- Sync ---
 export {
   syncClerkUser,
   syncUser,
@@ -28,7 +39,8 @@ export {
   type AppUser,
 } from "./sync-user";
 
-export { assertActiveAppUser, requireAppUser } from "./require-auth";
+// --- Authorization gates (Phase 9.3) ---
+export { requireAppUser } from "./require-auth";
 
 export {
   assertRole,
