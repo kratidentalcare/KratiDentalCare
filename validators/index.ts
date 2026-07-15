@@ -52,3 +52,17 @@ export {
   type CreateDoctorInput,
   type UpdateDoctorInput,
 } from "./doctor";
+
+export {
+  allergySchema,
+  bloodGroupSchema,
+  chronicConditionSchema,
+  createPatientSchema,
+  emergencyContactRelationshipSchema,
+  genderSchema,
+  patientAddressSchema,
+  updatePatientSchema,
+  type CreatePatientInput,
+  type PatientAddressInput,
+  type UpdatePatientInput,
+} from "./patient";
