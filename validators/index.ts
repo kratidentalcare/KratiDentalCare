@@ -74,3 +74,12 @@ export {
   type CreateHolidayInput,
   type UpdateHolidayInput,
 } from "./holiday";
+
+export {
+  createSlotSchema,
+  slotNotesSchema,
+  slotWindowSchema,
+  updateSlotSchema,
+  type CreateSlotInput,
+  type UpdateSlotInput,
+} from "./slot";
