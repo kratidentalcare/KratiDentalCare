@@ -66,3 +66,11 @@ export {
   type PatientAddressInput,
   type UpdatePatientInput,
 } from "./patient";
+
+export {
+  createHolidaySchema,
+  holidayDateSchema,
+  updateHolidaySchema,
+  type CreateHolidayInput,
+  type UpdateHolidayInput,
+} from "./holiday";
