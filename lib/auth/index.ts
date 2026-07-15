@@ -1,6 +1,7 @@
 /**
- * Clerk session identity helpers only.
- * Mongo user sync, roles, and ownership checks belong in a later phase.
+ * Auth helpers — Clerk session identity + Mongo user synchronization.
+ *
+ * Role guards / ownership checks belong in a later phase.
  */
 
 export {
@@ -11,4 +12,21 @@ export {
   requireAuthRedirect,
 } from "./session";
 
-export type { AuthSession } from "./types";
+export {
+  getAppUser,
+  getCurrentUser,
+  requireCurrentUser,
+} from "./current-user";
+
+export {
+  syncClerkUser,
+  syncUser,
+  toClerkUserSyncInput,
+  type AppUser,
+} from "./sync-user";
+
+export type {
+  AuthSession,
+  ClerkUserSyncInput,
+  SyncUserOptions,
+} from "./types";

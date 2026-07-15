@@ -12,6 +12,8 @@ export const ERROR_CODES = {
   RATE_LIMITED: "RATE_LIMITED",
   INTERNAL_ERROR: "INTERNAL_ERROR",
   CONFIGURATION_ERROR: "CONFIGURATION_ERROR",
+  /** Clerk session exists but Mongo `users` row cannot be resolved/created. */
+  USER_NOT_SYNCED: "USER_NOT_SYNCED",
 } as const;
 
 export type ErrorCode = (typeof ERROR_CODES)[keyof typeof ERROR_CODES];
