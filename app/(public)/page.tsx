@@ -18,18 +18,9 @@ export default function HomePage() {
         </h1>
 
         <p className="mt-4 max-w-xl text-base leading-relaxed text-slate-600 sm:text-lg">
-          {APP_DESCRIPTION} Project scaffolding is ready — features will be
-          added in upcoming phases.
+          {APP_DESCRIPTION} Authentication foundation is wired — feature
+          modules come next.
         </p>
-
-        <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:items-center">
-          <span className="inline-flex h-10 items-center justify-center rounded-lg bg-slate-900 px-4 text-sm font-medium text-white">
-            Setup complete
-          </span>
-          <span className="text-sm text-slate-500">
-            Next: environment, auth, and data layer
-          </span>
-        </div>
       </div>
     </main>
   );

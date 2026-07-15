@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 
 import { APP_DESCRIPTION, APP_NAME } from "@/constants";
+import { AppProviders } from "@/providers";
 
 import "./globals.css";
 
@@ -33,7 +34,9 @@ export default function RootLayout({
       lang="en"
       className={`${fontSans.variable} ${fontMono.variable} h-full antialiased`}
     >
-      <body className="flex min-h-full flex-col font-sans">{children}</body>
+      <body className="flex min-h-full flex-col font-sans">
+        <AppProviders>{children}</AppProviders>
+      </body>
     </html>
   );
 }

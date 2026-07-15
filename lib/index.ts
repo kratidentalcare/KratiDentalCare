@@ -1,6 +1,8 @@
 /**
  * Shared library utilities (infrastructure).
  * Prefer importing from specific modules to avoid pulling server-only code into Client Components.
+ *
+ * Auth helpers: `@/lib/auth` (server-only).
  */
 
 export {

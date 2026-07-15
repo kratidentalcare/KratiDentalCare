@@ -7,3 +7,4 @@ export * from "./http";
 export * from "./db";
 export * from "./doctor";
 export * from "./patient";
+export * from "./routes";
