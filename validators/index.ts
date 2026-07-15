@@ -37,3 +37,18 @@ export {
   type CreateUserInput,
   type UpdateUserInput,
 } from "./user";
+
+export {
+  consultationDurationSchema,
+  createDoctorSchema,
+  doctorSlugSchema,
+  specialtiesSchema,
+  specialtySchema,
+  timeOfDaySchema,
+  updateDoctorSchema,
+  weekdaySchema,
+  workingDaysSchema,
+  profilePhotoSchema,
+  type CreateDoctorInput,
+  type UpdateDoctorInput,
+} from "./doctor";
