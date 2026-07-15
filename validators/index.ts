@@ -83,3 +83,15 @@ export {
   type CreateSlotInput,
   type UpdateSlotInput,
 } from "./slot";
+
+export {
+  appointmentDoctorSnapshotSchema,
+  appointmentPatientSnapshotSchema,
+  appointmentTimeWindowSchema,
+  createAppointmentSchema,
+  updateAppointmentSchema,
+  type AppointmentDoctorSnapshotInput,
+  type AppointmentPatientSnapshotInput,
+  type CreateAppointmentInput,
+  type UpdateAppointmentInput,
+} from "./appointment";
