@@ -14,7 +14,6 @@ export type NavLinkItem = {
 
 export const PUBLIC_NAV_LINKS: readonly NavLinkItem[] = [
   { href: ROUTES.PUBLIC.HOME, label: "Home" },
-  { href: ROUTES.PUBLIC.ABOUT, label: "About" },
   { href: ROUTES.PUBLIC.SERVICES, label: "Services" },
   { href: ROUTES.PUBLIC.DOCTORS, label: "Doctors" },
   { href: ROUTES.PUBLIC.CONTACT, label: "Contact" },

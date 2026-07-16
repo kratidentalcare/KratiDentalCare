@@ -49,7 +49,8 @@ export function PublicShell({
         {children}
       </main>
 
-      {footer ? <footer className="mt-auto w-full">{footer}</footer> : null}
+      {/* Footer owns semantic <footer>; slot stays structural only. */}
+      {footer ?? null}
     </div>
   );
 }

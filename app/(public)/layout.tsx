@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 import { PublicShell } from "@/components/layout";
+import { Footer } from "@/components/shared/footer";
 import { Navbar } from "@/components/shared/navbar";
 import { APP_DESCRIPTION, APP_NAME } from "@/constants";
 
@@ -45,5 +46,9 @@ export default function PublicLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return <PublicShell header={<Navbar />}>{children}</PublicShell>;
+  return (
+    <PublicShell header={<Navbar />} footer={<Footer />}>
+      {children}
+    </PublicShell>
+  );
 }

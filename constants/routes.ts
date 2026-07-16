@@ -10,7 +10,6 @@ export const ROUTES = {
   /** Public marketing site (single-page section anchors until dedicated routes ship). */
   PUBLIC: {
     HOME: "/",
-    ABOUT: "/#about",
     SERVICES: "/#services",
     DOCTORS: "/#doctors",
     BOOK: "/#book",

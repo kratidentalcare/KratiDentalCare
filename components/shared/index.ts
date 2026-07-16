@@ -12,6 +12,27 @@ export {
 } from "./data-table";
 export { EmptyState, type EmptyStateProps } from "./empty-state";
 export { ErrorMessage, type ErrorMessageProps } from "./error-message";
+export {
+  Footer,
+  FooterBottom,
+  FooterContact,
+  FooterLinkList,
+  FooterSocial,
+  DEFAULT_FOOTER_CONTACT,
+  DEFAULT_FOOTER_SOCIAL,
+  DEFAULT_FOOTER_TAGLINE,
+  DEFAULT_LEGAL_LINKS,
+  DEFAULT_QUICK_LINKS,
+  type FooterContactInfo,
+  type FooterContactProps,
+  type FooterBottomProps,
+  type FooterLegalLink,
+  type FooterLinkItem,
+  type FooterLinkListProps,
+  type FooterProps,
+  type FooterSocialItem,
+  type FooterSocialProps,
+} from "./footer";
 export { FormField, type FormFieldProps } from "./form-field";
 export { ListToolbar, type ListToolbarProps } from "./list-toolbar";
 export { LoadingState, type LoadingStateProps } from "./loading-state";

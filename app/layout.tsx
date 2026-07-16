@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Montserrat } from "next/font/google";
+import { Geist, Geist_Mono, Montserrat, Playfair_Display } from "next/font/google";
 
 import { APP_DESCRIPTION, APP_NAME } from "@/constants";
 import { AppProviders } from "@/providers";
@@ -22,6 +22,12 @@ const fontMontserrat = Montserrat({
   weight: ["400", "500", "600", "700", "800"],
 });
 
+const fontSerif = Playfair_Display({
+  variable: "--font-serif",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+});
+
 export const metadata: Metadata = {
   title: {
     default: APP_NAME,
@@ -38,7 +44,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${fontSans.variable} ${fontMono.variable} ${fontMontserrat.variable} h-full antialiased`}
+      className={`${fontSans.variable} ${fontMono.variable} ${fontMontserrat.variable} ${fontSerif.variable} h-full antialiased`}
     >
       <body
         className="flex min-h-full flex-col font-sans"

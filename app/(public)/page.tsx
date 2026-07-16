@@ -1,28 +1,20 @@
-import { PageContainer } from "@/components/layout";
-import { APP_DESCRIPTION, APP_NAME } from "@/constants";
+import { Hero } from "@/components/website/hero";
+import { Services } from "@/components/website/services";
 
 /**
- * Public homepage shell. Section components (Hero, About, Services, …)
- * plug in here later — keep this file free of business logic.
+ * Public homepage shell. Section components (About, Services, …)
+ * plug in below Hero later — keep this file free of business logic.
  */
 export default function HomePage() {
   return (
     <div className="flex flex-1 flex-col">
       {/*
-        Future section order (do not implement yet):
-        Navbar (layout header slot) → Hero → About → Services → Doctors
-        → Testimonials → FAQ → Contact → Footer (layout footer slot)
+        Section order:
+        Navbar (layout) → Hero → Services → Doctors
+        → Testimonials → FAQ → Contact → Footer (layout)
       */}
-      <PageContainer className="flex flex-1 flex-col justify-center public-section-y">
-        <div className="flex max-w-2xl flex-col public-stack-gap">
-          <h1 className="font-heading text-3xl font-semibold tracking-tight text-foreground sm:text-4xl md:text-5xl">
-            {APP_NAME}
-          </h1>
-          <p className="text-base leading-relaxed text-muted-foreground sm:text-lg">
-            {APP_DESCRIPTION}
-          </p>
-        </div>
-      </PageContainer>
+      <Hero />
+      <Services />
     </div>
   );
 }
