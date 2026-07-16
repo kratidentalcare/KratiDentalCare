@@ -8,12 +8,23 @@ import { TrustBadges } from "./trust-badges";
 
 export type HeroContentProps = {
   className?: string;
+  /** Hide when the banner artwork already includes trust indicators. */
+  showTrustBadges?: boolean;
+  /**
+   * Hide booking CTA + rating on mobile when they already appear
+   * on the full-screen image overlay.
+   */
+  hidePrimaryCtaOnMobile?: boolean;
 };
 
 /**
  * Left-column editorial copy: eyebrow, serif headline, rating, CTAs, trust row.
  */
-export function HeroContent({ className }: HeroContentProps) {
+export function HeroContent({
+  className,
+  showTrustBadges = true,
+  hidePrimaryCtaOnMobile = false,
+}: HeroContentProps) {
   return (
     <div
       className={cn(
@@ -46,7 +57,8 @@ export function HeroContent({ className }: HeroContentProps) {
       <div
         className={cn(
           "hero-animate-fade-up hero-delay-3",
-          "mt-6 flex flex-col items-start gap-2 sm:mt-8"
+          "mt-6 flex flex-col items-start gap-2 sm:mt-8",
+          hidePrimaryCtaOnMobile && "max-md:hidden"
         )}
       >
         <span className="flex items-center gap-0.5 text-brand-dark" aria-hidden>
@@ -88,7 +100,8 @@ export function HeroContent({ className }: HeroContentProps) {
             "transition-all duration-200",
             "hover:bg-[#0870A8]",
             "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/40 focus-visible:ring-offset-2",
-            "sm:w-auto"
+            "sm:w-auto",
+            hidePrimaryCtaOnMobile && "max-md:hidden"
           )}
           aria-label="Book and smile — schedule an appointment"
         >
@@ -109,9 +122,11 @@ export function HeroContent({ className }: HeroContentProps) {
         </Link>
       </div>
 
-      <div className="hero-animate-fade-up hero-delay-6 mt-8 w-full sm:mt-10">
-        <TrustBadges />
-      </div>
+      {showTrustBadges ? (
+        <div className="hero-animate-fade-up hero-delay-6 mt-8 w-full sm:mt-10">
+          <TrustBadges />
+        </div>
+      ) : null}
     </div>
   );
 }

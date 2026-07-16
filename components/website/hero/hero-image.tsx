@@ -2,79 +2,70 @@ import Image from "next/image";
 
 import { cn } from "@/lib/utils";
 
-import { FloatingCard } from "./floating-card";
+import { HeroMobileCta } from "./hero-mobile-cta";
 
-const HERO_IMAGE = {
-  src: "/images/hero/arch-patient.jpg",
-  alt: "Smiling patient receiving care at a modern dental clinic in Jaipur",
+const HERO_BANNER_DESKTOP = {
+  src: "/images/hero/hero-banner-2.png",
+  alt: "Krati Dental Care clinic reception",
 } as const;
 
-/** Scattered teal dots — bottom-right of arch */
-const DOT_CLUSTERS = [
-  { top: "62%", left: "72%", size: "h-14 w-16", opacity: "opacity-70" },
-  { top: "72%", left: "80%", size: "h-16 w-20", opacity: "opacity-55" },
-  { top: "78%", left: "66%", size: "h-12 w-14", opacity: "opacity-45" },
-  { top: "68%", left: "88%", size: "h-10 w-12", opacity: "opacity-40" },
-] as const;
+const HERO_BANNER_MOBILE = {
+  src: "/images/hero/hero-banner-mobile-2.png",
+  alt: "Krati Dental Care clinic",
+} as const;
 
 export type HeroImageProps = {
   className?: string;
+  /** Mobile stacks in document flow; desktop is a full-bleed absolute layer. */
+  variant?: "mobile" | "desktop";
 };
 
 /**
- * Arch-shaped hero visual with brand gradient blob, teal dots, floating card.
+ * Hero banner artwork — stacked on mobile, full-bleed background on desktop.
  */
-export function HeroImage({ className }: HeroImageProps) {
-  return (
-    <div
-      className={cn(
-        "hero-animate-fade-in hero-delay-3 relative mx-auto w-full max-w-md lg:mx-0 lg:max-w-none",
-        className
-      )}
-    >
-      {/* Brand gradient depth blob */}
-      <div
-        aria-hidden
-        className="absolute top-[10%] left-1/2 h-[75%] w-[90%] -translate-x-1/2 rounded-full bg-[radial-gradient(circle,color-mix(in_srgb,var(--brand-blue)_18%,transparent),color-mix(in_srgb,var(--brand-teal)_12%,transparent)_45%,transparent_72%)] blur-2xl"
-      />
-
-      {/* Teal scattered dots — bleed past arch edge */}
-      {DOT_CLUSTERS.map((cluster, index) => (
-        <div
-          key={index}
-          aria-hidden
-          className={cn(
-            "pointer-events-none absolute z-0",
-            cluster.size,
-            cluster.opacity
-          )}
-          style={{ top: cluster.top, left: cluster.left }}
-        >
-          <div className="h-full w-full bg-[radial-gradient(circle,var(--brand-teal)_2px,transparent_2.1px)] bg-[length:10px_10px]" />
-        </div>
-      ))}
-
+export function HeroImage({
+  className,
+  variant = "desktop",
+}: HeroImageProps) {
+  if (variant === "mobile") {
+    return (
       <div
         className={cn(
-          "hero-arch relative z-10 mx-auto w-full overflow-hidden bg-brand-card",
-          "aspect-[4/5] sm:aspect-[3/4]",
-          "max-w-[20rem] sm:max-w-[26rem]",
-          "lg:mx-0 lg:aspect-auto lg:h-[min(36rem,calc(100vh-9rem))] lg:max-h-[38rem] lg:max-w-none",
-          "shadow-[0_24px_56px_color-mix(in_srgb,var(--brand-blue)_16%,transparent)]"
+          "relative w-full overflow-hidden",
+          // Fill the first screen below the sticky navbar
+          "h-[calc(100svh-5.25rem)] min-h-[28rem]",
+          className
         )}
       >
         <Image
-          src={HERO_IMAGE.src}
-          alt={HERO_IMAGE.alt}
+          src={HERO_BANNER_MOBILE.src}
+          alt={HERO_BANNER_MOBILE.alt}
           fill
           priority
-          sizes="(max-width: 1024px) 90vw, 50vw"
-          className="object-cover object-[48%_18%]"
+          sizes="(max-width: 767px) 100vw, 1px"
+          className="object-cover object-center"
         />
+        <HeroMobileCta />
       </div>
+    );
+  }
 
-      {/* Overlap arch on desktop; static below on mobile */}
-      <FloatingCard className="relative z-20 mt-4 w-fit sm:mt-5 lg:absolute lg:bottom-6 lg:left-4 lg:mt-0 xl:left-6" />
+  return (
+    <div
+      aria-hidden
+      className={cn(
+        "pointer-events-none absolute inset-0 select-none",
+        className
+      )}
+    >
+      <Image
+        src={HERO_BANNER_DESKTOP.src}
+        alt=""
+        fill
+        priority
+        sizes="(max-width: 767px) 1px, 100vw"
+        className="object-cover object-center"
+      />
     </div>
   );
 }

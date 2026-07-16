@@ -18,6 +18,7 @@ export type ServiceCardProps = {
 /**
  * Premium interactive service preview card with scroll-enter motion.
  * Looks up data by id so Lucide icons stay on the client boundary.
+ * Styled for the brand-blue services canvas.
  */
 export function ServiceCard({ serviceId, index, className }: ServiceCardProps) {
   const ref = useRef<HTMLElement>(null);
@@ -65,18 +66,19 @@ export function ServiceCard({ serviceId, index, className }: ServiceCardProps) {
         aria-label={`Learn more about ${service.title}`}
         className={cn(
           "relative flex h-full cursor-pointer flex-col overflow-hidden rounded-2xl",
-          "border border-slate-100 bg-brand-card p-6 sm:p-7",
-          "shadow-sm",
+          "border border-slate-100 bg-white p-5 sm:p-7",
+          "shadow-[0_12px_32px_color-mix(in_srgb,black_14%,transparent)]",
           "transition-all duration-300 ease-out",
-          "hover:-translate-y-1 hover:shadow-xl hover:ring-1 hover:ring-blue-100",
-          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/40 focus-visible:ring-offset-2"
+          "hover:-translate-y-1 hover:shadow-[0_18px_40px_color-mix(in_srgb,black_20%,transparent)]",
+          "hover:ring-1 hover:ring-white/80",
+          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-brand-blue"
         )}
       >
         <span
           className={cn(
-            "pointer-events-none absolute top-4 right-5 z-0 select-none",
-            "font-serif text-5xl font-medium leading-none text-brand-dark/[0.06]",
-            "sm:text-6xl"
+            "pointer-events-none absolute top-3.5 right-4 z-0 select-none",
+            "font-serif text-4xl font-medium leading-none text-brand-dark/[0.06]",
+            "sm:top-4 sm:right-5 sm:text-6xl"
           )}
           aria-hidden
         >
@@ -85,15 +87,15 @@ export function ServiceCard({ serviceId, index, className }: ServiceCardProps) {
 
         <div
           className={cn(
-            "relative z-10 mb-5 flex size-12 items-center justify-center rounded-xl",
-            "bg-gradient-to-br from-blue-50 to-teal-50",
+            "relative z-10 mb-4 flex size-10 items-center justify-center rounded-xl",
+            "bg-gradient-to-br from-blue-50 to-teal-50 sm:mb-5 sm:size-12",
             "transition-all duration-300 ease-out",
             "group-hover:from-blue-100 group-hover:to-teal-100"
           )}
         >
           <Icon
             className={cn(
-              "size-5 text-brand-blue",
+              "size-4 text-brand-blue sm:size-5",
               "transition-transform duration-300 ease-out",
               "group-hover:scale-110"
             )}
@@ -102,18 +104,18 @@ export function ServiceCard({ serviceId, index, className }: ServiceCardProps) {
           />
         </div>
 
-        <h3 className="relative z-10 text-lg font-semibold text-brand-dark">
+        <h3 className="relative z-10 text-base font-semibold text-brand-dark sm:text-lg">
           {service.title}
         </h3>
 
-        <p className="relative z-10 mt-2 line-clamp-2 flex-1 text-sm leading-relaxed text-brand-muted sm:text-[0.9375rem]">
+        <p className="relative z-10 mt-1.5 line-clamp-2 flex-1 text-[0.8125rem] leading-relaxed text-brand-muted sm:mt-2 sm:text-[0.9375rem]">
           {service.description}
         </p>
 
         <span
           className={cn(
-            "relative z-10 mt-6 inline-flex items-center gap-1.5",
-            "text-sm font-medium text-brand-teal"
+            "relative z-10 mt-4 inline-flex items-center gap-1.5 sm:mt-6",
+            "text-sm font-medium text-brand-blue"
           )}
         >
           Learn More

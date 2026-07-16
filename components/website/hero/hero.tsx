@@ -11,8 +11,8 @@ export type HeroProps = {
 };
 
 /**
- * Editorial boutique hero — serif copy left, arch imagery right.
- * Mobile-first: text first, arch below; desktop 50 / 50 split.
+ * Mobile: stacked image (top) + copy (bottom).
+ * Desktop: full-bleed banner with copy overlaid on the left panel.
  */
 export function Hero({ className }: HeroProps) {
   return (
@@ -20,16 +20,35 @@ export function Hero({ className }: HeroProps) {
       id="hero"
       aria-labelledby="hero-heading"
       className={cn(
-        "relative overflow-hidden bg-[#0A84C6]/10 font-montserrat",
+        "relative overflow-hidden font-montserrat",
+        "bg-brand-surface md:bg-transparent",
+        "md:min-h-[min(36rem,calc(100svh-6.5rem))]",
         className
       )}
     >
-      <PageContainer size="xl" className="relative public-section-y">
-        <div className="flex flex-col gap-12 lg:grid lg:grid-cols-2 lg:items-start lg:gap-10 xl:gap-14">
-          <HeroContent className="order-1" />
-          <HeroImage className="order-2 w-full lg:-mt-4 xl:-mt-6" />
-        </div>
-      </PageContainer>
+      {/* Desktop: absolute full-bleed background */}
+      <HeroImage variant="desktop" className="hidden md:block" />
+
+      <div className="relative z-10 flex flex-col md:min-h-[inherit] md:justify-center">
+        {/* Mobile: image sits above the copy */}
+        <HeroImage variant="mobile" className="md:hidden" />
+
+        <PageContainer
+          size="xl"
+          className={cn(
+            "relative flex w-full flex-col items-start",
+            "public-section-y",
+            "md:min-h-[inherit] md:justify-center",
+            "md:pl-4 lg:pl-5 xl:pl-6"
+          )}
+        >
+          <HeroContent
+            showTrustBadges={false}
+            hidePrimaryCtaOnMobile
+            className="w-full max-w-xl md:max-w-[42%] xl:max-w-[38%] md:-ml-2 lg:-ml-4 xl:-ml-6"
+          />
+        </PageContainer>
+      </div>
     </section>
   );
 }
