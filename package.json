@@ -11,7 +11,7 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "test": "tsx --test features/scheduling/**/*.test.ts features/appointments/**/*.test.ts",
+    "test": "tsx --test features/scheduling/**/*.test.ts features/appointments/**/*.test.ts features/patients/**/*.test.ts",
     "test:scheduling": "tsx --test features/scheduling/engine/generate-slots.test.ts"
   },
   "dependencies": {

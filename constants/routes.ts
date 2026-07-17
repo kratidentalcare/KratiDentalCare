@@ -47,8 +47,10 @@ export const ROUTES = {
     CLERK_WEBHOOK: "/api/webhooks/clerk",
     AVAILABILITY: "/api/availability",
     APPOINTMENTS: "/api/appointments",
-    APPOINTMENTS_AVAILABILITY: "/api/appointments/availability",
+    /** Alias of AVAILABILITY — public booking slot lookup. */
+    APPOINTMENTS_AVAILABILITY: "/api/availability",
     DASHBOARD_APPOINTMENTS: "/api/dashboard/appointments",
+    DASHBOARD_PATIENTS: "/api/dashboard/patients",
   },
   PUBLIC_BOOK: "/book-appointment",
   /** Legacy admin scaffold (`/admin`) — prefer `DASHBOARD` for new work. */

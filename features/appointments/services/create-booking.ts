@@ -1,6 +1,6 @@
 import "server-only";
 
-import { Types } from "mongoose";
+import mongoose, { Types } from "mongoose";
 
 import { BOOKING_SOURCES } from "@/constants/appointments";
 import { APPOINTMENT_STATUSES } from "@/constants/statuses";
@@ -13,6 +13,7 @@ import type { PublicBookingConfirmation } from "@/features/appointments/types";
 import { connect } from "@/lib/db";
 import { ConflictError, NotFoundError } from "@/lib/errors";
 import { Appointment, type LeanAppointment } from "@/models/appointment";
+import type { LeanDoctor } from "@/models/doctor";
 import type { PublicBookingInput } from "@/validators/appointment-booking";
 
 function isDuplicateKeyError(error: unknown): boolean {
@@ -21,6 +22,18 @@ function isDuplicateKeyError(error: unknown): boolean {
     typeof error === "object" &&
     "code" in error &&
     (error as { code?: number }).code === 11000
+  );
+}
+
+function isTransactionUnsupportedError(error: unknown): boolean {
+  if (!(error instanceof Error)) {
+    return false;
+  }
+  const message = error.message.toLowerCase();
+  return (
+    message.includes("transaction numbers are only allowed") ||
+    message.includes("transactions are not supported") ||
+    message.includes("replica set")
   );
 }
 
@@ -42,8 +55,61 @@ function toConfirmation(
   };
 }
 
+async function createAppointmentDocument(
+  input: PublicBookingInput,
+  doctor: LeanDoctor,
+  bookingReference: string,
+  occupancyKey: string,
+  startsAt: Date,
+  endsAt: Date,
+  session?: mongoose.ClientSession,
+): Promise<LeanAppointment> {
+  const patient = await resolveOrCreatePatient(input, session);
+
+  const payload = {
+    patientId: patient._id,
+    doctorId: doctor._id,
+    slotId: null,
+    status: APPOINTMENT_STATUSES.PENDING,
+    reason: input.reason.trim(),
+    notes: null,
+    cancellationReason: null,
+    cancelledAt: null,
+    cancelledByUserId: null,
+    bookedByUserId: null,
+    bookingSource: BOOKING_SOURCES.PUBLIC,
+    bookingReference,
+    occupancyKey,
+    rescheduledFromStartsAt: null,
+    rescheduledFromEndsAt: null,
+    startsAt,
+    endsAt,
+    checkedInAt: null,
+    completedAt: null,
+    patientSnapshot: {
+      fullName: input.fullName.trim(),
+      phone: input.phone.trim(),
+      email: input.email.trim().toLowerCase(),
+    },
+    doctorSnapshot: {
+      fullName: doctor.fullName,
+      specialties: doctor.specialties,
+    },
+  };
+
+  if (session) {
+    const [appointment] = await Appointment.create([payload], { session });
+    return appointment!.toObject() as LeanAppointment;
+  }
+
+  const appointment = await Appointment.create(payload);
+  return appointment.toObject() as LeanAppointment;
+}
+
 /**
  * Creates a public guest booking with idempotency and atomic occupancy.
+ * Validates availability before mutating patient charts; patient + appointment
+ * writes share one MongoDB transaction when the deployment supports it.
  */
 export async function createPublicBooking(
   input: PublicBookingInput,
@@ -71,57 +137,56 @@ export async function createPublicBooking(
     return toConfirmation(existing, label, timezone, bookingReference);
   }
 
-  const [doctor, patient] = await Promise.all([
-    resolveDefaultDoctor(),
-    resolveOrCreatePatient(input),
-  ]);
-
+  const doctor = await resolveDefaultDoctor();
   const startsAt = new Date(input.startAt);
   const endsAt = new Date(input.endAt);
 
   const { label, timezone } = await assertSlotAvailableForBooking({
     date: input.date,
     startAt: startsAt,
-    endsAt,
+    endAt: endsAt,
   });
 
   const occupancyKey = buildOccupancyKey(String(doctor._id), startsAt);
 
   try {
-    const appointment = await Appointment.create({
-      patientId: patient._id,
-      doctorId: doctor._id,
-      slotId: null,
-      status: APPOINTMENT_STATUSES.PENDING,
-      reason: input.reason.trim(),
-      notes: null,
-      cancellationReason: null,
-      cancelledAt: null,
-      cancelledByUserId: null,
-      bookedByUserId: null,
-      bookingSource: BOOKING_SOURCES.PUBLIC,
-      bookingReference,
-      occupancyKey,
-      rescheduledFromStartsAt: null,
-      rescheduledFromEndsAt: null,
-      startsAt,
-      endsAt,
-      checkedInAt: null,
-      completedAt: null,
-      patientSnapshot: {
-        fullName: input.fullName.trim(),
-        phone: input.phone.trim(),
-        email: input.email.trim().toLowerCase(),
-      },
-      doctorSnapshot: {
-        fullName: doctor.fullName,
-        specialties: doctor.specialties,
-      },
-    });
+    let lean: LeanAppointment | null = null;
+    const session = await mongoose.startSession();
 
-    const lean = appointment.toObject() as LeanAppointment;
+    try {
+      await session.withTransaction(async () => {
+        lean = await createAppointmentDocument(
+          input,
+          doctor,
+          bookingReference,
+          occupancyKey,
+          startsAt,
+          endsAt,
+          session,
+        );
+      });
+    } catch (error) {
+      if (!isTransactionUnsupportedError(error)) {
+        throw error;
+      }
+
+      lean = await createAppointmentDocument(
+        input,
+        doctor,
+        bookingReference,
+        occupancyKey,
+        startsAt,
+        endsAt,
+      );
+    } finally {
+      await session.endSession();
+    }
+
+    if (!lean) {
+      throw new ConflictError("Unable to create appointment");
+    }
+
     await onAppointmentCreated(lean);
-
     return toConfirmation(lean, label, timezone, bookingReference);
   } catch (error) {
     if (isDuplicateKeyError(error)) {

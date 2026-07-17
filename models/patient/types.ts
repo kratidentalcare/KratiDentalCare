@@ -41,6 +41,11 @@ export type PatientFields = {
   fullName: string;
   /** Primary clinic contact phone (reminders / walk-ins). */
   phone: string;
+  /**
+   * Normalized phone used as unique booking identity.
+   * Digits with optional leading `+`; lazily backfilled for legacy rows.
+   */
+  canonicalPhone: string;
   /** Optional clinic email (sparse unique when present). */
   email: string | null;
   gender: Gender | null;

@@ -16,10 +16,10 @@ import {
   patientStatusSchema,
   phoneSchema,
 } from "@/validators/common";
+import { paginationQuerySchema } from "@/validators/pagination";
 
 /**
- * Zod contracts for Patient clinical / demographic fields.
- * Not an API surface — Server Actions will reuse these later.
+ * Zod contracts for Patient clinical / demographic fields and dashboard APIs.
  */
 
 export const genderSchema = z.enum(GENDER_VALUES);
@@ -121,3 +121,46 @@ export const updatePatientSchema = z
 export type CreatePatientInput = z.infer<typeof createPatientSchema>;
 export type UpdatePatientInput = z.infer<typeof updatePatientSchema>;
 export type PatientAddressInput = z.infer<typeof patientAddressSchema>;
+
+/** Active-status filter for dashboard patient lists. */
+export const patientActiveFilterSchema = z.enum(["active", "inactive", "all"]);
+
+export const patientIdParamSchema = z.object({
+  id: objectIdSchema,
+});
+
+export const patientListQuerySchema = paginationQuerySchema.extend({
+  /** Filter by Active / Inactive chart status. Defaults to all. */
+  status: patientActiveFilterSchema.default("all"),
+});
+
+/** Dashboard edit of basic contact information only. */
+export const updatePatientContactSchema = z.object({
+  fullName: nonEmptyStringSchema.max(120),
+  phone: phoneSchema,
+  email: z.union([emailSchema, z.literal(""), z.null()]).transform((value) => {
+    if (value === "" || value == null) {
+      return null;
+    }
+    return value;
+  }),
+});
+
+/** Mark patient Active / Inactive (no archive/delete from this surface). */
+export const updatePatientActiveStatusSchema = z.object({
+  status: z.enum([PATIENT_STATUSES.ACTIVE, PATIENT_STATUSES.INACTIVE]),
+});
+
+export const patientAppointmentHistoryQuerySchema = paginationQuerySchema;
+
+export type PatientListQuery = z.infer<typeof patientListQuerySchema>;
+export type UpdatePatientContactInput = z.infer<
+  typeof updatePatientContactSchema
+>;
+export type UpdatePatientActiveStatusInput = z.infer<
+  typeof updatePatientActiveStatusSchema
+>;
+export type PatientAppointmentHistoryQuery = z.infer<
+  typeof patientAppointmentHistoryQuerySchema
+>;
+

@@ -1,48 +1,34 @@
 import { NextResponse, type NextRequest } from "next/server";
 
 import { ROUTES } from "@/constants/routes";
+import { getBookingAvailability } from "@/features/appointments/services/booking-availability";
 import {
   fromUnknownError,
   successResponse,
+  toActionResult,
   validationErrorResponse,
 } from "@/lib/api-response";
-import { generateAvailableSlots } from "@/features/scheduling/services/generate-available-slots";
-import { generateAvailableSlotsQuerySchema } from "@/validators/availability";
+import { bookingAvailabilityQuerySchema } from "@/validators/appointment-booking";
 
 /**
  * GET /api/availability?date=YYYY-MM-DD
  *
- * Public-facing availability endpoint for future patient booking UI.
- * Uses the same `generateAvailableSlots` engine as the admin live preview.
- *
- * Optional query:
- * - doctorId — future doctor-scoped capacity
- * - durationMinutes — future service-specific duration
+ * Public booking availability with clinic policy and default doctor applied.
  */
 export async function GET(request: NextRequest) {
   const { searchParams } = request.nextUrl;
 
-  const parsed = generateAvailableSlotsQuerySchema.safeParse({
+  const parsed = bookingAvailabilityQuerySchema.safeParse({
     date: searchParams.get("date") ?? undefined,
-    doctorId: searchParams.get("doctorId") ?? undefined,
-    durationMinutes: searchParams.get("durationMinutes")
-      ? Number(searchParams.get("durationMinutes"))
-      : undefined,
-    includePastTimes: searchParams.get("includePastTimes") === "true",
   });
 
   if (!parsed.success) {
     const result = validationErrorResponse(parsed.error);
-    return NextResponse.json(result, { status: result.status });
+    return NextResponse.json(toActionResult(result), { status: result.status });
   }
 
   try {
-    const data = await generateAvailableSlots(parsed.data.date, {
-      doctorId: parsed.data.doctorId,
-      durationMinutes: parsed.data.durationMinutes,
-      includePastTimes: parsed.data.includePastTimes,
-    });
-
+    const data = await getBookingAvailability(parsed.data.date);
     const result = successResponse(data);
     return NextResponse.json(
       {
@@ -57,6 +43,6 @@ export async function GET(request: NextRequest) {
     );
   } catch (error) {
     const result = fromUnknownError(error);
-    return NextResponse.json(result, { status: result.status });
+    return NextResponse.json(toActionResult(result), { status: result.status });
   }
 }

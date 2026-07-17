@@ -1,5 +1,10 @@
-/**
- * Patients feature — patient profiles and records (later phase).
- */
-
-export {};
+export type {
+  PatientAppointmentStats,
+  PatientAppointmentSummary,
+  PatientContactUpdateResult,
+  PatientListItem,
+  PatientListResult,
+  PatientProfile,
+  PatientStatusUpdateResult,
+  ResolvePatientInput,
+} from "./types";

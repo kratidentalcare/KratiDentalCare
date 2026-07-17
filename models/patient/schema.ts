@@ -125,6 +125,22 @@ export const patientSchema = createBaseSchema(
         message: "phone must be a valid phone number",
       },
     },
+    /**
+     * Unique booking identity derived from `phone`.
+     * Required for new writes; legacy rows are backfilled on resolve/update.
+     */
+    canonicalPhone: {
+      type: String,
+      required: [true, "canonicalPhone is required"],
+      trim: true,
+      maxlength: [PHONE_MAX, "canonicalPhone is too long"],
+      validate: {
+        validator(value: string) {
+          return /^\+?\d{7,20}$/.test(value);
+        },
+        message: "canonicalPhone must be a normalized phone number",
+      },
+    },
     email: {
       type: String,
       default: null,
@@ -269,15 +285,27 @@ export const patientSchema = createBaseSchema(
   },
 );
 
-patientSchema.pre("validate", function ensureEmergencyContactConsistency() {
+patientSchema.pre("validate", function ensurePatientInvariants() {
   const name = this.get("emergencyContactName") as string | null;
-  const phone = this.get("emergencyContactPhone") as string | null;
+  const contactPhone = this.get("emergencyContactPhone") as string | null;
 
-  if ((name && !phone) || (!name && phone)) {
+  if ((name && !contactPhone) || (!name && contactPhone)) {
     this.invalidate(
       "emergencyContactPhone",
       "emergencyContactName and emergencyContactPhone must be provided together",
     );
+  }
+
+  const phone = this.get("phone") as string | undefined;
+  const canonical = this.get("canonicalPhone") as string | undefined | null;
+  if (phone && (!canonical || canonical === "")) {
+    const digits = phone.replace(/\D/g, "");
+    if (digits.length >= 7) {
+      this.set(
+        "canonicalPhone",
+        phone.trim().startsWith("+") ? `+${digits}` : digits,
+      );
+    }
   }
 });
 
@@ -286,7 +314,10 @@ patientSchema.index(
   {
     unique: true,
     sparse: true,
-    partialFilterExpression: { userId: { $type: "objectId" } },
+    partialFilterExpression: {
+      userId: { $type: "objectId" },
+      deletedAt: null,
+    },
   },
 );
 
@@ -295,7 +326,21 @@ patientSchema.index(
   {
     unique: true,
     sparse: true,
-    partialFilterExpression: { email: { $type: "string" } },
+    partialFilterExpression: {
+      email: { $type: "string" },
+      deletedAt: null,
+    },
+  },
+);
+
+patientSchema.index(
+  { canonicalPhone: 1 },
+  {
+    unique: true,
+    partialFilterExpression: {
+      canonicalPhone: { $type: "string" },
+      deletedAt: null,
+    },
   },
 );
 
