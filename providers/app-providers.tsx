@@ -5,6 +5,7 @@ import type { ReactNode } from "react";
 
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { clerkAppearance } from "@/config/clerk-appearance";
 
 type AppProvidersProps = {
   children: ReactNode;
@@ -17,7 +18,7 @@ type AppProvidersProps = {
  */
 export function AppProviders({ children }: AppProvidersProps) {
   return (
-    <ClerkProvider>
+    <ClerkProvider appearance={clerkAppearance}>
       <TooltipProvider>
         {children}
         <Toaster position="top-center" richColors closeButton />

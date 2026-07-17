@@ -35,7 +35,11 @@ const envSchema = z.object({
   NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: clerkPublishableKeySchema,
   CLERK_SECRET_KEY: clerkSecretKeySchema,
   NEXT_PUBLIC_CLERK_SIGN_IN_URL: z.string().min(1).default("/sign-in"),
-  NEXT_PUBLIC_CLERK_SIGN_UP_URL: z.string().min(1).default("/sign-up"),
+  /**
+   * Optional. Leave unset for Clerk's combined sign-in-or-up flow
+   * (required for modal + OAuth callbacks under `/sign-in`).
+   */
+  NEXT_PUBLIC_CLERK_SIGN_UP_URL: optionalNonEmpty,
   NEXT_PUBLIC_CLERK_SIGN_IN_FALLBACK_REDIRECT_URL: z
     .string()
     .min(1)
@@ -63,7 +67,7 @@ export type ClerkEnv = {
   NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: string;
   CLERK_SECRET_KEY: string;
   NEXT_PUBLIC_CLERK_SIGN_IN_URL: string;
-  NEXT_PUBLIC_CLERK_SIGN_UP_URL: string;
+  NEXT_PUBLIC_CLERK_SIGN_UP_URL?: string;
 };
 
 let cachedEnv: ServerEnv | null = null;
@@ -156,7 +160,9 @@ export function requireClerkEnv(): ClerkEnv {
     NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: publishableKey,
     CLERK_SECRET_KEY: secretKey,
     NEXT_PUBLIC_CLERK_SIGN_IN_URL: env.NEXT_PUBLIC_CLERK_SIGN_IN_URL,
-    NEXT_PUBLIC_CLERK_SIGN_UP_URL: env.NEXT_PUBLIC_CLERK_SIGN_UP_URL,
+    ...(env.NEXT_PUBLIC_CLERK_SIGN_UP_URL
+      ? { NEXT_PUBLIC_CLERK_SIGN_UP_URL: env.NEXT_PUBLIC_CLERK_SIGN_UP_URL }
+      : {}),
   };
 }
 

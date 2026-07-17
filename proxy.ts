@@ -5,7 +5,7 @@ import { isProtectedPath } from "@/config/auth";
 /**
  * Next.js 16 network boundary (formerly `middleware.ts`).
  * Establishes Clerk session context and redirects unauthenticated
- * visitors away from `/patient` and `/admin` trees.
+ * visitors away from `/patient`, `/admin`, and `/profile` trees.
  *
  * Role / Mongo authorization is intentionally not performed here.
  */

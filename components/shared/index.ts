@@ -37,12 +37,14 @@ export { FormField, type FormFieldProps } from "./form-field";
 export { ListToolbar, type ListToolbarProps } from "./list-toolbar";
 export { LoadingState, type LoadingStateProps } from "./loading-state";
 export {
+  AuthControls,
   Logo,
   MobileMenu,
   Navbar,
   NavLinks,
   PUBLIC_NAV_LINKS,
   isNavLinkActive,
+  type AuthControlsProps,
   type LogoProps,
   type MobileMenuProps,
   type NavLinkItem,

@@ -3,7 +3,9 @@ import type { Metadata } from "next";
 import { PublicShell } from "@/components/layout";
 import { Footer } from "@/components/shared/footer";
 import { Navbar } from "@/components/shared/navbar";
+import { getEnv } from "@/config/env";
 import { APP_DESCRIPTION, APP_NAME } from "@/constants";
+import { isAdmin } from "@/lib/auth";
 
 /**
  * Public marketing site metadata defaults.
@@ -34,20 +36,38 @@ export const metadata: Metadata = {
 };
 
 /**
+ * Soft admin check for navbar chrome only.
+ * Never throws — missing Clerk / sync failures hide the Dashboard link.
+ */
+async function resolveNavbarIsAdmin(): Promise<boolean> {
+  if (!getEnv().hasClerkKeys) {
+    return false;
+  }
+
+  try {
+    return await isAdmin({ touchLastLogin: false });
+  } catch {
+    return false;
+  }
+}
+
+/**
  * Root layout for `app/(public)/*`.
  *
  * Slot contract:
- * - header → Navbar
+ * - header → Navbar (auth-aware)
  * - children → Hero, About, Services, Doctors, Testimonials, FAQ, Contact, …
  * - footer → Footer
  */
-export default function PublicLayout({
+export default async function PublicLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const admin = await resolveNavbarIsAdmin();
+
   return (
-    <PublicShell header={<Navbar />} footer={<Footer />}>
+    <PublicShell header={<Navbar isAdmin={admin} />} footer={<Footer />}>
       {children}
     </PublicShell>
   );

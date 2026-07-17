@@ -27,9 +27,12 @@ export type MobileMenuProps = {
 
 /**
  * Mobile navigation drawer (right slide-in via shadcn Sheet).
+ * Auth controls live in the sticky header; this sheet focuses on links + Book CTA.
  * Closes on link click, overlay click, ESC (Sheet/Dialog defaults), and close button.
  */
 export function MobileMenu({ open, onOpenChange }: MobileMenuProps) {
+  const close = () => onOpenChange(false);
+
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetTrigger
@@ -56,23 +59,20 @@ export function MobileMenu({ open, onOpenChange }: MobileMenuProps) {
           <SheetDescription className="sr-only">
             Navigate the {APP_NAME} website
           </SheetDescription>
-          <Logo onClick={() => onOpenChange(false)} />
+          <Logo onClick={close} />
         </SheetHeader>
 
         <nav
           className="flex-1 overflow-y-auto px-3 py-4"
           aria-label="Mobile"
         >
-          <NavLinks
-            orientation="vertical"
-            onNavigate={() => onOpenChange(false)}
-          />
+          <NavLinks orientation="vertical" onNavigate={close} />
         </nav>
 
         <SheetFooter className="border-t border-[#E5E7EB] p-5">
           <Link
             href={ROUTES.PUBLIC.BOOK}
-            onClick={() => onOpenChange(false)}
+            onClick={close}
             className={cn(
               "inline-flex h-12 w-full items-center justify-center rounded-full",
               "border border-[#1F2937]/25 bg-[#0A84C6]/10 px-6 text-base font-semibold text-[#1F2937]",

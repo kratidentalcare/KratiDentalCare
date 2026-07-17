@@ -7,18 +7,33 @@ import { PageContainer } from "@/components/layout";
 import { ROUTES } from "@/constants/routes";
 import { cn } from "@/lib/utils";
 
+import { AuthControls } from "./auth-controls";
 import { Logo } from "./logo";
 import { MobileMenu } from "./mobile-menu";
 import { NavLinks } from "./nav-links";
 
 export type NavbarProps = {
   className?: string;
+  /**
+   * Whether the signed-in app user is an admin (from `isAdmin()`).
+   * Controls Dashboard visibility in the user dropdown.
+   */
+  isAdmin?: boolean;
 };
 
+const bookCtaClassName = cn(
+  "inline-flex h-11 items-center justify-center rounded-full",
+  "border border-[#1F2937]/25 bg-[#0A84C6]/10 px-6 text-base font-semibold text-[#1F2937]",
+  "transition-all duration-200",
+  "hover:border-[#0A84C6]/40 hover:bg-[#0A84C6]/15 hover:text-[#0870A8]",
+  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0A84C6]/40 focus-visible:ring-offset-2",
+  "active:scale-[0.98]"
+);
+
 /**
- * Sticky public-site navbar: logo left, links + CTA grouped right.
+ * Sticky public-site navbar: logo left, links + auth + CTA grouped right.
  */
-export function Navbar({ className }: NavbarProps) {
+export function Navbar({ className, isAdmin = false }: NavbarProps) {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -48,21 +63,16 @@ export function Navbar({ className }: NavbarProps) {
             <Logo />
           </div>
 
-          <div className="flex items-center gap-2 sm:gap-4 lg:gap-6">
+          <div className="flex items-center gap-2 sm:gap-3 lg:gap-5">
             <nav className="hidden lg:block" aria-label="Primary">
               <NavLinks />
             </nav>
 
+            <AuthControls isAdmin={isAdmin} />
+
             <Link
               href={ROUTES.PUBLIC.BOOK}
-              className={cn(
-                "hidden h-11 items-center justify-center rounded-full lg:inline-flex",
-                "border border-[#1F2937]/25 bg-[#0A84C6]/10 px-6 text-base font-semibold text-[#1F2937]",
-                "transition-all duration-200",
-                "hover:border-[#0A84C6]/40 hover:bg-[#0A84C6]/15 hover:text-[#0870A8]",
-                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0A84C6]/40 focus-visible:ring-offset-2",
-                "active:scale-[0.98]"
-              )}
+              className={cn(bookCtaClassName, "hidden lg:inline-flex")}
             >
               Book & Smile
             </Link>

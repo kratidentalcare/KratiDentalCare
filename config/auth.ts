@@ -6,13 +6,22 @@ import { ROUTES } from "@/constants/routes";
  */
 
 export const AUTH_CONFIG = {
+  /**
+   * Combined Clerk host (`<SignIn withSignUp />`).
+   * Sign-up UI lives under `/sign-in/create` — do not point env at `/sign-up`.
+   */
   signInUrl: ROUTES.SIGN_IN,
+  /** Legacy alias; redirects to `/sign-in/create`. */
   signUpUrl: ROUTES.SIGN_UP,
   /** After sign-in when no return URL is present (role redirect comes later). */
   afterSignInUrl: ROUTES.HOME,
   afterSignUpUrl: ROUTES.HOME,
   /** URL path prefixes that require a Clerk session. */
-  protectedPathPrefixes: [ROUTES.PATIENT.ROOT, ROUTES.ADMIN.ROOT] as const,
+  protectedPathPrefixes: [
+    ROUTES.PATIENT.ROOT,
+    ROUTES.ADMIN.ROOT,
+    ROUTES.PROFILE,
+  ] as const,
   /** Prefixes that must stay public (webhooks, static marketing). */
   publicPathPrefixes: [ROUTES.API.CLERK_WEBHOOK] as const,
 } as const;

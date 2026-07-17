@@ -7,6 +7,8 @@ export const ROUTES = {
   HOME: "/",
   SIGN_IN: "/sign-in",
   SIGN_UP: "/sign-up",
+  /** Authenticated profile placeholder (full profile UI lands later). */
+  PROFILE: "/profile",
   /** Public marketing site (single-page section anchors until dedicated routes ship). */
   PUBLIC: {
     HOME: "/",
