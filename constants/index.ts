@@ -1,4 +1,5 @@
 export * from "./app";
+export * from "./auth-status";
 export * from "./roles";
 export * from "./statuses";
 export * from "./pagination";

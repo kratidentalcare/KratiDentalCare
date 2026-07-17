@@ -1,21 +1,24 @@
 import type { Metadata } from "next";
 
-import { requireAuthRedirect } from "@/lib/auth";
+import { ROUTES } from "@/constants/routes";
+import { requireAdminPage } from "@/lib/auth";
 
 export const metadata: Metadata = {
   title: "Admin",
 };
 
 /**
- * Admin console shell — Clerk session required.
- * Role = admin enforcement lands with Mongo user sync.
+ * Admin console shell — Clerk session + active Mongo admin role required.
  */
 export default async function AdminLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  await requireAuthRedirect();
+  await requireAdminPage({
+    returnPath: ROUTES.ADMIN.ROOT,
+    touchLastLogin: true,
+  });
 
   return (
     <div className="flex flex-1 flex-col bg-slate-50">

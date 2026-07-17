@@ -7,7 +7,8 @@ import { isProtectedPath } from "@/config/auth";
  * Establishes Clerk session context and redirects unauthenticated
  * visitors away from `/patient`, `/admin`, and `/profile` trees.
  *
- * Role / Mongo authorization is intentionally not performed here.
+ * Role / active-account / Mongo authorization is enforced in server
+ * layouts via `requireAdminPage` / `requirePatientPage` / `requireAppUserPage`.
  */
 export default clerkMiddleware(async (auth, request) => {
   if (isProtectedPath(request.nextUrl.pathname)) {

@@ -9,6 +9,13 @@ export const ROUTES = {
   SIGN_UP: "/sign-up",
   /** Authenticated profile placeholder (full profile UI lands later). */
   PROFILE: "/profile",
+  /**
+   * Auth infrastructure status pages (access denied, disabled account, …).
+   * Not a dashboard surface.
+   */
+  AUTH: {
+    STATUS: "/auth/status",
+  },
   /** Public marketing site (single-page section anchors until dedicated routes ship). */
   PUBLIC: {
     HOME: "/",

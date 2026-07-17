@@ -18,7 +18,10 @@ type AppProvidersProps = {
  */
 export function AppProviders({ children }: AppProvidersProps) {
   return (
-    <ClerkProvider appearance={clerkAppearance}>
+    <ClerkProvider
+      appearance={clerkAppearance}
+      telemetry={{ disabled: true }}
+    >
       <TooltipProvider>
         {children}
         <Toaster position="top-center" richColors closeButton />

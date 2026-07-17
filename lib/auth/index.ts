@@ -74,6 +74,14 @@ export {
   type AuthorizeOptions,
 } from "./authorization";
 
+// --- Page / layout gates (Phase 12.2) ---
+export {
+  requireAdminPage,
+  requireAppUserPage,
+  requirePatientPage,
+  type PageAccessOptions,
+} from "./page-access";
+
 export type {
   AuthSession,
   ClerkUserSyncInput,

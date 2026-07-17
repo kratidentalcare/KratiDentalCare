@@ -70,8 +70,8 @@ export function assertActiveAppUser(user: AppUser): AppUser {
  * - No Clerk session → `null`
  * - Valid session → upsert/sync Clerk → Mongo and return the user
  *
- * Does **not** reject inactive accounts — use {@link getCurrentUserOrThrow}
- * or soft role helpers (`isAdmin`, …) when activity matters.
+ * Sync rejects inactive / soft-deleted accounts (`ACCOUNT_DISABLED`).
+ * Prefer {@link getActiveCurrentUser} for optional UI chrome.
  */
 export async function getCurrentUser(
   options: SyncUserOptions = {},
@@ -102,27 +102,34 @@ export async function getCurrentUser(
   return syncClerkUser(clerkUser, options);
 }
 
+function isSoftAuthFailure(error: unknown): boolean {
+  return (
+    error instanceof DomainError &&
+    (error.code === ERROR_CODES.ACCOUNT_DISABLED ||
+      error.code === ERROR_CODES.USER_NOT_SYNCED)
+  );
+}
+
 /**
  * Soft read of an **active** synchronized app user.
  * Returns `null` for missing session, inactive, soft-deleted, or invalid role.
+ *
+ * Sync may reject disabled accounts before return — those are treated as soft
+ * failures here (UI chrome should hide privileged links, not crash).
  */
 export async function getActiveCurrentUser(
   options: SyncUserOptions = {},
 ): Promise<AppUser | null> {
-  const user = await getCurrentUser(options);
-
-  if (!user) {
-    return null;
-  }
-
   try {
+    const user = await getCurrentUser(options);
+
+    if (!user) {
+      return null;
+    }
+
     return assertActiveAppUser(user);
   } catch (error) {
-    if (
-      error instanceof DomainError &&
-      (error.code === ERROR_CODES.ACCOUNT_DISABLED ||
-        error.code === ERROR_CODES.USER_NOT_SYNCED)
-    ) {
+    if (isSoftAuthFailure(error)) {
       return null;
     }
     throw error;
@@ -133,8 +140,8 @@ export async function getActiveCurrentUser(
  * Requires a synchronized, active Mongo app user with a known role.
  *
  * Throws:
- * - `UNAUTHORIZED` — missing session
- * - `ACCOUNT_DISABLED` — inactive / soft-deleted
+ * - `UNAUTHORIZED` — missing session / invalid Clerk identity
+ * - `ACCOUNT_DISABLED` — inactive / soft-deleted (including sync rejection)
  * - `USER_NOT_SYNCED` — missing / invalid role
  */
 export async function getCurrentUserOrThrow(
@@ -150,8 +157,9 @@ export async function getCurrentUserOrThrow(
 }
 
 /**
- * Requires a Clerk session + synced Mongo user (does not enforce `isActive`).
- * Prefer {@link getCurrentUserOrThrow} for protected mutations / layouts.
+ * Requires a Clerk session + synced Mongo user.
+ * Inactive / soft-deleted accounts fail during sync (`ACCOUNT_DISABLED`).
+ * Prefer {@link getCurrentUserOrThrow} / page guards for protected layouts.
  */
 export async function requireSyncedUser(
   options: SyncUserOptions = {},

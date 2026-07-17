@@ -2,7 +2,7 @@ import { ROUTES } from "@/constants/routes";
 
 /**
  * Authentication route and path-matching configuration.
- * Role checks and Mongo user resolution belong in a later phase.
+ * Edge session protection only — Mongo role gates live in server layouts.
  */
 
 export const AUTH_CONFIG = {
@@ -45,7 +45,9 @@ function isPublicAuthException(pathname: string): boolean {
     pathname === AUTH_CONFIG.signInUrl ||
     pathname.startsWith(`${AUTH_CONFIG.signInUrl}/`) ||
     pathname === AUTH_CONFIG.signUpUrl ||
-    pathname.startsWith(`${AUTH_CONFIG.signUpUrl}/`)
+    pathname.startsWith(`${AUTH_CONFIG.signUpUrl}/`) ||
+    pathname === ROUTES.AUTH.STATUS ||
+    pathname.startsWith(`${ROUTES.AUTH.STATUS}/`)
   ) {
     return true;
   }

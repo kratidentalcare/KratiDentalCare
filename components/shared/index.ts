@@ -3,6 +3,10 @@
  * Domain-aware styling allowed (status maps); no data fetching or business rules.
  */
 
+export {
+  AuthStatusView,
+  type AuthStatusViewProps,
+} from "./auth-status-view";
 export { ConfirmDialog, type ConfirmDialogProps } from "./confirm-dialog";
 export { Container, type ContainerProps } from "./container";
 export {

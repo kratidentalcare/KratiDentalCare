@@ -84,6 +84,14 @@ function userNotSyncedError(message: string): DomainError {
   );
 }
 
+function accountDisabledError(message?: string): DomainError {
+  return new DomainError(
+    ERROR_CODES.ACCOUNT_DISABLED,
+    message ?? "This account has been disabled",
+    HTTP_STATUS.FORBIDDEN,
+  );
+}
+
 async function ensureDatabase(): Promise<void> {
   try {
     await connect();
@@ -233,7 +241,7 @@ async function updateMutableProfile(
   const updated = await User.findOneAndUpdate(
     { clerkId },
     { $set: fields },
-    { new: true, runValidators: true },
+    { returnDocument: "after", runValidators: true },
   )
     .lean<AppUser>()
     .exec();
@@ -297,7 +305,8 @@ async function createUserFromSyncInput(
  * Idempotently synchronizes a Clerk identity into the MongoDB `users` collection.
  *
  * - Creates a patient-default row when `clerkId` is new
- * - Updates Clerk-owned profile fields when the row exists
+ * - Updates Clerk-owned profile fields when the row exists and is usable
+ * - Rejects soft-deleted / inactive accounts as `ACCOUNT_DISABLED` (no mutation)
  * - Never overwrites application-managed fields (`role`, `isActive`, …)
  */
 export async function syncUser(
@@ -311,10 +320,17 @@ export async function syncUser(
 
   const existing = await findUserByClerkId(clerkId, { includeDeleted: true });
 
+  // Soft-deleted / inactive accounts must not be mutated during sync.
   if (existing?.deletedAt != null) {
-    throw userNotSyncedError(
+    logger.warn("Rejected soft-deleted app user during sync", { clerkId });
+    throw accountDisabledError(
       "This account has been deactivated and cannot be synchronized",
     );
+  }
+
+  if (existing && !existing.isActive) {
+    logger.warn("Rejected inactive app user during sync", { clerkId });
+    throw accountDisabledError();
   }
 
   if (existing) {

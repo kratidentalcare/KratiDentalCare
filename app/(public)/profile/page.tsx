@@ -3,7 +3,7 @@ import Link from "next/link";
 
 import { PageContainer } from "@/components/layout";
 import { ROUTES } from "@/constants/routes";
-import { requireAuthRedirect } from "@/lib/auth";
+import { requireAppUserPage } from "@/lib/auth";
 
 export const metadata: Metadata = {
   title: "Profile",
@@ -15,10 +15,14 @@ export const metadata: Metadata = {
 
 /**
  * Authenticated profile placeholder.
+ * Requires an active synchronized Mongo app user (any role).
  * Full profile management ships in a later phase.
  */
 export default async function ProfilePage() {
-  await requireAuthRedirect();
+  await requireAppUserPage({
+    returnPath: ROUTES.PROFILE,
+    touchLastLogin: true,
+  });
 
   return (
     <PageContainer size="md" className="py-16 sm:py-20">

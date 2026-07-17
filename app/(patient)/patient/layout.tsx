@@ -1,21 +1,24 @@
 import type { Metadata } from "next";
 
-import { requireAuthRedirect } from "@/lib/auth";
+import { ROUTES } from "@/constants/routes";
+import { requirePatientPage } from "@/lib/auth";
 
 export const metadata: Metadata = {
   title: "Patient portal",
 };
 
 /**
- * Patient portal shell — Clerk session required.
- * Role = patient enforcement lands with Mongo user sync.
+ * Patient portal shell — Clerk session + active Mongo patient role required.
  */
 export default async function PatientLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  await requireAuthRedirect();
+  await requirePatientPage({
+    returnPath: ROUTES.PATIENT.ROOT,
+    touchLastLogin: true,
+  });
 
   return (
     <div className="flex flex-1 flex-col bg-slate-50">
