@@ -12,6 +12,7 @@ import type {
   PatientAppointmentSummary,
   PatientProfile,
 } from "@/features/patients/types";
+import { listPatientPrescriptionHistory } from "@/features/prescriptions/services/list-patient-prescriptions";
 import { connect } from "@/lib/db";
 import type { LeanAppointment } from "@/models/appointment";
 import { getOrCreateClinicSettings } from "@/features/scheduling/services/clinic-settings";
@@ -39,16 +40,19 @@ export async function getPatientProfile(
   id: string,
   historyPage = PAGINATION.DEFAULT_PAGE,
   historyLimit = PAGINATION.DEFAULT_LIMIT,
+  prescriptionPage = PAGINATION.DEFAULT_PAGE,
+  prescriptionLimit = PAGINATION.DEFAULT_LIMIT,
 ): Promise<PatientProfile> {
   await connect();
 
   const settings = await getOrCreateClinicSettings();
   const patient = await findPatientByIdOrThrow(id);
 
-  const [statistics, upcoming, history] = await Promise.all([
+  const [statistics, upcoming, history, prescriptions] = await Promise.all([
     findAppointmentStatsForPatient(id),
     findUpcomingAppointmentForPatient(id),
     listPatientAppointments(id, historyPage, historyLimit),
+    listPatientPrescriptionHistory(id, prescriptionPage, prescriptionLimit),
   ]);
 
   const historyPagination = buildPaginationMeta(
@@ -80,7 +84,8 @@ export async function getPatientProfile(
       hasNextPage: historyPage < totalPages,
       hasPreviousPage: historyPage > 1,
     },
-    prescriptionHistoryPlaceholder: true,
+    prescriptionHistory: prescriptions.items,
+    prescriptionHistoryPagination: prescriptions.pagination,
     primaryDoctorId: null,
     medicalHistoryReady: false,
     uploadedReportsReady: false,

@@ -51,6 +51,7 @@ export const ROUTES = {
     APPOINTMENTS_AVAILABILITY: "/api/availability",
     DASHBOARD_APPOINTMENTS: "/api/dashboard/appointments",
     DASHBOARD_PATIENTS: "/api/dashboard/patients",
+    DASHBOARD_PRESCRIPTIONS: "/api/dashboard/prescriptions",
   },
   PUBLIC_BOOK: "/book-appointment",
   /** Legacy admin scaffold (`/admin`) — prefer `DASHBOARD` for new work. */

@@ -14,6 +14,7 @@ import { AppointmentStatusBadge } from "@/features/appointments/components/appoi
 import { PatientEditContactDialog } from "@/features/patients/components/patient-edit-contact-dialog";
 import { PatientStatusDialog } from "@/features/patients/components/patient-status-dialog";
 import type { PatientProfile } from "@/features/patients/types";
+import { PrintButton } from "@/components/dashboard/prescriptions/print-button";
 import { ROUTES } from "@/constants/routes";
 import { PATIENT_STATUSES } from "@/constants/statuses";
 import {
@@ -60,6 +61,19 @@ export function PatientProfileView({ profile }: PatientProfileViewProps) {
       params.delete("historyPage");
     } else {
       params.set("historyPage", String(page));
+    }
+    const query = params.toString();
+    router.replace(
+      `${ROUTES.DASHBOARD.PATIENTS}/${profile.id}${query ? `?${query}` : ""}`,
+    );
+  };
+
+  const updatePrescriptionPage = (page: number) => {
+    const params = new URLSearchParams(window.location.search);
+    if (page <= 1) {
+      params.delete("rxPage");
+    } else {
+      params.set("rxPage", String(page));
     }
     const query = params.toString();
     router.replace(
@@ -114,9 +128,9 @@ export function PatientProfileView({ profile }: PatientProfileViewProps) {
                 : "Mark active"}
             </Button>
             <Button
-              type="button"
               variant="ghost"
               size="sm"
+              nativeButton={false}
               render={<Link href={ROUTES.DASHBOARD.PATIENTS} />}
             >
               Back to list
@@ -185,13 +199,69 @@ export function PatientProfileView({ profile }: PatientProfileViewProps) {
               Prescription history
             </CardTitle>
             <CardDescription>
-              Placeholder until E-Prescriptions (Phase 17).
+              Issued e-prescriptions linked to this patient.
             </CardDescription>
           </CardHeader>
-          <CardContent>
-            <div className="rounded-lg border border-dashed border-[#E5E7EB] px-4 py-8 text-center text-sm text-muted-foreground">
-              Prescription records will appear here in a future release.
-            </div>
+          <CardContent className="space-y-4">
+            {profile.prescriptionHistory.length === 0 ? (
+              <div className="rounded-lg border border-dashed border-[#E5E7EB] px-4 py-8 text-center text-sm text-muted-foreground">
+                No prescriptions recorded yet.
+              </div>
+            ) : (
+              <>
+                <ul className="space-y-3">
+                  {profile.prescriptionHistory.map((rx) => (
+                    <li
+                      key={rx.id}
+                      className="rounded-xl p-3 text-sm ring-1 ring-foreground/10"
+                    >
+                      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                        <div className="min-w-0 space-y-1">
+                          <p className="font-medium text-brand-dark">
+                            {rx.prescriptionNumber}
+                          </p>
+                          <p className="text-muted-foreground">
+                            {rx.issuedDateLabel} · {rx.doctorName}
+                          </p>
+                          <p className="truncate text-muted-foreground">
+                            {rx.diagnosis ?? "No diagnosis"}
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            {rx.medicationCount} medicine
+                            {rx.medicationCount === 1 ? "" : "s"}
+                          </p>
+                        </div>
+                        <div className="flex flex-wrap gap-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            nativeButton={false}
+                            render={
+                              <Link
+                                href={
+                                  rx.appointmentId
+                                    ? `${ROUTES.DASHBOARD.PRESCRIPTIONS}?appointmentId=${rx.appointmentId}`
+                                    : `${ROUTES.DASHBOARD.PRESCRIPTIONS}/${rx.id}`
+                                }
+                              />
+                            }
+                          >
+                            View
+                          </Button>
+                          <PrintButton prescriptionId={rx.id} />
+                        </div>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+                <PaginationControls
+                  page={profile.prescriptionHistoryPagination.page}
+                  pageSize={profile.prescriptionHistoryPagination.limit}
+                  totalItems={profile.prescriptionHistoryPagination.total}
+                  onPageChange={updatePrescriptionPage}
+                />
+              </>
+            )}
           </CardContent>
         </Card>
       </div>

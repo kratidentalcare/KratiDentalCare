@@ -17,6 +17,8 @@ type PatientProfilePageProps = {
   searchParams: Promise<{
     historyPage?: string;
     historyLimit?: string;
+    rxPage?: string;
+    rxLimit?: string;
   }>;
 };
 
@@ -45,6 +47,8 @@ export default async function PatientProfilePage({
       query.historyLimit
         ? Number(query.historyLimit)
         : PAGINATION.DEFAULT_LIMIT,
+      query.rxPage ? Number(query.rxPage) : PAGINATION.DEFAULT_PAGE,
+      query.rxLimit ? Number(query.rxLimit) : PAGINATION.DEFAULT_LIMIT,
     );
   } catch (error) {
     if (isAppError(error) && error.status === 404) {

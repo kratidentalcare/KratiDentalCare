@@ -2,6 +2,7 @@ import "server-only";
 
 import { Schema, type SchemaDefinition } from "mongoose";
 
+import { GENDER_VALUES } from "@/constants/patient";
 import {
   PRESCRIPTION_STATUSES,
   PRESCRIPTION_STATUS_VALUES,
@@ -19,6 +20,8 @@ import { USER_MODEL_NAME } from "@/models/user/constants";
 export const PRESCRIPTION_MODEL_NAME = "Prescription";
 
 const DIAGNOSIS_MAX = 1000;
+const CHIEF_COMPLAINT_MAX = 1000;
+const CLINICAL_NOTES_MAX = 5000;
 const ADVICE_MAX = 5000;
 const VOID_REASON_MAX = 1000;
 const MED_NAME_MAX = 200;
@@ -124,6 +127,14 @@ const patientSnapshotSchema = new Schema(
         message: "patientSnapshot.ageYears must be an integer",
       },
     },
+    gender: {
+      type: String,
+      default: null,
+      enum: {
+        values: [...GENDER_VALUES, null],
+        message: "`{VALUE}` is not a supported gender",
+      },
+    },
   },
   { _id: false },
 );
@@ -214,12 +225,30 @@ export const prescriptionSchema = createBaseSchema(
       maxlength: [DIAGNOSIS_MAX, "diagnosis is too long"],
       set: emptyToNull,
     },
+    chiefComplaint: {
+      type: String,
+      default: null,
+      trim: true,
+      maxlength: [CHIEF_COMPLAINT_MAX, "chiefComplaint is too long"],
+      set: emptyToNull,
+    },
+    clinicalNotes: {
+      type: String,
+      default: null,
+      trim: true,
+      maxlength: [CLINICAL_NOTES_MAX, "clinicalNotes is too long"],
+      set: emptyToNull,
+    },
     advice: {
       type: String,
       default: null,
       trim: true,
       maxlength: [ADVICE_MAX, "advice is too long"],
       set: emptyToNull,
+    },
+    followUpDate: {
+      type: Date,
+      default: null,
     },
     medications: {
       type: [medicationSchema],
@@ -326,9 +355,6 @@ prescriptionSchema.pre("validate", function validatePrescriptionInvariants() {
   const voidReason = this.get("voidReason") as string | null | undefined;
   const voidedAt = this.get("voidedAt") as Date | null | undefined;
   const voidedByUserId = this.get("voidedByUserId") as unknown;
-  const patientSnapshot = this.get("patientSnapshot") as
-    | { ageYears?: number | null }
-    | undefined;
 
   const isPatientVisible =
     status === PRESCRIPTION_STATUSES.ISSUED ||
@@ -351,12 +377,6 @@ prescriptionSchema.pre("validate", function validatePrescriptionInvariants() {
       this.invalidate(
         "issuedAt",
         "issuedAt is required when ISSUED or AMENDED",
-      );
-    }
-    if (patientSnapshot?.ageYears == null) {
-      this.invalidate(
-        "patientSnapshot.ageYears",
-        "patientSnapshot.ageYears is required when ISSUED or AMENDED",
       );
     }
   }
@@ -416,11 +436,15 @@ prescriptionSchema.index(
 
 prescriptionSchema.index({ patientId: 1, issuedAt: -1 });
 prescriptionSchema.index({ doctorId: 1, issuedAt: -1 });
+/** One active prescription per appointment (soft-deleted rows excluded). */
 prescriptionSchema.index(
   { appointmentId: 1 },
   {
-    sparse: true,
-    partialFilterExpression: { appointmentId: { $type: "objectId" } },
+    unique: true,
+    partialFilterExpression: {
+      deletedAt: null,
+      appointmentId: { $type: "objectId" },
+    },
   },
 );
 prescriptionSchema.index({ status: 1, updatedAt: -1 });

@@ -1,4 +1,5 @@
 import type { AppointmentStatus, PatientStatus } from "@/constants/statuses";
+import type { PatientPrescriptionSummary } from "@/features/prescriptions/types";
 import type { PaginationMeta } from "@/types/api";
 
 /** List-row DTO for Dashboard → Patients. */
@@ -63,8 +64,11 @@ export type PatientProfile = {
     hasNextPage: boolean;
     hasPreviousPage: boolean;
   };
-  /** Phase 17 placeholder — no prescription data loaded. */
-  prescriptionHistoryPlaceholder: true;
+  prescriptionHistory: PatientPrescriptionSummary[];
+  prescriptionHistoryPagination: PaginationMeta & {
+    hasNextPage: boolean;
+    hasPreviousPage: boolean;
+  };
   /** Reserved for multi-doctor scoping (not implemented). */
   primaryDoctorId: string | null;
   /** Reserved medical-history seams (not implemented). */

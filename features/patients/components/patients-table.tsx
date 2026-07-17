@@ -199,9 +199,9 @@ export function PatientsTable({
           </dl>
           <div className="flex flex-wrap gap-2">
             <Button
-              type="button"
               size="sm"
               variant="outline"
+              nativeButton={false}
               render={<Link href={`${ROUTES.DASHBOARD.PATIENTS}/${row.id}`} />}
             >
               View

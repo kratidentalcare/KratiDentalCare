@@ -1,5 +1,6 @@
 import type { Model, Types } from "mongoose";
 
+import type { Gender } from "@/constants/patient";
 import type { PrescriptionStatus } from "@/constants/statuses";
 import type {
   LeanSoftDeleteDocument,
@@ -27,6 +28,7 @@ export type PrescriptionPatientSnapshot = {
   phone: string;
   /** Age in whole years at issue time (optional for drafts). */
   ageYears: number | null;
+  gender: Gender | null;
 };
 
 /** Doctor fields frozen at issue/amend time. */
@@ -48,7 +50,10 @@ export type PrescriptionFields = {
   appointmentId: Types.ObjectId | null;
   status: PrescriptionStatus;
   diagnosis: string | null;
+  chiefComplaint: string | null;
+  clinicalNotes: string | null;
   advice: string | null;
+  followUpDate: Date | null;
   medications: PrescriptionMedication[];
   issuedAt: Date | null;
   validUntil: Date | null;

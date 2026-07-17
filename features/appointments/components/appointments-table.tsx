@@ -6,6 +6,7 @@ import {
   CheckIcon,
   EyeIcon,
   MoreHorizontalIcon,
+  PillIcon,
   XIcon,
 } from "lucide-react";
 import { toast } from "sonner";
@@ -31,6 +32,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { APPOINTMENT_STATUSES } from "@/constants/statuses";
+import { ROUTES } from "@/constants/routes";
 
 type AppointmentsTableProps = {
   items: AppointmentListItem[];
@@ -158,6 +160,18 @@ export function AppointmentsTable({ items, onRefresh }: AppointmentsTableProps) 
                         >
                           <CheckIcon className="size-4" />
                           Mark completed
+                        </DropdownMenuItem>
+                      ) : null}
+                      {item.status === APPOINTMENT_STATUSES.COMPLETED ? (
+                        <DropdownMenuItem
+                          onClick={() => {
+                            window.location.assign(
+                              `${ROUTES.DASHBOARD.PRESCRIPTIONS}?appointmentId=${item.id}`,
+                            );
+                          }}
+                        >
+                          <PillIcon className="size-4" />
+                          Create / view prescription
                         </DropdownMenuItem>
                       ) : null}
                     </DropdownMenuContent>
