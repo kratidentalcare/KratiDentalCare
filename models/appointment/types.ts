@@ -33,8 +33,11 @@ export type AppointmentDoctorSnapshot = {
 export type AppointmentFields = {
   patientId: Types.ObjectId;
   doctorId: Types.ObjectId;
-  /** 1:1 with slots — unique. */
-  slotId: Types.ObjectId;
+  /**
+   * Legacy 1:1 Slot inventory link.
+   * Null for appointments booked against the dynamic availability engine.
+   */
+  slotId: Types.ObjectId | null;
   status: AppointmentStatus;
   reason: string | null;
   notes: string | null;

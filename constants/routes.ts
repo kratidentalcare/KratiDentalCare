@@ -34,18 +34,21 @@ export const ROUTES = {
   DASHBOARD: {
     ROOT: "/dashboard",
     APPOINTMENTS: "/dashboard/appointments",
+    /** @deprecated Prefer SCHEDULING — reserved legacy path. */
     SLOTS: "/dashboard/slots",
+    SCHEDULING: "/dashboard/scheduling",
     PATIENTS: "/dashboard/patients",
     PRESCRIPTIONS: "/dashboard/prescriptions",
     FAQS: "/dashboard/faqs",
     SETTINGS: "/dashboard/settings",
     PROFILE: "/dashboard/profile",
   },
+  API: {
+    CLERK_WEBHOOK: "/api/webhooks/clerk",
+    AVAILABILITY: "/api/availability",
+  },
   /** Legacy admin scaffold (`/admin`) — prefer `DASHBOARD` for new work. */
   ADMIN: {
     ROOT: "/admin",
-  },
-  API: {
-    CLERK_WEBHOOK: "/api/webhooks/clerk",
   },
 } as const;

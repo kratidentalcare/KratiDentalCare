@@ -46,9 +46,9 @@ export const DASHBOARD_NAV_ITEMS: readonly DashboardNavItem[] = [
     icon: CalendarDaysIcon,
   },
   {
-    id: "slots",
-    label: "Slots",
-    href: ROUTES.DASHBOARD.SLOTS,
+    id: "scheduling",
+    label: "Scheduling",
+    href: ROUTES.DASHBOARD.SCHEDULING,
     icon: ClockIcon,
   },
   {
@@ -93,9 +93,9 @@ export const DASHBOARD_NAV_ITEMS: readonly DashboardNavItem[] = [
 
 export const DASHBOARD_QUICK_ACTIONS = [
   {
-    id: "generate-slots",
-    label: "Generate Slots",
-    href: ROUTES.DASHBOARD.SLOTS,
+    id: "configure-scheduling",
+    label: "Configure Scheduling",
+    href: ROUTES.DASHBOARD.SCHEDULING,
     icon: CalendarPlusIcon,
   },
   {

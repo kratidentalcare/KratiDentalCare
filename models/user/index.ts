@@ -2,10 +2,9 @@ import "server-only";
 
 import { getOrCreateModel } from "@/models/base";
 
+import { USER_MODEL_NAME } from "./constants";
 import { userSchema } from "./schema";
 import type { UserDocument, UserModel } from "./types";
-
-export const USER_MODEL_NAME = "User";
 
 /**
  * User model — hot-reload safe via `getOrCreateModel`.
@@ -16,5 +15,6 @@ export const User = getOrCreateModel<UserDocument>(
   userSchema,
 ) as UserModel;
 
+export { USER_MODEL_NAME } from "./constants";
 export type { LeanUser, UserDocument, UserFields, UserModel } from "./types";
 export { userSchema } from "./schema";

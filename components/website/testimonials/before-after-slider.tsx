@@ -3,7 +3,6 @@
 import Image from "next/image";
 import {
   useCallback,
-  useEffect,
   useId,
   useRef,
   useState,
@@ -20,8 +19,6 @@ export type BeforeAfterSliderProps = {
   afterImage: string;
   patientName: string;
   className?: string;
-  /** Reset key — change when switching testimonials to restore the midpoint. */
-  resetKey?: string;
 };
 
 /**
@@ -33,18 +30,12 @@ export function BeforeAfterSlider({
   afterImage,
   patientName,
   className,
-  resetKey,
 }: BeforeAfterSliderProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const draggingRef = useRef(false);
   const labelId = useId();
   const [position, setPosition] = useState(50);
   const [imageReady, setImageReady] = useState(false);
-
-  useEffect(() => {
-    setPosition(50);
-    setImageReady(false);
-  }, [resetKey]);
 
   const updatePosition = useCallback((clientX: number) => {
     const node = containerRef.current;

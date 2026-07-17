@@ -49,7 +49,8 @@ export const createAppointmentSchema = z
   .object({
     patientId: objectIdSchema,
     doctorId: objectIdSchema,
-    slotId: objectIdSchema,
+    /** Optional legacy Slot link; null for runtime-generated bookings. */
+    slotId: objectIdSchema.nullable().optional(),
     status: appointmentStatusSchema.default(APPOINTMENT_STATUSES.PENDING),
     reason: z.string().trim().max(500).nullable().optional(),
     notes: z.string().trim().max(5000).nullable().optional(),

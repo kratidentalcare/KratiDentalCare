@@ -33,10 +33,10 @@ export function TestimonialCard({
       aria-label={`Smile transformation for ${testimonial.patientName}`}
     >
       <BeforeAfterSlider
+        key={testimonial.id}
         beforeImage={testimonial.beforeImage}
         afterImage={testimonial.afterImage}
         patientName={testimonial.patientName}
-        resetKey={testimonial.id}
       />
     </article>
   );

@@ -64,12 +64,12 @@ export function softDeletePlugin(schema: Schema): void {
   const query = schema.query as QueryWithSoftDeleteHelpers &
     Record<string, unknown>;
 
-  query.withDeleted = function withDeleted(this: Query<unknown, unknown>) {
+  query.withDeleted = function withDeleted(this: QueryWithSoftDeleteHelpers) {
     this.setOptions({ withDeleted: true });
     return this;
   };
 
-  query.onlyDeleted = function onlyDeleted(this: Query<unknown, unknown>) {
+  query.onlyDeleted = function onlyDeleted(this: QueryWithSoftDeleteHelpers) {
     this.setOptions({ withDeleted: true });
     this.where({ [DELETED_AT_PATH]: { $ne: null } });
     return this;

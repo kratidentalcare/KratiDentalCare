@@ -12,7 +12,7 @@ import {
   objectIdPathValidator,
 } from "@/models/base";
 import { DOCTOR_MODEL_NAME } from "@/models/doctor";
-import { USER_MODEL_NAME } from "@/models/user";
+import { USER_MODEL_NAME } from "@/models/user/constants";
 
 /** Forward ref — Appointment model is implemented in a later phase. */
 export const APPOINTMENT_MODEL_NAME = "Appointment";
@@ -87,7 +87,7 @@ export const slotSchema = createBaseSchema(
       maxlength: [NOTES_MAX, "notes is too long"],
       set: emptyToNull,
     },
-  } satisfies SchemaDefinition,
+  } as SchemaDefinition,
   {
     softDelete: true,
     isActive: false,
@@ -95,7 +95,7 @@ export const slotSchema = createBaseSchema(
   },
 );
 
-slotSchema.pre("validate", function validateWindowAndBookingLink(next) {
+slotSchema.pre("validate", function validateWindowAndBookingLink() {
   const startAt = this.get("startAt") as Date | undefined;
   const endAt = this.get("endAt") as Date | undefined;
   const status = this.get("status") as string | undefined;
@@ -134,8 +134,6 @@ slotSchema.pre("validate", function validateWindowAndBookingLink(next) {
       "appointmentId must be null unless status is BOOKED",
     );
   }
-
-  next();
 });
 
 // Prevent overlapping duplicate windows for the same doctor start time.

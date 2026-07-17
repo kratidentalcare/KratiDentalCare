@@ -14,7 +14,7 @@ import {
 import { DOCTOR_MODEL_NAME } from "@/models/doctor";
 import { PATIENT_MODEL_NAME } from "@/models/patient";
 import { APPOINTMENT_MODEL_NAME, SLOT_MODEL_NAME } from "@/models/slot";
-import { USER_MODEL_NAME } from "@/models/user";
+import { USER_MODEL_NAME } from "@/models/user/constants";
 
 const REASON_MAX = 500;
 const NOTES_MAX = 5000;
@@ -130,12 +130,22 @@ export const appointmentSchema = createBaseSchema(
         message: OBJECT_ID_VALIDATOR_MESSAGE,
       },
     },
+    /**
+     * Legacy Slot inventory link (optional).
+     * Runtime-generated bookings leave this null; existing Slot-linked
+     * appointments remain readable for backwards compatibility.
+     */
     slotId: {
       type: Schema.Types.ObjectId,
       ref: SLOT_MODEL_NAME,
-      required: [true, "slotId is required"],
+      default: null,
       validate: {
-        validator: objectIdPathValidator,
+        validator(value: unknown) {
+          if (value == null) {
+            return true;
+          }
+          return objectIdPathValidator(value);
+        },
         message: OBJECT_ID_VALIDATOR_MESSAGE,
       },
     },
@@ -220,7 +230,7 @@ export const appointmentSchema = createBaseSchema(
       type: doctorSnapshotSchema,
       required: [true, "doctorSnapshot is required"],
     },
-  } satisfies SchemaDefinition,
+  } as SchemaDefinition,
   {
     softDelete: true,
     isActive: false,
@@ -228,7 +238,7 @@ export const appointmentSchema = createBaseSchema(
   },
 );
 
-appointmentSchema.pre("validate", function validateAppointmentInvariants(next) {
+appointmentSchema.pre("validate", function validateAppointmentInvariants() {
   const startsAt = this.get("startsAt") as Date | undefined;
   const endsAt = this.get("endsAt") as Date | undefined;
   const status = this.get("status") as string | undefined;
@@ -290,14 +300,29 @@ appointmentSchema.pre("validate", function validateAppointmentInvariants(next) {
     this.invalidate("completedAt", "completedAt is required when COMPLETED");
   }
 
-  next();
 });
 
+// Unique only when a legacy Slot document is linked (slotless bookings allowed).
 appointmentSchema.index(
   { slotId: 1 },
   {
     unique: true,
-    partialFilterExpression: { deletedAt: null },
+    sparse: true,
+    partialFilterExpression: {
+      deletedAt: null,
+      slotId: { $type: "objectId" },
+    },
+  },
+);
+
+// Atomic conflict guard for runtime-generated (slotless) bookings.
+appointmentSchema.index(
+  { doctorId: 1, startsAt: 1, endsAt: 1 },
+  {
+    partialFilterExpression: {
+      deletedAt: null,
+      status: { $nin: ["CANCELLED", "ARCHIVED"] },
+    },
   },
 );
 

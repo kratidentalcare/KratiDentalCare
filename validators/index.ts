@@ -68,12 +68,50 @@ export {
 } from "./patient";
 
 export {
+  createHolidayActionSchema,
   createHolidaySchema,
   holidayDateSchema,
+  updateHolidayActionSchema,
   updateHolidaySchema,
+  type CreateHolidayActionInput,
   type CreateHolidayInput,
+  type UpdateHolidayActionInput,
   type UpdateHolidayInput,
 } from "./holiday";
+
+export {
+  appointmentDurationMinutesSchema,
+  clinicAddressSchema,
+  clinicBookingRulesSchema,
+  clinicBreakWindowSchema,
+  createClinicSettingsSchema,
+  timeOfDaySchema as clinicTimeOfDaySchema,
+  timezoneSchema,
+  updateClinicAvailabilitySchema,
+  updateClinicSettingsSchema,
+  type ClinicBookingRulesInput,
+  type ClinicBreakWindowInput,
+  type CreateClinicSettingsInput,
+  type UpdateClinicAvailabilityInput,
+  type UpdateClinicSettingsInput,
+} from "./clinic-settings";
+
+export {
+  civilDateSchema as scheduleOverrideCivilDateSchema,
+  createScheduleOverrideActionSchema,
+  createScheduleOverrideSchema,
+  scheduleOverrideDateSchema,
+  updateScheduleOverrideSchema,
+  type CreateScheduleOverrideActionInput,
+  type CreateScheduleOverrideInput,
+  type UpdateScheduleOverrideInput,
+} from "./schedule-override";
+
+export {
+  civilDateSchema,
+  generateAvailableSlotsQuerySchema,
+  type GenerateAvailableSlotsQuery,
+} from "./availability";
 
 export {
   createSlotSchema,

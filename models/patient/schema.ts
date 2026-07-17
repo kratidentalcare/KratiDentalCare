@@ -17,7 +17,7 @@ import {
   OBJECT_ID_VALIDATOR_MESSAGE,
   objectIdPathValidator,
 } from "@/models/base";
-import { USER_MODEL_NAME } from "@/models/user";
+import { USER_MODEL_NAME } from "@/models/user/constants";
 
 const FULL_NAME_MAX = 120;
 const PHONE_MAX = 20;
@@ -261,7 +261,7 @@ export const patientSchema = createBaseSchema(
       default: PATIENT_STATUSES.ACTIVE,
       index: true,
     },
-  } satisfies SchemaDefinition,
+  } as SchemaDefinition,
   {
     softDelete: true,
     isActive: true,
@@ -269,7 +269,7 @@ export const patientSchema = createBaseSchema(
   },
 );
 
-patientSchema.pre("validate", function ensureEmergencyContactConsistency(next) {
+patientSchema.pre("validate", function ensureEmergencyContactConsistency() {
   const name = this.get("emergencyContactName") as string | null;
   const phone = this.get("emergencyContactPhone") as string | null;
 
@@ -279,8 +279,6 @@ patientSchema.pre("validate", function ensureEmergencyContactConsistency(next) {
       "emergencyContactName and emergencyContactPhone must be provided together",
     );
   }
-
-  next();
 });
 
 patientSchema.index(

@@ -102,7 +102,7 @@ export const userSchema = createBaseSchema(
       required: true,
       default: false,
     },
-  } satisfies SchemaDefinition,
+  } as SchemaDefinition,
   {
     softDelete: true,
     isActive: true,

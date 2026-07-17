@@ -224,7 +224,8 @@ export default function DashboardHomePage() {
                 className="mt-0.5 size-3.5 shrink-0 text-brand-teal"
                 aria-hidden
               />
-              Actions link to reserved routes. Module pages ship in later phases.
+              Configure Scheduling opens the dynamic availability engine. Other
+              modules ship in later phases.
             </p>
           </CardContent>
         </Card>

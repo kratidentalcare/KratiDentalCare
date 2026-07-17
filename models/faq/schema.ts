@@ -11,7 +11,7 @@ import {
   OBJECT_ID_VALIDATOR_MESSAGE,
   objectIdPathValidator,
 } from "@/models/base";
-import { USER_MODEL_NAME } from "@/models/user";
+import { USER_MODEL_NAME } from "@/models/user/constants";
 
 export const FAQ_MODEL_NAME = "Faq";
 
@@ -84,7 +84,7 @@ export const faqSchema = createBaseSchema(
         message: OBJECT_ID_VALIDATOR_MESSAGE,
       },
     },
-  } satisfies SchemaDefinition,
+  } as SchemaDefinition,
   {
     softDelete: true,
     isActive: true,

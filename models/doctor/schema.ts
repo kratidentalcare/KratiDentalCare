@@ -17,7 +17,7 @@ import {
   OBJECT_ID_VALIDATOR_MESSAGE,
   objectIdPathValidator,
 } from "@/models/base";
-import { USER_MODEL_NAME } from "@/models/user";
+import { USER_MODEL_NAME } from "@/models/user/constants";
 
 const FULL_NAME_MAX = 120;
 const SLUG_MAX = 120;
@@ -254,7 +254,7 @@ export const doctorSchema = createBaseSchema(
       default: 0,
       min: [0, "displayOrder cannot be negative"],
     },
-  } satisfies SchemaDefinition,
+  } as SchemaDefinition,
   {
     softDelete: true,
     isActive: true,
@@ -262,7 +262,7 @@ export const doctorSchema = createBaseSchema(
   },
 );
 
-doctorSchema.pre("validate", function ensureEndAfterStart(next) {
+doctorSchema.pre("validate", function ensureEndAfterStart() {
   const start = this.get("startTime") as string | undefined;
   const end = this.get("endTime") as string | undefined;
 
@@ -275,8 +275,6 @@ doctorSchema.pre("validate", function ensureEndAfterStart(next) {
   ) {
     this.invalidate("endTime", "endTime must be after startTime");
   }
-
-  next();
 });
 
 // Sparse unique: multiple doctors may exist without a portal user yet.

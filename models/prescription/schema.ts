@@ -14,7 +14,7 @@ import {
 import { APPOINTMENT_MODEL_NAME } from "@/models/appointment";
 import { DOCTOR_MODEL_NAME } from "@/models/doctor";
 import { PATIENT_MODEL_NAME } from "@/models/patient";
-import { USER_MODEL_NAME } from "@/models/user";
+import { USER_MODEL_NAME } from "@/models/user/constants";
 
 export const PRESCRIPTION_MODEL_NAME = "Prescription";
 
@@ -309,7 +309,7 @@ export const prescriptionSchema = createBaseSchema(
         message: OBJECT_ID_VALIDATOR_MESSAGE,
       },
     },
-  } satisfies SchemaDefinition,
+  } as SchemaDefinition,
   {
     softDelete: true,
     isActive: false,
@@ -317,7 +317,7 @@ export const prescriptionSchema = createBaseSchema(
   },
 );
 
-prescriptionSchema.pre("validate", function validatePrescriptionInvariants(next) {
+prescriptionSchema.pre("validate", function validatePrescriptionInvariants() {
   const status = this.get("status") as string | undefined;
   const diagnosis = this.get("diagnosis") as string | null | undefined;
   const medications = this.get("medications") as unknown[] | undefined;
@@ -404,8 +404,6 @@ prescriptionSchema.pre("validate", function validatePrescriptionInvariants(next)
       "supersedesPrescriptionId is required when AMENDED",
     );
   }
-
-  next();
 });
 
 prescriptionSchema.index(

@@ -7,7 +7,7 @@ import {
   OBJECT_ID_VALIDATOR_MESSAGE,
   objectIdPathValidator,
 } from "@/models/base";
-import { USER_MODEL_NAME } from "@/models/user";
+import { USER_MODEL_NAME } from "@/models/user/constants";
 
 const REASON_MAX = 200;
 
@@ -69,7 +69,7 @@ export const holidaySchema = createBaseSchema(
         message: OBJECT_ID_VALIDATOR_MESSAGE,
       },
     },
-  } satisfies SchemaDefinition,
+  } as SchemaDefinition,
   {
     softDelete: true,
     isActive: true,
@@ -77,11 +77,10 @@ export const holidaySchema = createBaseSchema(
   },
 );
 
-holidaySchema.pre("validate", function syncMonthDayFromDate(next) {
+holidaySchema.pre("validate", function syncMonthDayFromDate() {
   const rawDate = this.get("date") as Date | undefined;
 
   if (!(rawDate instanceof Date) || Number.isNaN(rawDate.getTime())) {
-    next();
     return;
   }
 
@@ -94,13 +93,11 @@ holidaySchema.pre("validate", function syncMonthDayFromDate(next) {
 
   if (day > daysInUtcMonth(year, month - 1)) {
     this.invalidate("date", "date is not a valid calendar day");
-    next();
     return;
   }
 
   this.set("month", month);
   this.set("day", day);
-  next();
 });
 
 // One-off clinic closures: one document per calendar date.
