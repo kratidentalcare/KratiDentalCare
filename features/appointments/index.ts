@@ -1,5 +1,8 @@
-/**
- * Appointments feature — booking and slot management (later phase).
- */
-
-export {};
+export type {
+  AppointmentDetail,
+  AppointmentEventItem,
+  AppointmentListItem,
+  AppointmentListResult,
+  BookingAvailabilityResult,
+  PublicBookingConfirmation,
+} from "./types";

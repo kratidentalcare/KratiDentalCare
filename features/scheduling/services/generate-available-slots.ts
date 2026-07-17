@@ -22,6 +22,8 @@ export type GenerateAvailableSlotsOptions = Partial<
   Omit<GenerateAvailableSlotsQuery, "date">
 > & {
   now?: Date;
+  /** Exclude an appointment window during authorized rescheduling. */
+  excludeAppointmentId?: string;
 };
 
 /**
@@ -78,6 +80,10 @@ export async function generateAvailableSlots(
 
   if (parsed.data.doctorId) {
     appointmentFilter.doctorId = parsed.data.doctorId;
+  }
+
+  if (options.excludeAppointmentId) {
+    appointmentFilter._id = { $ne: options.excludeAppointmentId };
   }
 
   const appointments = await Appointment.find(appointmentFilter)

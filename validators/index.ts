@@ -123,6 +123,21 @@ export {
 } from "./slot";
 
 export {
+  appointmentActionSchema,
+  approveAppointmentSchema,
+  bookingAvailabilityQuerySchema,
+  cancelAppointmentSchema,
+  completeAppointmentSchema,
+  appointmentListQuerySchema,
+  publicBookingSchema,
+  rescheduleAppointmentSchema,
+  type AppointmentActionInput,
+  type AppointmentListQuery,
+  type BookingAvailabilityQuery,
+  type PublicBookingInput,
+} from "./appointment-booking";
+
+export {
   appointmentDoctorSnapshotSchema,
   appointmentPatientSnapshotSchema,
   appointmentTimeWindowSchema,

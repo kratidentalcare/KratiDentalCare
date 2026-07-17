@@ -177,6 +177,7 @@ export const createClinicSettingsSchema = z
       cancellationCutoffHours: 2,
       allowSameDayBooking: true,
     }),
+    defaultDoctorId: objectIdSchema.nullable().optional(),
     updatedByUserId: objectIdSchema.nullable().optional(),
     isActive: isActiveSchema.optional(),
   })
@@ -194,6 +195,7 @@ export const updateClinicAvailabilitySchema = z
     appointmentDurationMinutes: appointmentDurationMinutesSchema.optional(),
     breaks: z.array(clinicBreakWindowSchema).max(12).optional(),
     bookingRules: clinicBookingRulesSchema.partial().optional(),
+    defaultDoctorId: objectIdSchema.nullable().optional(),
     isActive: isActiveSchema.optional(),
   })
   .strict()
@@ -230,6 +232,7 @@ export const updateClinicSettingsSchema = z
     appointmentDurationMinutes: appointmentDurationMinutesSchema.optional(),
     breaks: z.array(clinicBreakWindowSchema).max(12).optional(),
     bookingRules: clinicBookingRulesSchema.partial().optional(),
+    defaultDoctorId: objectIdSchema.nullable().optional(),
     isActive: isActiveSchema.optional(),
   })
   .strict();

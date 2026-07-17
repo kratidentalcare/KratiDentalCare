@@ -19,6 +19,7 @@ import {
   OBJECT_ID_VALIDATOR_MESSAGE,
   objectIdPathValidator,
 } from "@/models/base/validators";
+import { DOCTOR_MODEL_NAME } from "@/models/doctor";
 import { USER_MODEL_NAME } from "@/models/user/constants";
 
 export const CLINIC_SETTINGS_MODEL_NAME = "ClinicSettings";
@@ -300,6 +301,20 @@ export const clinicSettingsSchema = createBaseSchema(
       type: bookingRulesSchema,
       required: true,
       default: () => ({}),
+    },
+    defaultDoctorId: {
+      type: Schema.Types.ObjectId,
+      ref: DOCTOR_MODEL_NAME,
+      default: null,
+      validate: {
+        validator(value: unknown) {
+          if (value == null) {
+            return true;
+          }
+          return objectIdPathValidator(value);
+        },
+        message: OBJECT_ID_VALIDATOR_MESSAGE,
+      },
     },
     updatedByUserId: {
       type: Schema.Types.ObjectId,

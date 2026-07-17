@@ -55,6 +55,7 @@ const DEFAULT_SETTINGS_SEED = {
     cancellationCutoffHours: 2,
     allowSameDayBooking: true,
   },
+  defaultDoctorId: null as string | null,
   updatedByUserId: null as string | null,
 };
 
@@ -145,6 +146,10 @@ export async function updateClinicAvailability(
       ...current.bookingRules,
       ...(input.bookingRules ?? {}),
     },
+    defaultDoctorId:
+      input.defaultDoctorId !== undefined
+        ? input.defaultDoctorId
+        : current.defaultDoctorId,
     isActive: input.isActive ?? current.isActive,
   };
 
@@ -191,6 +196,9 @@ export async function updateClinicAvailability(
         appointmentDurationMinutes: merged.appointmentDurationMinutes,
         breaks: merged.breaks,
         bookingRules: merged.bookingRules,
+        defaultDoctorId: merged.defaultDoctorId
+          ? new Types.ObjectId(String(merged.defaultDoctorId))
+          : null,
         isActive: merged.isActive,
         updatedByUserId: new Types.ObjectId(updatedByUserId),
       },

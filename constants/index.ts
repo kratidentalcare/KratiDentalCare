@@ -9,4 +9,5 @@ export * from "./db";
 export * from "./doctor";
 export * from "./patient";
 export * from "./scheduling";
+export * from "./appointments";
 export * from "./routes";

@@ -21,7 +21,7 @@ export const ROUTES = {
     HOME: "/",
     SERVICES: "/#services",
     DOCTORS: "/#doctors",
-    BOOK: "/#book",
+    BOOK: "/book-appointment",
     CONTACT: "/#contact",
   },
   PATIENT: {
@@ -46,7 +46,11 @@ export const ROUTES = {
   API: {
     CLERK_WEBHOOK: "/api/webhooks/clerk",
     AVAILABILITY: "/api/availability",
+    APPOINTMENTS: "/api/appointments",
+    APPOINTMENTS_AVAILABILITY: "/api/appointments/availability",
+    DASHBOARD_APPOINTMENTS: "/api/dashboard/appointments",
   },
+  PUBLIC_BOOK: "/book-appointment",
   /** Legacy admin scaffold (`/admin`) — prefer `DASHBOARD` for new work. */
   ADMIN: {
     ROOT: "/admin",

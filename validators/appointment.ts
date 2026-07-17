@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 import { APPOINTMENT_STATUSES } from "@/constants/statuses";
+import { BOOKING_SOURCES } from "@/constants/appointments";
 import {
   appointmentStatusSchema,
   emailSchema,
@@ -57,7 +58,18 @@ export const createAppointmentSchema = z
     cancellationReason: z.string().trim().max(500).nullable().optional(),
     cancelledAt: z.coerce.date().nullable().optional(),
     cancelledByUserId: objectIdSchema.nullable().optional(),
-    bookedByUserId: objectIdSchema,
+    bookedByUserId: objectIdSchema.nullable().optional(),
+    bookingSource: z
+      .enum([
+        BOOKING_SOURCES.PUBLIC,
+        BOOKING_SOURCES.STAFF,
+        BOOKING_SOURCES.PATIENT_PORTAL,
+      ])
+      .default(BOOKING_SOURCES.STAFF),
+    bookingReference: z.string().trim().max(128).nullable().optional(),
+    occupancyKey: z.string().trim().max(128).nullable().optional(),
+    rescheduledFromStartsAt: z.coerce.date().nullable().optional(),
+    rescheduledFromEndsAt: z.coerce.date().nullable().optional(),
     startsAt: z.coerce.date(),
     endsAt: z.coerce.date(),
     checkedInAt: z.coerce.date().nullable().optional(),

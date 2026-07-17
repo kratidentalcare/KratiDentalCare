@@ -1,5 +1,6 @@
 import type { Model, Types } from "mongoose";
 
+import type { BookingSource } from "@/constants/appointments";
 import type { AppointmentStatus } from "@/constants/statuses";
 import type {
   LeanSoftDeleteDocument,
@@ -44,7 +45,15 @@ export type AppointmentFields = {
   cancellationReason: string | null;
   cancelledAt: Date | null;
   cancelledByUserId: Types.ObjectId | null;
-  bookedByUserId: Types.ObjectId;
+  /** Null for anonymous public bookings. */
+  bookedByUserId: Types.ObjectId | null;
+  bookingSource: BookingSource;
+  /** Client idempotency key for public booking retries. */
+  bookingReference: string | null;
+  /** Minute-level occupancy guard for concurrent booking prevention. */
+  occupancyKey: string | null;
+  rescheduledFromStartsAt: Date | null;
+  rescheduledFromEndsAt: Date | null;
   /** Snapshot of slot.startAt at booking (immutable visit time). */
   startsAt: Date;
   /** Snapshot of slot.endAt at booking. */

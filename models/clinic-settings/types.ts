@@ -63,6 +63,8 @@ export type ClinicSettingsFields = {
   appointmentDurationMinutes: AppointmentDurationMinutes;
   breaks: ClinicBreakWindow[];
   bookingRules: ClinicBookingRules;
+  /** Default doctor for public booking when patients do not choose one. */
+  defaultDoctorId: Types.ObjectId | null;
   updatedByUserId: Types.ObjectId | null;
 };
 

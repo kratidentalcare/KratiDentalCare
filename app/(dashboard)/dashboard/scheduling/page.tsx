@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 
 import { PageHeader } from "@/components/dashboard";
 import { SchedulingWorkspace } from "@/features/scheduling/components/scheduling-workspace";
+import { DefaultDoctorSettings } from "@/features/scheduling/components/default-doctor-settings";
+import { listBookableDoctors } from "@/features/appointments/services/list-doctors";
 import { utcToCivilDate } from "@/features/scheduling/lib/timezone";
 import { getOrCreateClinicSettings } from "@/features/scheduling/services/clinic-settings";
 import { generateAvailableSlots } from "@/features/scheduling/services/generate-available-slots";
@@ -16,10 +18,11 @@ export const metadata: Metadata = {
  * Admin Scheduling — configure clinic availability and preview dynamic slots.
  */
 export default async function SchedulingPage() {
-  const [settings, holidays, overrides] = await Promise.all([
+  const [settings, holidays, overrides, doctors] = await Promise.all([
     getOrCreateClinicSettings(),
     listHolidays(),
     listScheduleOverrides(),
+    listBookableDoctors(),
   ]);
 
   const previewDate = utcToCivilDate(new Date(), settings.timezone);
@@ -30,6 +33,13 @@ export default async function SchedulingPage() {
       <PageHeader
         title="Scheduling"
         description="Configure working hours, breaks, holidays, and date blocks. Available appointment times are generated dynamically — never stored as slot inventory."
+      />
+
+      <DefaultDoctorSettings
+        doctors={doctors}
+        currentDoctorId={
+          settings.defaultDoctorId ? String(settings.defaultDoctorId) : null
+        }
       />
 
       <SchedulingWorkspace

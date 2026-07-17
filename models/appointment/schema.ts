@@ -7,6 +7,10 @@ import {
   APPOINTMENT_STATUS_VALUES,
 } from "@/constants/statuses";
 import {
+  BOOKING_SOURCE_VALUES,
+  BOOKING_SOURCES,
+} from "@/constants/appointments";
+import {
   createBaseSchema,
   OBJECT_ID_VALIDATOR_MESSAGE,
   objectIdPathValidator,
@@ -25,6 +29,8 @@ const SNAPSHOT_EMAIL_MAX = 320;
 const SPECIALTY_MAX = 80;
 const MAX_SPECIALTIES = 20;
 const MIN_DURATION_MS = 5 * 60 * 1000;
+const BOOKING_REFERENCE_MAX = 128;
+const OCCUPANCY_KEY_MAX = 128;
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PHONE_PATTERN = /^[+]?[\d\s()-]+$/;
@@ -200,11 +206,52 @@ export const appointmentSchema = createBaseSchema(
     bookedByUserId: {
       type: Schema.Types.ObjectId,
       ref: USER_MODEL_NAME,
-      required: [true, "bookedByUserId is required"],
+      default: null,
       validate: {
-        validator: objectIdPathValidator,
+        validator(value: unknown) {
+          if (value == null) {
+            return true;
+          }
+          return objectIdPathValidator(value);
+        },
         message: OBJECT_ID_VALIDATOR_MESSAGE,
       },
+    },
+    bookingSource: {
+      type: String,
+      required: true,
+      enum: {
+        values: [...BOOKING_SOURCE_VALUES],
+        message: "`{VALUE}` is not a supported booking source",
+      },
+      default: BOOKING_SOURCES.STAFF,
+    },
+    /** Client-supplied idempotency key for public booking retries. */
+    bookingReference: {
+      type: String,
+      default: null,
+      trim: true,
+      maxlength: [BOOKING_REFERENCE_MAX, "bookingReference is too long"],
+      set: emptyToNull,
+    },
+    /**
+     * Minute-level occupancy guard for slotless bookings.
+     * Set for blocking statuses; cleared on cancellation/archive.
+     */
+    occupancyKey: {
+      type: String,
+      default: null,
+      trim: true,
+      maxlength: [OCCUPANCY_KEY_MAX, "occupancyKey is too long"],
+      set: emptyToNull,
+    },
+    rescheduledFromStartsAt: {
+      type: Date,
+      default: null,
+    },
+    rescheduledFromEndsAt: {
+      type: Date,
+      default: null,
     },
     startsAt: {
       type: Date,
@@ -271,6 +318,12 @@ appointmentSchema.pre("validate", function validateAppointmentInvariants() {
         "cancelledByUserId is required when CANCELLED",
       );
     }
+    if (this.get("occupancyKey") != null) {
+      this.invalidate(
+        "occupancyKey",
+        "occupancyKey must be cleared when CANCELLED",
+      );
+    }
   }
 
   if (
@@ -315,7 +368,34 @@ appointmentSchema.index(
   },
 );
 
-// Atomic conflict guard for runtime-generated (slotless) bookings.
+// Atomic occupancy guard — one blocking appointment per doctor-minute.
+appointmentSchema.index(
+  { occupancyKey: 1 },
+  {
+    unique: true,
+    sparse: true,
+    partialFilterExpression: {
+      deletedAt: null,
+      occupancyKey: { $type: "string" },
+      status: { $nin: ["CANCELLED", "ARCHIVED"] },
+    },
+  },
+);
+
+// Idempotent public booking retries.
+appointmentSchema.index(
+  { bookingReference: 1 },
+  {
+    unique: true,
+    sparse: true,
+    partialFilterExpression: {
+      deletedAt: null,
+      bookingReference: { $type: "string" },
+    },
+  },
+);
+
+// Legacy non-unique doctor/time listing index.
 appointmentSchema.index(
   { doctorId: 1, startsAt: 1, endsAt: 1 },
   {
