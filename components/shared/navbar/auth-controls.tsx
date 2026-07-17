@@ -98,7 +98,7 @@ export function AuthControls({
               {isAdmin ? (
                 <UserButton.Link
                   label="Dashboard"
-                  href={ROUTES.ADMIN.ROOT}
+                  href={ROUTES.DASHBOARD.ROOT}
                   labelIcon={
                     <LayoutDashboardIcon className="size-4" aria-hidden />
                   }

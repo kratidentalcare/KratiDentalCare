@@ -102,7 +102,7 @@ export async function requireAppUserPage(
 export async function requireAdminPage(
   options: PageAccessOptions = {},
 ): Promise<AppUser> {
-  const returnPath = options.returnPath ?? ROUTES.ADMIN.ROOT;
+  const returnPath = options.returnPath ?? ROUTES.DASHBOARD.ROOT;
   const syncOptions: SyncUserOptions = {
     touchLastLogin: options.touchLastLogin,
   };

@@ -27,6 +27,21 @@ export const ROUTES = {
   PATIENT: {
     ROOT: "/patient",
   },
+  /**
+   * Admin dashboard (Phase 13+). Nested module paths are reserved for
+   * future business modules — the shell already highlights them when active.
+   */
+  DASHBOARD: {
+    ROOT: "/dashboard",
+    APPOINTMENTS: "/dashboard/appointments",
+    SLOTS: "/dashboard/slots",
+    PATIENTS: "/dashboard/patients",
+    PRESCRIPTIONS: "/dashboard/prescriptions",
+    FAQS: "/dashboard/faqs",
+    SETTINGS: "/dashboard/settings",
+    PROFILE: "/dashboard/profile",
+  },
+  /** Legacy admin scaffold (`/admin`) — prefer `DASHBOARD` for new work. */
   ADMIN: {
     ROOT: "/admin",
   },

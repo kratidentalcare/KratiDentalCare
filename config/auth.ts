@@ -19,6 +19,7 @@ export const AUTH_CONFIG = {
   /** URL path prefixes that require a Clerk session. */
   protectedPathPrefixes: [
     ROUTES.PATIENT.ROOT,
+    ROUTES.DASHBOARD.ROOT,
     ROUTES.ADMIN.ROOT,
     ROUTES.PROFILE,
   ] as const,
@@ -28,7 +29,8 @@ export const AUTH_CONFIG = {
 
 /**
  * True when the pathname is under a session-protected tree
- * (`/patient`, `/admin`) and is not an explicit public exception.
+ * (`/patient`, `/dashboard`, `/admin`, `/profile`) and is not an
+ * explicit public exception.
  */
 export function isProtectedPath(pathname: string): boolean {
   if (isPublicAuthException(pathname)) {
