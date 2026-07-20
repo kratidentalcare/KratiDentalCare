@@ -72,6 +72,14 @@ function redirectForPageAccessFailure(
     redirect(buildSignInRedirectUrl(returnPath));
   }
 
+  // A uniqueness conflict during sync (e.g. the Clerk email collides with an
+  // existing / soft-deleted Mongo row) leaves the session without a usable
+  // app profile — surface the stable "account unavailable" status instead of
+  // bubbling a raw 500 to the error boundary.
+  if (isAppError(error) && error.code === ERROR_CODES.CONFLICT) {
+    redirect(buildAuthStatusUrl(AUTH_STATUS_REASONS.USER_NOT_SYNCED));
+  }
+
   throw error;
 }
 

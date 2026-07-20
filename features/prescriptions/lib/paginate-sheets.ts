@@ -85,6 +85,26 @@ function buildTextBuckets(data: PrescriptionPreviewData): TextBucket[] {
   return buckets;
 }
 
+function medicineLineCost(medicine: PrescriptionMedicineDto): number {
+  const charsPerLine = PRESCRIPTION_LAYOUT.charsPerLine;
+  const title = [medicine.medicineName, medicine.dosage]
+    .filter(Boolean)
+    .join(" ");
+  const directions = [
+    medicine.frequency,
+    medicine.duration,
+    medicine.instructions,
+  ]
+    .filter(Boolean)
+    .join(" · ");
+
+  return (
+    Math.max(1, wrapText(title, charsPerLine).length) +
+    Math.max(1, wrapText(directions, charsPerLine).length) +
+    PRESCRIPTION_LAYOUT.medicineSpacingLineCost
+  );
+}
+
 function emptySheetBody(): Pick<
   PrescriptionPreviewSheet,
   | "diagnosisLines"
@@ -116,8 +136,7 @@ export function paginatePrescriptionSheets(
   const followUp = data.followUpLabel.trim();
 
   type PageDraft = {
-    textLineBudget: number;
-    medicineBudget: number;
+    lineBudget: number;
     isContinuation: boolean;
     body: ReturnType<typeof emptySheetBody>;
   };
@@ -127,12 +146,9 @@ export function paginatePrescriptionSheets(
   function startPage(isContinuation: boolean): PageDraft {
     const page: PageDraft = {
       isContinuation,
-      textLineBudget: isContinuation
-        ? PRESCRIPTION_LAYOUT.textLinesPerContinuationPage
-        : PRESCRIPTION_LAYOUT.textLinesPerFirstPage,
-      medicineBudget: isContinuation
-        ? PRESCRIPTION_LAYOUT.medicinesPerContinuationPage
-        : PRESCRIPTION_LAYOUT.medicinesPerFirstPage,
+      lineBudget:
+        PRESCRIPTION_LAYOUT.contentLineCapacity -
+        (isContinuation ? PRESCRIPTION_LAYOUT.continuationHeadingLineCost : 0),
       body: emptySheetBody(),
     };
     pages.push(page);
@@ -141,8 +157,8 @@ export function paginatePrescriptionSheets(
 
   let page = startPage(false);
 
-  function ensureTextCapacity(neededLines: number) {
-    if (page.textLineBudget >= neededLines) {
+  function ensureCapacity(neededLines: number) {
+    if (page.lineBudget >= neededLines) {
       return;
     }
     page = startPage(true);
@@ -155,11 +171,11 @@ export function paginatePrescriptionSheets(
   ) {
     let index = 0;
     while (index < lines.length) {
-      // Label + at least one content line.
-      ensureTextCapacity(2);
-      const room = Math.max(1, page.textLineBudget - 1);
+      ensureCapacity(1);
+      const room = page.lineBudget;
       const slice = lines.slice(index, index + room);
-      const prefixed = [`${label}:`, ...slice];
+      const firstLine = slice[0] ?? "";
+      const prefixed = [`${label}: ${firstLine}`, ...slice.slice(1)];
 
       const field =
         targetKey === "diagnosis"
@@ -171,7 +187,7 @@ export function paginatePrescriptionSheets(
               : "adviceLines";
 
       page.body[field].push(...prefixed);
-      page.textLineBudget -= prefixed.length;
+      page.lineBudget -= prefixed.length;
       index += slice.length;
     }
   }
@@ -182,25 +198,34 @@ export function paginatePrescriptionSheets(
 
   let medIndex = 0;
   while (medIndex < medicines.length) {
-    if (page.medicineBudget <= 0) {
-      page = startPage(true);
+    const medicine = medicines[medIndex];
+    if (!medicine) {
+      break;
     }
-    const room = page.medicineBudget;
-    const slice: PrescriptionMedicineDto[] = medicines.slice(
-      medIndex,
-      medIndex + room,
-    );
-    page.body.medications.push(...slice);
-    page.medicineBudget -= slice.length;
-    medIndex += slice.length;
+    const itemCost = medicineLineCost(medicine);
+    const pageHasContent =
+      page.body.diagnosisLines.length > 0 ||
+      page.body.chiefComplaintLines.length > 0 ||
+      page.body.clinicalNotesLines.length > 0 ||
+      page.body.adviceLines.length > 0 ||
+      page.body.medications.length > 0;
+
+    if (page.lineBudget < itemCost && pageHasContent) {
+      page = startPage(true);
+      continue;
+    }
+
+    page.body.medications.push(medicine);
+    page.lineBudget -= itemCost;
+    medIndex += 1;
   }
 
   if (followUp) {
-    if (page.textLineBudget < 1) {
+    if (page.lineBudget < PRESCRIPTION_LAYOUT.followUpLineCost) {
       page = startPage(true);
     }
     page.body.followUpLabel = followUp;
-    page.textLineBudget -= 1;
+    page.lineBudget -= PRESCRIPTION_LAYOUT.followUpLineCost;
   }
 
   // Ensure at least one sheet even for empty draft preview.

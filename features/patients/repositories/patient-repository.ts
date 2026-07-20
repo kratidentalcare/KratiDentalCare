@@ -3,6 +3,7 @@ import "server-only";
 import type { ClientSession, Types } from "mongoose";
 import { Types as MongooseTypes } from "mongoose";
 
+import type { Gender } from "@/constants/patient";
 import { PATIENT_STATUSES } from "@/constants/statuses";
 import {
   escapeRegex,
@@ -170,6 +171,8 @@ export async function createPatientRecord(
     fullName: string;
     phone: string;
     email: string | null;
+    gender?: Gender | null;
+    dateOfBirth?: Date | null;
   },
   session?: ClientSession,
 ): Promise<LeanPatient> {
@@ -184,6 +187,8 @@ export async function createPatientRecord(
           phone: displayPhone,
           canonicalPhone,
           email: input.email,
+          gender: input.gender ?? null,
+          dateOfBirth: input.dateOfBirth ?? null,
           status: PATIENT_STATUSES.ACTIVE,
           isActive: true,
         },

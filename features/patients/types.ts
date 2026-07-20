@@ -93,8 +93,13 @@ export type PatientStatusUpdateResult = {
   isActive: boolean;
 };
 
+import type { Gender } from "@/constants/patient";
+
 export type ResolvePatientInput = {
   fullName: string;
   phone: string;
   email?: string | null;
+  /** Whole-year age from booking — stored as approximate dateOfBirth. */
+  ageYears?: number | null;
+  gender?: Gender | null;
 };

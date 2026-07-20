@@ -104,11 +104,7 @@ export function AuthControls({
                   }
                 />
               ) : null}
-              <UserButton.Link
-                label="Profile"
-                href={ROUTES.PROFILE}
-                labelIcon={<UserIcon className="size-4" aria-hidden />}
-              />
+              <UserButton.Action label="manageAccount" />
               <UserButton.Action label="signOut" />
             </UserButton.MenuItems>
           </UserButton>

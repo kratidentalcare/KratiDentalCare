@@ -52,8 +52,18 @@ export default async function PrintPrescriptionPage({
     >
       <style>{`
         @media print {
-          @page { size: A4 portrait; margin: 0; }
-          html, body { margin: 0 !important; background: white !important; }
+          @page {
+            size: A4;
+            margin: 0;
+          }
+          html,
+          body {
+            width: 210mm !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            min-height: 0 !important;
+            background: white !important;
+          }
           [data-slot="sidebar"],
           [data-dashboard-chrome],
           header,
@@ -61,15 +71,36 @@ export default async function PrintPrescriptionPage({
           aside {
             display: none !important;
           }
+          body *:has(.prescription-print-root) {
+            display: block !important;
+            width: auto !important;
+            max-width: none !important;
+            min-height: 0 !important;
+            margin: 0 !important;
+            padding: 0 !important;
+          }
           .prescription-print-root {
             position: static !important;
             inset: auto !important;
             z-index: auto !important;
+            width: 210mm !important;
+            max-width: 210mm !important;
             margin: 0 !important;
             padding: 0 !important;
             overflow: visible !important;
           }
           [data-prescription-sheet] {
+            display: block !important;
+            box-sizing: border-box !important;
+            width: 210mm !important;
+            height: 297mm !important;
+            min-height: 0 !important;
+            max-height: 297mm !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            overflow: hidden !important;
+            break-inside: avoid !important;
+            page-break-inside: avoid !important;
             box-shadow: none !important;
             page-break-after: always;
             break-after: page;

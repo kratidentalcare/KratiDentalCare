@@ -178,9 +178,13 @@ export {
 } from "./testimonial";
 
 export {
+  createFaqActionSchema,
   createFaqSchema,
   faqCategorySchema,
+  updateFaqActionSchema,
   updateFaqSchema,
+  type CreateFaqActionInput,
   type CreateFaqInput,
+  type UpdateFaqActionInput,
   type UpdateFaqInput,
 } from "./faq";

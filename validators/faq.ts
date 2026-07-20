@@ -44,3 +44,24 @@ export const updateFaqSchema = z
 
 export type CreateFaqInput = z.infer<typeof createFaqSchema>;
 export type UpdateFaqInput = z.infer<typeof updateFaqSchema>;
+
+/** Admin form input — updatedByUserId injected server-side. */
+export const createFaqActionSchema = z.object({
+  question: nonEmptyStringSchema.max(300),
+  answer: nonEmptyStringSchema.max(10_000),
+  displayOrder: z.coerce.number().int().min(0).default(0),
+  isActive: isActiveSchema.default(true),
+});
+
+/** Admin form update — partial fields. */
+export const updateFaqActionSchema = z
+  .object({
+    question: nonEmptyStringSchema.max(300).optional(),
+    answer: nonEmptyStringSchema.max(10_000).optional(),
+    displayOrder: z.coerce.number().int().min(0).optional(),
+    isActive: isActiveSchema.optional(),
+  })
+  .strict();
+
+export type CreateFaqActionInput = z.infer<typeof createFaqActionSchema>;
+export type UpdateFaqActionInput = z.infer<typeof updateFaqActionSchema>;

@@ -9,19 +9,35 @@ import { Accordion } from "@/components/ui/accordion";
 import { ROUTES } from "@/constants/routes";
 import { cn } from "@/lib/utils";
 
-import { FAQS, FAQ_SECTION } from "./faq-data";
+import { FAQ_SECTION, type FaqItem as FaqItemData } from "./faq-data";
 import { FaqItem } from "./faq-item";
 import { FaqSectionHeader } from "./section-header";
 
 export type FaqProps = {
+  /** Active FAQs from the CMS. Empty / omitted → section not rendered. */
+  items?: readonly FaqItemData[];
   className?: string;
 };
 
 /**
  * Homepage FAQ — two-column accordion on tablet+, single column on mobile.
  * Only one item open at a time (shadcn/Base UI Accordion default).
+ * Returns null when there are no Active FAQs to show.
  */
-export function Faq({ className }: FaqProps) {
+export function Faq({ items = [], className }: FaqProps) {
+  if (items.length === 0) {
+    return null;
+  }
+
+  return <FaqSection items={items} className={className} />;
+}
+
+type FaqSectionProps = {
+  items: readonly FaqItemData[];
+  className?: string;
+};
+
+function FaqSection({ items, className }: FaqSectionProps) {
   const sectionRef = useRef<HTMLElement>(null);
   const [visible, setVisible] = useState(false);
 
@@ -97,7 +113,7 @@ export function Faq({ className }: FaqProps) {
               "grid w-full grid-cols-1 gap-x-10 md:grid-cols-2 md:gap-x-14 lg:gap-x-16"
             )}
           >
-            {FAQS.map((item) => (
+            {items.map((item) => (
               <FaqItem key={item.id} item={item} />
             ))}
           </Accordion>

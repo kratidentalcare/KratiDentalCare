@@ -10,7 +10,10 @@ import type { PublicBookingInput } from "@/validators/appointment-booking";
  * Compatibility delegate — patient resolution lives in the patients feature.
  */
 export async function resolveOrCreatePatient(
-  input: Pick<PublicBookingInput, "fullName" | "phone" | "email">,
+  input: Pick<
+    PublicBookingInput,
+    "fullName" | "phone" | "email" | "ageYears" | "gender"
+  >,
   session?: ClientSession,
 ): Promise<LeanPatient> {
   return resolvePatient(
@@ -18,6 +21,8 @@ export async function resolveOrCreatePatient(
       fullName: input.fullName,
       phone: input.phone,
       email: input.email,
+      ageYears: input.ageYears,
+      gender: input.gender,
     },
     session,
   );

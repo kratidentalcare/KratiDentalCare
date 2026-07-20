@@ -3,8 +3,7 @@
  * Used by on-screen preview and PDF — keep as the single source of truth.
  */
 
-export const PRESCRIPTION_TEMPLATE_PATH =
-  "/images/prescription-template.jpeg" as const;
+export const PRESCRIPTION_TEMPLATE_PATH = "/prescription-template.png" as const;
 
 /** CSS size matching A4 portrait. */
 export const A4_WIDTH_MM = 210;
@@ -17,28 +16,42 @@ export type OverlayBox = {
   height?: number;
 };
 
-export const PRESCRIPTION_LAYOUT = {
-  /** Approximate characters per diagnosis/notes line at configured font. */
-  charsPerLine: 72,
-  /** Medicine rows that fit on the first sheet body. */
-  medicinesPerFirstPage: 8,
-  /** Medicine rows on continuation sheets. */
-  medicinesPerContinuationPage: 12,
-  /** Text block lines reserved above medicines on first page. */
-  textLinesPerFirstPage: 6,
-  textLinesPerContinuationPage: 10,
-
-  patientName: { top: 22.8, left: 22, width: 42 } satisfies OverlayBox,
-  ageSex: { top: 25.6, left: 22, width: 28 } satisfies OverlayBox,
-  date: { top: 22.8, left: 68, width: 26 } satisfies OverlayBox,
-  opd: { top: 25.6, left: 68, width: 26 } satisfies OverlayBox,
-
-  bodyStartTop: 32,
-  bodyLeft: 12,
-  bodyWidth: 76,
-  bodyLineHeight: 1.35,
-  bodyFontSizePx: 11,
-
-  signature: { top: 78, left: 58, width: 32 } satisfies OverlayBox,
+export const prescriptionPositions = {
+  patientName: {
+    top: 25.75,
+    left: 25.5,
+    width: 28.5,
+  } satisfies OverlayBox,
+  ageSex: { top: 29.75, left: 17, width: 18 } satisfies OverlayBox,
+  date: { top: 25.75, left: 72.5, width: 21.5 } satisfies OverlayBox,
+  opdNumber: {
+    top: 29.75,
+    left: 76.5,
+    width: 17.5,
+  } satisfies OverlayBox,
+  content: {
+    top: 39.5,
+    left: 8.5,
+    width: 83,
+    height: 31.5,
+  } satisfies OverlayBox,
+  signature: {
+    top: 72,
+    left: 61,
+    width: 30,
+    height: 5.5,
+  } satisfies OverlayBox,
   pageBadge: { top: 3, left: 86, width: 10 } satisfies OverlayBox,
+} as const;
+
+export const PRESCRIPTION_LAYOUT = {
+  /** Approximate characters per printed line at 11pt within the content box. */
+  charsPerLine: 82,
+  /** Conservative measured capacity of the fixed writing area. */
+  contentLineCapacity: 18,
+  continuationHeadingLineCost: 1,
+  medicineSpacingLineCost: 1,
+  followUpLineCost: 2,
+  bodyLineHeight: 1.35,
+  bodyFontSizePt: 11,
 } as const;

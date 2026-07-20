@@ -197,3 +197,82 @@
     gap: var(--stack-gap);
   }
 }
+
+/*
+ * Clerk's default modal is vertically centered. On compact screens auth and
+ * account flows behave as an anchored bottom sheet instead: the action area
+ * stays reachable above the safe area and long forms scroll inside the sheet.
+ * Desktop keeps Clerk's regular centered modal treatment.
+ */
+@media (max-width: 39.999rem) {
+  .clerk-modal-backdrop {
+    align-items: flex-end !important;
+    overflow: hidden !important;
+    padding-top: 0.75rem !important;
+  }
+
+  .clerk-modal-content {
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    animation: clerk-sheet-enter 200ms ease-out !important;
+  }
+
+  .clerk-modal-content .clerk-card-box {
+    width: 100% !important;
+    max-width: none !important;
+  }
+
+  .clerk-modal-content .clerk-card {
+    max-height: calc(100dvh - 0.75rem) !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    overscroll-behavior: contain;
+    border-right: 0 !important;
+    border-bottom: 0 !important;
+    border-left: 0 !important;
+    border-radius: 1.25rem 1.25rem 0 0 !important;
+    padding-bottom: max(1rem, env(safe-area-inset-bottom)) !important;
+    box-shadow: 0 -12px 36px rgb(15 23 42 / 16%) !important;
+  }
+
+  .clerk-modal-close-button {
+    top: 0.75rem !important;
+    right: 0.75rem !important;
+    min-width: 2.75rem !important;
+    min-height: 2.75rem !important;
+    border-radius: 9999px !important;
+    background: rgb(248 251 253 / 92%) !important;
+  }
+
+  .clerk-auth-footer {
+    padding-bottom: max(0.25rem, env(safe-area-inset-bottom)) !important;
+  }
+
+  .clerk-auth-footer-action {
+    display: flex !important;
+    min-height: 2.75rem;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.125rem;
+  }
+}
+
+@keyframes clerk-sheet-enter {
+  from {
+    opacity: 0;
+    transform: translateY(1.5rem);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .clerk-modal-content {
+    animation: none !important;
+  }
+}

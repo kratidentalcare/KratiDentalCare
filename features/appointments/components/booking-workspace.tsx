@@ -18,24 +18,47 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { GENDERS } from "@/constants/patient";
 import { ROUTES } from "@/constants/routes";
 import { DatePickerField } from "@/features/scheduling/components/date-picker-field";
 import type {
   BookingAvailabilityResult,
   PublicBookingConfirmation,
 } from "@/features/appointments/types";
-import { phoneSchema, emailSchema, nonEmptyStringSchema } from "@/validators/common";
+import { bookingAgeYearsSchema } from "@/validators/appointment-booking";
+import {
+  phoneSchema,
+  emailSchema,
+  nonEmptyStringSchema,
+} from "@/validators/common";
+import { genderSchema } from "@/validators/patient";
 import { cn } from "@/lib/utils";
 
 const bookingFormSchema = z.object({
   fullName: nonEmptyStringSchema.max(120),
   phone: phoneSchema,
   email: z.union([emailSchema, z.literal("")]),
+  ageYears: bookingAgeYearsSchema,
+  gender: genderSchema,
   reason: nonEmptyStringSchema.max(500),
 });
 
 type BookingFormValues = z.infer<typeof bookingFormSchema>;
+
+const GENDER_OPTIONS = [
+  { value: GENDERS.FEMALE, label: "Female" },
+  { value: GENDERS.MALE, label: "Male" },
+  { value: GENDERS.OTHER, label: "Other" },
+  { value: GENDERS.PREFER_NOT_TO_SAY, label: "Prefer not to say" },
+] as const;
 
 type BookingWorkspaceProps = {
   initialDate: string;
@@ -61,6 +84,8 @@ export function BookingWorkspace({ initialDate }: BookingWorkspaceProps) {
       fullName: "",
       phone: "",
       email: "",
+      ageYears: undefined,
+      gender: undefined,
       reason: "",
     },
   });
@@ -230,6 +255,51 @@ export function BookingWorkspace({ initialDate }: BookingWorkspaceProps) {
                   type="email"
                   placeholder="you@example.com"
                 />
+              </FormField>
+            </div>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <FormField
+                id="ageYears"
+                label="Age"
+                required
+                error={form.formState.errors.ageYears?.message}
+              >
+                <Input
+                  {...form.register("ageYears", { valueAsNumber: true })}
+                  type="number"
+                  inputMode="numeric"
+                  min={0}
+                  max={120}
+                  placeholder="e.g. 32"
+                />
+              </FormField>
+              <FormField
+                id="gender"
+                label="Gender"
+                required
+                error={form.formState.errors.gender?.message}
+              >
+                <Select
+                  value={form.watch("gender")}
+                  onValueChange={(value) => {
+                    if (value == null) return;
+                    form.setValue("gender", value as BookingFormValues["gender"], {
+                      shouldValidate: true,
+                      shouldDirty: true,
+                    });
+                  }}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select gender" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {GENDER_OPTIONS.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </FormField>
             </div>
             <FormField

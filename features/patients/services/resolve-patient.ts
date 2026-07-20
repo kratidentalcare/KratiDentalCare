@@ -6,6 +6,7 @@ import {
   normalizePhone,
   toDisplayPhone,
 } from "@/features/patients/lib/phone";
+import { dateOfBirthFromAgeYears } from "@/features/patients/lib/age";
 import {
   createPatientRecord,
   findPatientByEmailExcludingId,
@@ -26,7 +27,7 @@ function normalizeEmail(email: string | null | undefined): string | null {
 
 /**
  * Atomically resolves a patient by canonical phone for booking flows.
- * Updates supplied current contact fields; rejects email owned by another chart.
+ * Updates supplied current contact and demographic fields; rejects email owned by another chart.
  */
 export async function resolveOrCreatePatient(
   input: ResolvePatientInput,
@@ -36,6 +37,11 @@ export async function resolveOrCreatePatient(
   const displayPhone = toDisplayPhone(input.phone);
   const canonicalPhone = normalizePhone(input.phone);
   const email = normalizeEmail(input.email);
+  const gender = input.gender ?? null;
+  const dateOfBirth =
+    input.ageYears != null && Number.isInteger(input.ageYears)
+      ? dateOfBirthFromAgeYears(input.ageYears)
+      : null;
 
   if (!canonicalPhone || canonicalPhone.replace(/\D/g, "").length < 7) {
     throw new ConflictError("A valid phone number is required");
@@ -50,6 +56,8 @@ export async function resolveOrCreatePatient(
         fullName,
         phone: displayPhone,
         email,
+        gender,
+        dateOfBirth,
       },
       session,
     );
@@ -68,7 +76,7 @@ export async function resolveOrCreatePatient(
     }
   }
 
-  const updates: Record<string, string | null | boolean> = {};
+  const updates: Record<string, string | Date | null | boolean> = {};
 
   if (existing.fullName !== fullName) {
     updates.fullName = fullName;
@@ -81,6 +89,17 @@ export async function resolveOrCreatePatient(
   }
   if (email && existing.email !== email) {
     updates.email = email;
+  }
+  if (gender && existing.gender !== gender) {
+    updates.gender = gender;
+  }
+  if (dateOfBirth) {
+    const existingDob = existing.dateOfBirth
+      ? existing.dateOfBirth.getTime()
+      : null;
+    if (existingDob !== dateOfBirth.getTime()) {
+      updates.dateOfBirth = dateOfBirth;
+    }
   }
 
   if (Object.keys(updates).length === 0) {

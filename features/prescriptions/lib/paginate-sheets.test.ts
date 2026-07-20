@@ -45,6 +45,35 @@ describe("generatePrescriptionNumber", () => {
 });
 
 describe("paginatePrescriptionSheets", () => {
+  it("keeps a normal prescription on one A4 sheet", () => {
+    const medications = Array.from({ length: 3 }, (_, index) => ({
+      medicineName: `Medicine ${index + 1}`,
+      dosage: "500 mg",
+      frequency: "1-0-1",
+      duration: "5 days",
+      instructions: "After food",
+    }));
+
+    const sheets = paginatePrescriptionSheets({
+      patientName: "Test Patient",
+      ageSexLabel: "30 / M",
+      dateLabel: "18 Jul 2026",
+      opdLabel: "RX123",
+      diagnosis: "Dental caries",
+      chiefComplaint: "Pain while chewing",
+      clinicalNotes: "Tenderness around the affected tooth",
+      advice: "Warm saline rinse",
+      followUpLabel: "Follow-up: 25 Jul 2026",
+      medications,
+      doctorName: "Dr Test",
+      doctorQualification: "BDS",
+      signatureLabel: "Doctor's Signature",
+    });
+
+    assert.equal(sheets.length, 1);
+    assert.equal(sheets[0]?.showSignature, true);
+  });
+
   it("creates continuation pages for many medicines", () => {
     const medications = Array.from({ length: 20 }, (_, index) => ({
       medicineName: `Med ${index + 1}`,

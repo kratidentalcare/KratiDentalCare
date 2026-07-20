@@ -7,6 +7,7 @@ import {
   appointmentTimeWindowSchema,
 } from "@/validators/appointment";
 import { civilDateSchema } from "@/validators/availability";
+import { genderSchema } from "@/validators/patient";
 import {
   emailSchema,
   nonEmptyStringSchema,
@@ -14,6 +15,32 @@ import {
   phoneSchema,
 } from "@/validators/common";
 import { paginationQuerySchema } from "@/validators/pagination";
+
+/** Whole-year age collected at public booking (maps to patient dateOfBirth). */
+export const bookingAgeYearsSchema = z.preprocess(
+  (value) => {
+    if (value === "" || value === null || value === undefined) {
+      return undefined;
+    }
+    if (typeof value === "number") {
+      return Number.isFinite(value) ? value : undefined;
+    }
+    if (typeof value === "string") {
+      const trimmed = value.trim();
+      if (trimmed === "") {
+        return undefined;
+      }
+      const parsed = Number(trimmed);
+      return Number.isFinite(parsed) ? parsed : undefined;
+    }
+    return value;
+  },
+  z
+    .number({ error: "Age is required" })
+    .int("Age must be a whole number")
+    .min(0, "Age cannot be negative")
+    .max(120, "Age must be 120 or less"),
+);
 
 /**
  * Public guest booking request.
@@ -23,6 +50,8 @@ export const publicBookingSchema = z
     fullName: nonEmptyStringSchema.max(120),
     phone: phoneSchema,
     email: z.union([emailSchema, z.literal("")]),
+    ageYears: bookingAgeYearsSchema,
+    gender: genderSchema,
     reason: nonEmptyStringSchema.max(500),
     date: civilDateSchema,
     startAt: z.string().datetime({ offset: true }),

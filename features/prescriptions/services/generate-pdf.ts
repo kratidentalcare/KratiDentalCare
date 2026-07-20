@@ -4,20 +4,51 @@ import puppeteer, { type Browser } from "puppeteer";
 
 let browserPromise: Promise<Browser> | null = null;
 
+async function launchBrowser(): Promise<Browser> {
+  return puppeteer.launch({
+    headless: true,
+    args: [
+      "--no-sandbox",
+      "--disable-setuid-sandbox",
+      "--font-render-hinting=none",
+      "--disable-dev-shm-usage",
+    ],
+    executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || undefined,
+  });
+}
+
 async function getBrowser(): Promise<Browser> {
-  if (!browserPromise) {
-    browserPromise = puppeteer.launch({
-      headless: true,
-      args: [
-        "--no-sandbox",
-        "--disable-setuid-sandbox",
-        "--font-render-hinting=none",
-        "--disable-dev-shm-usage",
-      ],
-      executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || undefined,
-    });
+  // Reuse a live browser, but transparently relaunch a crashed/disconnected one.
+  if (browserPromise) {
+    try {
+      const existing = await browserPromise;
+      if (existing.connected) {
+        return existing;
+      }
+    } catch {
+      // Fall through to relaunch; never keep a rejected/dead promise cached.
+    }
+    browserPromise = null;
   }
-  return browserPromise;
+
+  const pending = launchBrowser();
+  browserPromise = pending;
+
+  try {
+    const browser = await pending;
+    browser.once("disconnected", () => {
+      if (browserPromise === pending) {
+        browserPromise = null;
+      }
+    });
+    return browser;
+  } catch (error) {
+    // Do not cache a failed launch — the next call should retry cleanly.
+    if (browserPromise === pending) {
+      browserPromise = null;
+    }
+    throw error;
+  }
 }
 
 export type GeneratePrescriptionPdfOptions = {
@@ -40,15 +71,18 @@ export async function generatePrescriptionPdf(
   try {
     if (options.cookieHeader) {
       const target = new URL(options.printUrl);
-      const cookies = options.cookieHeader.split(";").map((part) => {
-        const [rawName, ...rest] = part.trim().split("=");
-        return {
-          name: rawName?.trim() ?? "",
-          value: rest.join("="),
-          domain: target.hostname,
-          path: "/",
-        };
-      }).filter((cookie) => cookie.name.length > 0);
+      const cookies = options.cookieHeader
+        .split(";")
+        .map((part) => {
+          const [rawName, ...rest] = part.trim().split("=");
+          return {
+            name: rawName?.trim() ?? "",
+            value: rest.join("="),
+            domain: target.hostname,
+            path: "/",
+          };
+        })
+        .filter((cookie) => cookie.name.length > 0);
 
       if (cookies.length > 0) {
         await page.setCookie(...cookies);
@@ -60,9 +94,13 @@ export async function generatePrescriptionPdf(
       height: 1123,
       deviceScaleFactor: 2,
     });
+    await page.emulateMediaType("print");
 
+    // Avoid `networkidle0`: dev HMR / Clerk sockets never go idle and would
+    // stall until timeout. The explicit selector + asset waits below are the
+    // real readiness signal for the printed sheet.
     await page.goto(options.printUrl, {
-      waitUntil: "networkidle0",
+      waitUntil: "domcontentloaded",
       timeout: 60_000,
     });
 
@@ -84,12 +122,35 @@ export async function generatePrescriptionPdf(
           });
         }),
       );
+      await document.fonts.ready;
     });
+
+    const overflowingSheets = await page.evaluate(() => {
+      const overflowTolerancePx = 2;
+      return Array.from(
+        document.querySelectorAll<HTMLElement>("[data-prescription-content]"),
+      ).flatMap((content, index) =>
+        content.scrollHeight - content.clientHeight > overflowTolerancePx
+          ? [index + 1]
+          : [],
+      );
+    });
+
+    if (overflowingSheets.length > 0) {
+      throw new Error(
+        `Prescription content exceeds the safe writing area on page(s): ${overflowingSheets.join(", ")}`,
+      );
+    }
 
     const pdf = await page.pdf({
       format: "A4",
       printBackground: true,
-      margin: { top: "0", right: "0", bottom: "0", left: "0" },
+      margin: {
+        top: "0mm",
+        right: "0mm",
+        bottom: "0mm",
+        left: "0mm",
+      },
       preferCSSPageSize: true,
     });
 
