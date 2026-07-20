@@ -2,6 +2,9 @@ import { z } from "zod";
 
 import { CLINIC_SETTINGS_KEY } from "@/constants/app";
 import {
+  FOOTER_LINK_GROUP_VALUES,
+} from "@/constants/clinic-settings";
+import {
   APPOINTMENT_DURATION_MINUTES,
   DEFAULT_APPOINTMENT_DURATION_MINUTES,
   DEFAULT_CLINIC_CLOSING_TIME,
@@ -44,6 +47,63 @@ function rangesOverlap(
 ): boolean {
   return aStart < bEnd && bStart < aEnd;
 }
+
+/** Optional phone — empty string / null → null. */
+export const optionalPhoneSchema = z
+  .union([phoneSchema, z.literal(""), z.null()])
+  .transform((value) => (value === "" || value == null ? null : value));
+
+/**
+ * https-only URL (rejects javascript:, data:, http:, etc.).
+ * Empty / null → null.
+ */
+export const optionalHttpsUrlSchema = z
+  .union([z.string().trim(), z.literal(""), z.null()])
+  .transform((value) => (value === "" || value == null ? null : value))
+  .refine(
+    (value) => {
+      if (value == null) return true;
+      try {
+        const parsed = new URL(value);
+        return parsed.protocol === "https:" && value.length <= 2048;
+      } catch {
+        return false;
+      }
+    },
+    { message: "Must be a valid https:// URL" },
+  );
+
+/**
+ * Internal path (`/about`) or https URL. Rejects unsafe schemes.
+ */
+export const footerUrlSchema = z
+  .string()
+  .trim()
+  .min(1, "URL is required")
+  .max(2048)
+  .refine(
+    (value) => {
+      if (value.startsWith("/") && !value.startsWith("//")) {
+        const lower = value.toLowerCase();
+        return (
+          !lower.startsWith("/javascript:") &&
+          !lower.startsWith("/data:") &&
+          !lower.includes("javascript:") &&
+          !lower.includes("data:")
+        );
+      }
+      try {
+        const parsed = new URL(value);
+        return parsed.protocol === "https:";
+      } catch {
+        return false;
+      }
+    },
+    {
+      message:
+        "URL must be an internal path (e.g. /about) or an https:// link",
+    },
+  );
 
 export const appointmentDurationMinutesSchema = z
   .number()
@@ -94,6 +154,23 @@ export const clinicBookingRulesSchema = z.object({
 });
 
 export const clinicAddressSchema = patientAddressSchema;
+
+export const clinicSocialLinksSchema = z.object({
+  facebook: optionalHttpsUrlSchema.optional(),
+  instagram: optionalHttpsUrlSchema.optional(),
+  linkedin: optionalHttpsUrlSchema.optional(),
+  youtube: optionalHttpsUrlSchema.optional(),
+});
+
+export const footerLinkGroupSchema = z.enum(FOOTER_LINK_GROUP_VALUES);
+
+export const clinicFooterLinkSchema = z.object({
+  label: nonEmptyStringSchema.max(80),
+  url: footerUrlSchema,
+  group: footerLinkGroupSchema,
+  displayOrder: z.number().int().min(0).max(9999),
+  isActive: z.boolean(),
+});
 
 const scheduleWindowRefine = <
   T extends {
@@ -150,6 +227,13 @@ const scheduleWindowRefine = <
   }
 };
 
+const emptySocialLinks = {
+  facebook: null as string | null,
+  instagram: null as string | null,
+  linkedin: null as string | null,
+  youtube: null as string | null,
+};
+
 export const createClinicSettingsSchema = z
   .object({
     clinicKey: z
@@ -161,8 +245,13 @@ export const createClinicSettingsSchema = z
     clinicName: nonEmptyStringSchema.max(160),
     address: clinicAddressSchema,
     phone: phoneSchema,
+    secondaryPhone: optionalPhoneSchema.optional(),
     email: emailSchema,
-    logoUrl: z.string().trim().url().max(2048).nullable().optional(),
+    emergencyContact: optionalPhoneSchema.optional(),
+    googleMapsUrl: optionalHttpsUrlSchema.optional(),
+    logoUrl: optionalHttpsUrlSchema.optional(),
+    socialLinks: clinicSocialLinksSchema.default(emptySocialLinks),
+    footerLinks: z.array(clinicFooterLinkSchema).max(40).default([]),
     timezone: timezoneSchema.default(DEFAULT_CLINIC_TIMEZONE),
     workingDays: workingDaysSchema.default([...DEFAULT_WORKING_DAYS]),
     openingTime: timeOfDaySchema.default(DEFAULT_CLINIC_OPENING_TIME),
@@ -184,7 +273,7 @@ export const createClinicSettingsSchema = z
   .superRefine(scheduleWindowRefine);
 
 /**
- * Admin schedule form — scheduling fields only (identity/contact edited elsewhere later).
+ * Admin schedule form — scheduling fields only.
  */
 export const updateClinicAvailabilitySchema = z
   .object({
@@ -218,24 +307,58 @@ export const updateClinicAvailabilitySchema = z
     }
   });
 
+/**
+ * Identity, contact, footer, and default doctor — not scheduling hours.
+ * Scheduling remains on Dashboard → Scheduling.
+ */
 export const updateClinicSettingsSchema = z
   .object({
     clinicName: nonEmptyStringSchema.max(160).optional(),
     address: clinicAddressSchema.partial().optional(),
     phone: phoneSchema.optional(),
+    secondaryPhone: optionalPhoneSchema.optional(),
     email: emailSchema.optional(),
-    logoUrl: z.string().trim().url().max(2048).nullable().optional(),
-    timezone: timezoneSchema.optional(),
-    workingDays: workingDaysSchema.optional(),
-    openingTime: timeOfDaySchema.optional(),
-    closingTime: timeOfDaySchema.optional(),
-    appointmentDurationMinutes: appointmentDurationMinutesSchema.optional(),
-    breaks: z.array(clinicBreakWindowSchema).max(12).optional(),
-    bookingRules: clinicBookingRulesSchema.partial().optional(),
+    emergencyContact: optionalPhoneSchema.optional(),
+    googleMapsUrl: optionalHttpsUrlSchema.optional(),
+    logoUrl: optionalHttpsUrlSchema.optional(),
+    socialLinks: clinicSocialLinksSchema.optional(),
+    footerLinks: z.array(clinicFooterLinkSchema).max(40).optional(),
     defaultDoctorId: objectIdSchema.nullable().optional(),
     isActive: isActiveSchema.optional(),
   })
   .strict();
+
+/** Clinic info tab form (required fields). */
+export const clinicInfoFormSchema = z.object({
+  clinicName: nonEmptyStringSchema.max(160),
+  phone: phoneSchema,
+  secondaryPhone: optionalPhoneSchema,
+  email: emailSchema,
+  emergencyContact: optionalPhoneSchema,
+});
+
+/** Contact & address tab form. */
+export const clinicContactFormSchema = z.object({
+  line1: nonEmptyStringSchema.max(200),
+  line2: z
+    .union([z.string().trim().max(200), z.literal(""), z.null()])
+    .transform((value) => (value === "" || value == null ? null : value)),
+  city: nonEmptyStringSchema.max(100),
+  state: nonEmptyStringSchema.max(100),
+  postalCode: nonEmptyStringSchema.max(20),
+  country: z
+    .string()
+    .trim()
+    .length(2, "country must be a 2-letter ISO code")
+    .transform((value) => value.toUpperCase()),
+  googleMapsUrl: optionalHttpsUrlSchema,
+});
+
+/** Footer social links form. */
+export const clinicSocialFormSchema = clinicSocialLinksSchema;
+
+/** Single footer link form (create / edit). */
+export const clinicFooterLinkFormSchema = clinicFooterLinkSchema;
 
 export type CreateClinicSettingsInput = z.infer<
   typeof createClinicSettingsSchema
@@ -248,3 +371,9 @@ export type UpdateClinicAvailabilityInput = z.infer<
 >;
 export type ClinicBreakWindowInput = z.infer<typeof clinicBreakWindowSchema>;
 export type ClinicBookingRulesInput = z.infer<typeof clinicBookingRulesSchema>;
+export type ClinicInfoFormValues = z.infer<typeof clinicInfoFormSchema>;
+export type ClinicContactFormValues = z.infer<typeof clinicContactFormSchema>;
+export type ClinicSocialFormValues = z.infer<typeof clinicSocialFormSchema>;
+export type ClinicFooterLinkFormValues = z.infer<
+  typeof clinicFooterLinkFormSchema
+>;

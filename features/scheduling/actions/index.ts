@@ -35,6 +35,10 @@ import { z } from "zod";
 
 function revalidateScheduling() {
   revalidatePath(ROUTES.DASHBOARD.SCHEDULING);
+  revalidatePath(ROUTES.DASHBOARD.SETTINGS);
+  // Footer working-hours display depends on clinic availability.
+  revalidatePath(ROUTES.PUBLIC.HOME);
+  revalidatePath("/", "layout");
 }
 
 export async function previewAvailableSlotsAction(

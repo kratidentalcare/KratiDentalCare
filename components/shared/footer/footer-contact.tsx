@@ -16,12 +16,14 @@ export type FooterContactInfo = {
   phoneHref: string;
   email: string;
   hours: string;
-  emergencyLabel: string;
-  emergencyPhone: string;
-  emergencyPhoneHref: string;
+  /** Optional Google Maps URL — wraps the address when present. */
+  mapsUrl?: string | null;
+  emergencyLabel?: string;
+  emergencyPhone?: string;
+  emergencyPhoneHref?: string;
 };
 
-/** Placeholder contact — replace from clinic_settings / CMS later. */
+/** Placeholder contact — used only when Footer receives no `contact` prop. */
 export const DEFAULT_FOOTER_CONTACT: FooterContactInfo = {
   address: "123 Smile Avenue, Suite 100, Your City, ST 00000",
   phone: "+1 (555) 123-4567",
@@ -72,11 +74,14 @@ export function FooterContact({
   contact = DEFAULT_FOOTER_CONTACT,
   className,
 }: FooterContactProps) {
+  const hasEmergency =
+    Boolean(contact.emergencyPhone) && Boolean(contact.emergencyPhoneHref);
+
   return (
     <div
       className={cn(
         "flex flex-col items-stretch text-center sm:items-start sm:text-left",
-        className
+        className,
       )}
     >
       <h3 className="text-xs font-semibold tracking-[0.16em] text-[#1F2937] uppercase sm:text-sm sm:tracking-wide">
@@ -85,7 +90,18 @@ export function FooterContact({
 
       <address className="mt-4 flex w-full flex-col gap-2.5 not-italic sm:max-w-none sm:gap-4">
         <ContactRow icon={MapPin} label="Address">
-          <p>{contact.address}</p>
+          {contact.mapsUrl ? (
+            <a
+              href={contact.mapsUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex min-h-6 transition-colors duration-200 hover:text-[#0A84C6] focus-visible:rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0A84C6]/40 focus-visible:ring-offset-2"
+            >
+              {contact.address}
+            </a>
+          ) : (
+            <p>{contact.address}</p>
+          )}
         </ContactRow>
 
         <ContactRow icon={Phone} label="Phone">
@@ -110,30 +126,32 @@ export function FooterContact({
           <p>{contact.hours}</p>
         </ContactRow>
 
-        <a
-          href={contact.emergencyPhoneHref}
-          className={cn(
-            "mt-1 flex items-center gap-3 rounded-xl border border-[#16A39A]/25 bg-[#16A39A]/10 px-3 py-3.5 text-left transition-colors duration-200",
-            "hover:border-[#16A39A]/40 hover:bg-[#16A39A]/15",
-            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#16A39A]/40 focus-visible:ring-offset-2",
-            "sm:mt-0 sm:border-0 sm:bg-transparent sm:p-0 sm:hover:bg-transparent"
-          )}
-        >
-          <span
-            className="flex size-10 shrink-0 items-center justify-center rounded-full bg-[#16A39A]/15 text-[#16A39A] sm:size-9 sm:bg-[#0A84C6]/10 sm:text-[#0A84C6]"
-            aria-hidden
+        {hasEmergency ? (
+          <a
+            href={contact.emergencyPhoneHref}
+            className={cn(
+              "mt-1 flex items-center gap-3 rounded-xl border border-[#16A39A]/25 bg-[#16A39A]/10 px-3 py-3.5 text-left transition-colors duration-200",
+              "hover:border-[#16A39A]/40 hover:bg-[#16A39A]/15",
+              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#16A39A]/40 focus-visible:ring-offset-2",
+              "sm:mt-0 sm:border-0 sm:bg-transparent sm:p-0 sm:hover:bg-transparent",
+            )}
           >
-            <PhoneCall className="size-4" />
-          </span>
-          <span className="min-w-0">
-            <span className="block text-[0.6875rem] font-medium tracking-[0.12em] text-[#6B7280] uppercase sm:text-xs">
-              {contact.emergencyLabel}
+            <span
+              className="flex size-10 shrink-0 items-center justify-center rounded-full bg-[#16A39A]/15 text-[#16A39A] sm:size-9 sm:bg-[#0A84C6]/10 sm:text-[#0A84C6]"
+              aria-hidden
+            >
+              <PhoneCall className="size-4" />
             </span>
-            <span className="mt-1 block text-[0.9375rem] font-semibold text-[#16A39A] sm:text-sm sm:font-medium">
-              {contact.emergencyPhone}
+            <span className="min-w-0">
+              <span className="block text-[0.6875rem] font-medium tracking-[0.12em] text-[#6B7280] uppercase sm:text-xs">
+                {contact.emergencyLabel ?? "Emergency Contact"}
+              </span>
+              <span className="mt-1 block text-[0.9375rem] font-semibold text-[#16A39A] sm:text-sm sm:font-medium">
+                {contact.emergencyPhone}
+              </span>
             </span>
-          </span>
-        </a>
+          </a>
+        ) : null}
       </address>
     </div>
   );

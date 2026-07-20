@@ -18,9 +18,12 @@ export type {
   ClinicAddress,
   ClinicBookingRules,
   ClinicBreakWindow,
+  ClinicFooterLink,
   ClinicSettingsDocument,
   ClinicSettingsFields,
   ClinicSettingsModel,
+  ClinicSocialLinks,
+  FooterLinkGroup,
   LeanClinicSettings,
 } from "./types";
 export {

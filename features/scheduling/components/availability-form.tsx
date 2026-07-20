@@ -135,7 +135,8 @@ export function AvailabilityForm({ initialValues }: AvailabilityFormProps) {
         <CardDescription>
           Configure working days, hours, appointment duration, and recurring
           breaks. Slots are generated dynamically — nothing is stored as slot
-          inventory.
+          inventory. Existing appointments are never modified when these
+          settings change; only future availability uses the updated rules.
         </CardDescription>
       </CardHeader>
       <CardContent className="pt-5">

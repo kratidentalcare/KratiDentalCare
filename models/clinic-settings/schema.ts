@@ -28,6 +28,7 @@ const CLINIC_NAME_MAX = 160;
 const PHONE_MAX = 20;
 const EMAIL_MAX = 320;
 const LOGO_URL_MAX = 2048;
+const URL_MAX = 2048;
 const TIMEZONE_MAX = 64;
 const BREAK_LABEL_MAX = 80;
 const ADDRESS_LINE_MAX = 200;
@@ -36,9 +37,29 @@ const STATE_MAX = 100;
 const POSTAL_MAX = 20;
 const COUNTRY_MAX = 2;
 const MAX_BREAKS = 12;
+const FOOTER_LINK_LABEL_MAX = 80;
+const MAX_FOOTER_LINKS = 40;
+
+const FOOTER_LINK_GROUPS = ["quickLinks", "services"] as const;
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PHONE_PATTERN = /^[+]?[\d\s()-]+$/;
+
+function isSafeHttpsUrl(value: string): boolean {
+  try {
+    const parsed = new URL(value);
+    return parsed.protocol === "https:";
+  } catch {
+    return false;
+  }
+}
+
+function isSafeFooterUrl(value: string): boolean {
+  if (value.startsWith("/") && !value.startsWith("//")) {
+    return !/^\/(javascript|data):/i.test(value);
+  }
+  return isSafeHttpsUrl(value);
+}
 
 function emptyToNull(value: string | null): string | null {
   return value === "" ? null : value;
@@ -170,6 +191,109 @@ const bookingRulesSchema = new Schema(
   { _id: false },
 );
 
+const socialLinksSchema = new Schema(
+  {
+    facebook: {
+      type: String,
+      default: null,
+      trim: true,
+      maxlength: [URL_MAX, "socialLinks.facebook is too long"],
+      set: emptyToNull,
+      validate: {
+        validator(value: string | null) {
+          return value == null || isSafeHttpsUrl(value);
+        },
+        message: "socialLinks.facebook must be a valid https URL",
+      },
+    },
+    instagram: {
+      type: String,
+      default: null,
+      trim: true,
+      maxlength: [URL_MAX, "socialLinks.instagram is too long"],
+      set: emptyToNull,
+      validate: {
+        validator(value: string | null) {
+          return value == null || isSafeHttpsUrl(value);
+        },
+        message: "socialLinks.instagram must be a valid https URL",
+      },
+    },
+    linkedin: {
+      type: String,
+      default: null,
+      trim: true,
+      maxlength: [URL_MAX, "socialLinks.linkedin is too long"],
+      set: emptyToNull,
+      validate: {
+        validator(value: string | null) {
+          return value == null || isSafeHttpsUrl(value);
+        },
+        message: "socialLinks.linkedin must be a valid https URL",
+      },
+    },
+    youtube: {
+      type: String,
+      default: null,
+      trim: true,
+      maxlength: [URL_MAX, "socialLinks.youtube is too long"],
+      set: emptyToNull,
+      validate: {
+        validator(value: string | null) {
+          return value == null || isSafeHttpsUrl(value);
+        },
+        message: "socialLinks.youtube must be a valid https URL",
+      },
+    },
+  },
+  { _id: false },
+);
+
+const footerLinkSchema = new Schema(
+  {
+    label: {
+      type: String,
+      required: [true, "footerLinks.label is required"],
+      trim: true,
+      maxlength: [FOOTER_LINK_LABEL_MAX, "footerLinks.label is too long"],
+    },
+    url: {
+      type: String,
+      required: [true, "footerLinks.url is required"],
+      trim: true,
+      maxlength: [URL_MAX, "footerLinks.url is too long"],
+      validate: {
+        validator(value: string) {
+          return isSafeFooterUrl(value);
+        },
+        message:
+          "footerLinks.url must be an internal path (/…) or https URL",
+      },
+    },
+    group: {
+      type: String,
+      required: [true, "footerLinks.group is required"],
+      enum: {
+        values: [...FOOTER_LINK_GROUPS],
+        message: "`{VALUE}` is not a supported footer link group",
+      },
+    },
+    displayOrder: {
+      type: Number,
+      required: true,
+      min: [0, "footerLinks.displayOrder cannot be negative"],
+      max: [9999, "footerLinks.displayOrder is too large"],
+      default: 0,
+    },
+    isActive: {
+      type: Boolean,
+      required: true,
+      default: true,
+    },
+  },
+  { _id: false },
+);
+
 /**
  * Operational clinic settings schema.
  * Collection: `clinic_settings`
@@ -206,6 +330,20 @@ export const clinicSettingsSchema = createBaseSchema(
         message: "phone must be a valid phone number",
       },
     },
+    secondaryPhone: {
+      type: String,
+      default: null,
+      trim: true,
+      maxlength: [PHONE_MAX, "secondaryPhone is too long"],
+      set: emptyToNull,
+      validate: {
+        validator(value: string | null) {
+          if (value == null) return true;
+          return value.length >= 7 && PHONE_PATTERN.test(value);
+        },
+        message: "secondaryPhone must be a valid phone number",
+      },
+    },
     email: {
       type: String,
       required: [true, "email is required"],
@@ -219,12 +357,55 @@ export const clinicSettingsSchema = createBaseSchema(
         message: "email must be a valid email address",
       },
     },
+    emergencyContact: {
+      type: String,
+      default: null,
+      trim: true,
+      maxlength: [PHONE_MAX, "emergencyContact is too long"],
+      set: emptyToNull,
+      validate: {
+        validator(value: string | null) {
+          if (value == null) return true;
+          return value.length >= 7 && PHONE_PATTERN.test(value);
+        },
+        message: "emergencyContact must be a valid phone number",
+      },
+    },
+    googleMapsUrl: {
+      type: String,
+      default: null,
+      trim: true,
+      maxlength: [URL_MAX, "googleMapsUrl is too long"],
+      set: emptyToNull,
+      validate: {
+        validator(value: string | null) {
+          return value == null || isSafeHttpsUrl(value);
+        },
+        message: "googleMapsUrl must be a valid https URL",
+      },
+    },
     logoUrl: {
       type: String,
       default: null,
       trim: true,
       maxlength: [LOGO_URL_MAX, "logoUrl is too long"],
       set: emptyToNull,
+    },
+    socialLinks: {
+      type: socialLinksSchema,
+      required: true,
+      default: () => ({}),
+    },
+    footerLinks: {
+      type: [footerLinkSchema],
+      required: true,
+      default: [],
+      validate: {
+        validator(value: unknown[]) {
+          return Array.isArray(value) && value.length <= MAX_FOOTER_LINKS;
+        },
+        message: `footerLinks cannot exceed ${MAX_FOOTER_LINKS}`,
+      },
     },
     timezone: {
       type: String,

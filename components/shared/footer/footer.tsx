@@ -31,6 +31,8 @@ export const DEFAULT_FOOTER_TAGLINE =
 export type FooterProps = {
   tagline?: string;
   quickLinks?: readonly FooterLinkItem[];
+  /** Optional services group — rendered under Quick Links when non-empty. */
+  serviceLinks?: readonly FooterLinkItem[];
   contact?: FooterContactInfo;
   social?: readonly FooterSocialItem[];
   legalLinks?: readonly FooterLegalLink[];
@@ -40,10 +42,12 @@ export type FooterProps = {
 
 /**
  * Public marketing footer — mobile-first stack, 3-column on desktop.
+ * Design is fixed; clinic/contact/link data is injected from ClinicSettings.
  */
 export function Footer({
   tagline = DEFAULT_FOOTER_TAGLINE,
   quickLinks = DEFAULT_QUICK_LINKS,
+  serviceLinks = [],
   contact,
   social,
   legalLinks,
@@ -54,7 +58,7 @@ export function Footer({
     <footer
       className={cn(
         "mt-auto w-full border-t border-[#E5E7EB] bg-[#0A84C6]/10 font-montserrat",
-        className
+        className,
       )}
     >
       <PageContainer
@@ -78,16 +82,23 @@ export function Footer({
                 "transition-all duration-200",
                 "hover:border-[#0A84C6]/40 hover:bg-[#0A84C6]/15 hover:text-[#0870A8]",
                 "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0A84C6]/40 focus-visible:ring-offset-2",
-                "active:scale-[0.98]"
+                "active:scale-[0.98]",
               )}
             >
               Book & Smile
             </Link>
           </div>
 
-          {/* Quick links */}
+          {/* Quick links (+ optional services) */}
           <div className="border-t border-[#E5E7EB]/80 py-8 lg:border-t-0 lg:py-0">
             <FooterLinkList title="Quick Links" links={quickLinks} />
+            {serviceLinks.length > 0 ? (
+              <FooterLinkList
+                title="Services"
+                links={serviceLinks}
+                className="mt-8"
+              />
+            ) : null}
           </div>
 
           {/* Contact */}

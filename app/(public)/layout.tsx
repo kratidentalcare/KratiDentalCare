@@ -5,6 +5,7 @@ import { Footer } from "@/components/shared/footer";
 import { Navbar } from "@/components/shared/navbar";
 import { getEnv } from "@/config/env";
 import { APP_DESCRIPTION, APP_NAME } from "@/constants";
+import { getPublicFooterData } from "@/features/clinic-settings";
 import { isAdmin } from "@/lib/auth";
 
 /**
@@ -57,17 +58,31 @@ async function resolveNavbarIsAdmin(): Promise<boolean> {
  * Slot contract:
  * - header → Navbar (auth-aware)
  * - children → Hero, About, Services, Doctors, Testimonials, FAQ, Contact, …
- * - footer → Footer
+ * - footer → Footer (clinic data from ClinicSettings, fetched once here)
  */
 export default async function PublicLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const admin = await resolveNavbarIsAdmin();
+  const [admin, footerData] = await Promise.all([
+    resolveNavbarIsAdmin(),
+    getPublicFooterData(),
+  ]);
 
   return (
-    <PublicShell header={<Navbar isAdmin={admin} />} footer={<Footer />}>
+    <PublicShell
+      header={<Navbar isAdmin={admin} />}
+      footer={
+        <Footer
+          contact={footerData?.contact}
+          social={footerData?.social}
+          quickLinks={footerData?.quickLinks}
+          serviceLinks={footerData?.serviceLinks}
+          copyrightOwner={footerData?.copyrightOwner}
+        />
+      }
+    >
       {children}
     </PublicShell>
   );

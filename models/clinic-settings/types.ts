@@ -41,6 +41,25 @@ export type ClinicAddress = {
   country: string;
 };
 
+/** Optional public social profile URLs (https only). */
+export type ClinicSocialLinks = {
+  facebook: string | null;
+  instagram: string | null;
+  linkedin: string | null;
+  youtube: string | null;
+};
+
+export type FooterLinkGroup = "quickLinks" | "services";
+
+/** Configurable public footer navigation entry. */
+export type ClinicFooterLink = {
+  label: string;
+  url: string;
+  group: FooterLinkGroup;
+  displayOrder: number;
+  isActive: boolean;
+};
+
 /**
  * Operational clinic settings singleton (v1: clinicKey = "primary").
  *
@@ -51,8 +70,16 @@ export type ClinicSettingsFields = {
   clinicName: string;
   address: ClinicAddress;
   phone: string;
+  /** Optional secondary clinic phone. */
+  secondaryPhone: string | null;
   email: string;
+  /** Optional emergency contact phone for public display. */
+  emergencyContact: string | null;
+  /** Optional Google Maps place / directions URL. */
+  googleMapsUrl: string | null;
   logoUrl: string | null;
+  socialLinks: ClinicSocialLinks;
+  footerLinks: ClinicFooterLink[];
   timezone: string;
   workingDays: Weekday[];
   /** Clinic-local opening time `HH:mm` (24h). */
