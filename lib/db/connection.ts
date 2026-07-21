@@ -14,7 +14,6 @@ import type {
 import { logger } from "@/lib/logger";
 
 declare global {
-  // eslint-disable-next-line no-var -- required for global mongoose cache
   var mongooseConnection: MongooseConnectionCache | undefined;
 }
 

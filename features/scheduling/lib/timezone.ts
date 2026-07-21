@@ -124,6 +124,19 @@ export function zonedDateTimeToUtc(
 }
 
 /**
+ * Advance a civil `YYYY-MM-DD` by one calendar day (UTC-safe arithmetic).
+ */
+export function addOneCivilDay(date: string): string {
+  const { year, month, day } = parseCivilDate(date);
+  const utc = new Date(Date.UTC(year, month - 1, day));
+  utc.setUTCDate(utc.getUTCDate() + 1);
+  const nextYear = utc.getUTCFullYear();
+  const nextMonth = String(utc.getUTCMonth() + 1).padStart(2, "0");
+  const nextDay = String(utc.getUTCDate()).padStart(2, "0");
+  return `${nextYear}-${nextMonth}-${nextDay}`;
+}
+
+/**
  * Civil `YYYY-MM-DD` for an instant in the given timezone.
  */
 export function utcToCivilDate(date: Date, timeZone: string): string {

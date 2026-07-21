@@ -3,6 +3,7 @@ import type { ZodError } from "zod";
 import { ERROR_CODES } from "@/constants/error-codes";
 import { HTTP_STATUS, type HttpStatus } from "@/constants/http";
 import { isAppError } from "@/lib/errors";
+import { logger } from "@/lib/logger";
 import type {
   ActionResult,
   ActionResultWithStatus,
@@ -114,11 +115,14 @@ export function fromUnknownError(
     });
   }
 
+  const resolvedRequestId = ensureRequestId(requestId);
+  logger.error("Unhandled application error", error, undefined, resolvedRequestId);
+
   return errorResponse(
     ERROR_CODES.INTERNAL_ERROR,
     "An unexpected error occurred",
     {
-      requestId,
+      requestId: resolvedRequestId,
       status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
     },
   );
@@ -130,6 +134,7 @@ export function fromUnknownError(
 export function toActionResult<T>(
   result: ActionResultWithStatus<T>,
 ): ActionResult<T> {
-  const { status: _status, ...rest } = result;
+  const { status, ...rest } = result;
+  void status;
   return rest;
 }

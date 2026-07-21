@@ -3,7 +3,7 @@ import "server-only";
 import { APPOINTMENT_STATUSES } from "@/constants/statuses";
 import { generateSlotsForDate } from "@/features/scheduling/engine/generate-slots";
 import {
-  civilDateToUtcMidnight,
+  addOneCivilDay,
   zonedDateTimeToUtc,
 } from "@/features/scheduling/lib/timezone";
 import { getOrCreateClinicSettings } from "@/features/scheduling/services/clinic-settings";
@@ -117,13 +117,4 @@ export async function generateAvailableSlots(
     includePastTimes: parsed.data.includePastTimes,
     durationMinutes: parsed.data.durationMinutes,
   });
-}
-
-function addOneCivilDay(date: string): string {
-  const utc = civilDateToUtcMidnight(date);
-  utc.setUTCDate(utc.getUTCDate() + 1);
-  const year = utc.getUTCFullYear();
-  const month = String(utc.getUTCMonth() + 1).padStart(2, "0");
-  const day = String(utc.getUTCDate()).padStart(2, "0");
-  return `${year}-${month}-${day}`;
 }

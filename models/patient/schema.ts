@@ -313,7 +313,6 @@ patientSchema.index(
   { userId: 1 },
   {
     unique: true,
-    sparse: true,
     partialFilterExpression: {
       userId: { $type: "objectId" },
       deletedAt: null,
@@ -325,7 +324,6 @@ patientSchema.index(
   { email: 1 },
   {
     unique: true,
-    sparse: true,
     partialFilterExpression: {
       email: { $type: "string" },
       deletedAt: null,

@@ -41,7 +41,8 @@ export const ROUTES = {
     PRESCRIPTIONS: "/dashboard/prescriptions",
     FAQS: "/dashboard/faqs",
     SETTINGS: "/dashboard/settings",
-    PROFILE: "/dashboard/profile",
+    /** @deprecated Prefer ROUTES.PROFILE — kept for older links. */
+    PROFILE: "/profile",
   },
   API: {
     CLERK_WEBHOOK: "/api/webhooks/clerk",

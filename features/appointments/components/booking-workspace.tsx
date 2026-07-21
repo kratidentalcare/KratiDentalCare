@@ -280,9 +280,9 @@ export function BookingWorkspace({ initialDate }: BookingWorkspaceProps) {
                 error={form.formState.errors.gender?.message}
               >
                 <Select
-                  value={form.watch("gender")}
+                  value={form.watch("gender") ?? ""}
                   onValueChange={(value) => {
-                    if (value == null) return;
+                    if (value == null || value === "") return;
                     form.setValue("gender", value as BookingFormValues["gender"], {
                       shouldValidate: true,
                       shouldDirty: true,

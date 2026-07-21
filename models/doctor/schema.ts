@@ -282,7 +282,6 @@ doctorSchema.index(
   { userId: 1 },
   {
     unique: true,
-    sparse: true,
     partialFilterExpression: { userId: { $type: "objectId" } },
   },
 );
@@ -291,7 +290,6 @@ doctorSchema.index(
   { registrationNumber: 1 },
   {
     unique: true,
-    sparse: true,
     partialFilterExpression: {
       registrationNumber: { $type: "string" },
     },

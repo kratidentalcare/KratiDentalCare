@@ -24,7 +24,9 @@ import { objectIdSchema } from "@/validators/common";
 import { z } from "zod";
 
 function revalidateAppointments() {
+  revalidatePath(ROUTES.DASHBOARD.ROOT);
   revalidatePath(ROUTES.DASHBOARD.APPOINTMENTS);
+  revalidatePath(ROUTES.DASHBOARD.PATIENTS);
 }
 
 export async function listAppointmentsAction(

@@ -2,7 +2,7 @@ import "server-only";
 
 import { getOrCreateModel } from "@/models/base";
 
-import { holidaySchema, toUtcMidnight } from "./schema";
+import { holidaySchema } from "./schema";
 import type { HolidayDocument, HolidayModel } from "./types";
 
 export const HOLIDAY_MODEL_NAME = "Holiday";

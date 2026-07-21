@@ -112,7 +112,7 @@ export function UserMenu({ user, className }: UserMenuProps) {
         <DropdownMenuSeparator />
 
         <DropdownMenuItem
-          render={<Link href={ROUTES.DASHBOARD.PROFILE} />}
+          render={<Link href={ROUTES.PROFILE} />}
           className="cursor-pointer gap-2"
         >
           <UserIcon className="size-4 text-brand-muted" aria-hidden />

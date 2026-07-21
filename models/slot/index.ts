@@ -2,7 +2,7 @@ import "server-only";
 
 import { getOrCreateModel } from "@/models/base";
 
-import { APPOINTMENT_MODEL_NAME, slotSchema } from "./schema";
+import { slotSchema } from "./schema";
 import type { SlotDocument, SlotModel } from "./types";
 
 export const SLOT_MODEL_NAME = "Slot";

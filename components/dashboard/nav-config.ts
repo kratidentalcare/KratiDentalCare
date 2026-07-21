@@ -78,7 +78,7 @@ export const DASHBOARD_NAV_ITEMS: readonly DashboardNavItem[] = [
   {
     id: "profile",
     label: "Profile",
-    href: ROUTES.DASHBOARD.PROFILE,
+    href: ROUTES.PROFILE,
     icon: UserCircleIcon,
   },
   {
@@ -93,22 +93,40 @@ export const DASHBOARD_NAV_ITEMS: readonly DashboardNavItem[] = [
 
 export const DASHBOARD_QUICK_ACTIONS = [
   {
+    id: "view-appointments",
+    label: "View Appointments",
+    href: ROUTES.DASHBOARD.APPOINTMENTS,
+    icon: CalendarDaysIcon,
+  },
+  {
+    id: "view-patients",
+    label: "View Patients",
+    href: ROUTES.DASHBOARD.PATIENTS,
+    icon: UsersIcon,
+  },
+  {
+    id: "create-prescription",
+    label: "E-Prescriptions",
+    href: ROUTES.DASHBOARD.PRESCRIPTIONS,
+    icon: ClipboardListIcon,
+  },
+  {
     id: "configure-scheduling",
     label: "Configure Scheduling",
     href: ROUTES.DASHBOARD.SCHEDULING,
     icon: CalendarPlusIcon,
   },
   {
-    id: "create-prescription",
-    label: "Create Prescription",
-    href: ROUTES.DASHBOARD.PRESCRIPTIONS,
-    icon: ClipboardListIcon,
+    id: "clinic-settings",
+    label: "Clinic Settings",
+    href: ROUTES.DASHBOARD.SETTINGS,
+    icon: SettingsIcon,
   },
   {
-    id: "view-appointments",
-    label: "View Appointments",
-    href: ROUTES.DASHBOARD.APPOINTMENTS,
-    icon: CalendarDaysIcon,
+    id: "manage-faqs",
+    label: "Manage FAQs",
+    href: ROUTES.DASHBOARD.FAQS,
+    icon: CircleHelpIcon,
   },
 ] as const;
 

@@ -360,7 +360,6 @@ appointmentSchema.index(
   { slotId: 1 },
   {
     unique: true,
-    sparse: true,
     partialFilterExpression: {
       deletedAt: null,
       slotId: { $type: "objectId" },
@@ -373,11 +372,18 @@ appointmentSchema.index(
   { occupancyKey: 1 },
   {
     unique: true,
-    sparse: true,
     partialFilterExpression: {
       deletedAt: null,
       occupancyKey: { $type: "string" },
-      status: { $nin: ["CANCELLED", "ARCHIVED"] },
+      status: {
+        $in: [
+          APPOINTMENT_STATUSES.PENDING,
+          APPOINTMENT_STATUSES.CONFIRMED,
+          APPOINTMENT_STATUSES.CHECKED_IN,
+          APPOINTMENT_STATUSES.COMPLETED,
+          APPOINTMENT_STATUSES.NO_SHOW,
+        ],
+      },
     },
   },
 );
@@ -387,7 +393,6 @@ appointmentSchema.index(
   { bookingReference: 1 },
   {
     unique: true,
-    sparse: true,
     partialFilterExpression: {
       deletedAt: null,
       bookingReference: { $type: "string" },
@@ -401,7 +406,15 @@ appointmentSchema.index(
   {
     partialFilterExpression: {
       deletedAt: null,
-      status: { $nin: ["CANCELLED", "ARCHIVED"] },
+      status: {
+        $in: [
+          APPOINTMENT_STATUSES.PENDING,
+          APPOINTMENT_STATUSES.CONFIRMED,
+          APPOINTMENT_STATUSES.CHECKED_IN,
+          APPOINTMENT_STATUSES.COMPLETED,
+          APPOINTMENT_STATUSES.NO_SHOW,
+        ],
+      },
     },
   },
 );

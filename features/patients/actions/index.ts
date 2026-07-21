@@ -24,6 +24,7 @@ import { objectIdSchema } from "@/validators/common";
 import { z } from "zod";
 
 function revalidatePatients(patientId?: string) {
+  revalidatePath(ROUTES.DASHBOARD.ROOT);
   revalidatePath(ROUTES.DASHBOARD.PATIENTS);
   if (patientId) {
     revalidatePath(`${ROUTES.DASHBOARD.PATIENTS}/${patientId}`);

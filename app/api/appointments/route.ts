@@ -1,8 +1,11 @@
 import { NextResponse, type NextRequest } from "next/server";
 
+import { ERROR_CODES } from "@/constants/error-codes";
+import { HTTP_STATUS } from "@/constants/http";
 import { ROUTES } from "@/constants/routes";
 import { createPublicBooking } from "@/features/appointments/services/create-booking";
 import {
+  errorResponse,
   fromUnknownError,
   successResponse,
   toActionResult,
@@ -20,17 +23,12 @@ export async function POST(request: NextRequest) {
   try {
     body = await request.json();
   } catch {
-    return NextResponse.json(
-      {
-        success: false,
-        error: {
-          code: "VALIDATION_ERROR",
-          message: "Invalid JSON body",
-        },
-        meta: { requestId: crypto.randomUUID() },
-      },
-      { status: 400 },
+    const result = errorResponse(
+      ERROR_CODES.VALIDATION_ERROR,
+      "Invalid JSON body",
+      { status: HTTP_STATUS.BAD_REQUEST },
     );
+    return NextResponse.json(toActionResult(result), { status: result.status });
   }
 
   const parsed = publicBookingSchema.safeParse(body);

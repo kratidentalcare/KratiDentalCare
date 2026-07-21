@@ -156,7 +156,6 @@ slotSchema.index(
   { appointmentId: 1 },
   {
     unique: true,
-    sparse: true,
     partialFilterExpression: { appointmentId: { $type: "objectId" } },
   },
 );

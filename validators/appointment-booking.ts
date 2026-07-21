@@ -1,6 +1,5 @@
 import { z } from "zod";
 
-import { APPOINTMENT_STATUSES } from "@/constants/statuses";
 import { ADMIN_APPOINTMENT_STATUS_FILTER_VALUES } from "@/constants/appointments";
 import {
   appointmentPatientSnapshotSchema,

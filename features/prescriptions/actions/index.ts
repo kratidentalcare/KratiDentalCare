@@ -29,6 +29,7 @@ function revalidatePrescriptionPaths(options?: {
   patientId?: string;
   appointmentId?: string;
 }) {
+  revalidatePath(ROUTES.DASHBOARD.ROOT);
   revalidatePath(ROUTES.DASHBOARD.PRESCRIPTIONS);
   revalidatePath(ROUTES.DASHBOARD.APPOINTMENTS);
   if (options?.prescriptionId) {

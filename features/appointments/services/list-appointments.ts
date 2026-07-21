@@ -14,8 +14,11 @@ import { NotFoundError } from "@/lib/errors";
 import { Appointment, type LeanAppointment } from "@/models/appointment";
 import { AppointmentEvent } from "@/models/appointment-event";
 import { getOrCreateClinicSettings } from "@/features/scheduling/services/clinic-settings";
-import { utcToCivilDate } from "@/features/scheduling/lib/timezone";
-import { zonedDateTimeToUtc } from "@/features/scheduling/lib/timezone";
+import {
+  addOneCivilDay,
+  utcToCivilDate,
+  zonedDateTimeToUtc,
+} from "@/features/scheduling/lib/timezone";
 import type { AppointmentListQuery } from "@/validators/appointment-booking";
 
 function escapeRegex(value: string): string {
@@ -56,9 +59,12 @@ export async function listAppointments(
 
   if (query.date) {
     const dayStart = zonedDateTimeToUtc(query.date, "00:00", settings.timezone);
-    const nextDay = new Date(dayStart);
-    nextDay.setUTCDate(nextDay.getUTCDate() + 1);
-    filter.startsAt = { $gte: dayStart, $lt: nextDay };
+    const dayEnd = zonedDateTimeToUtc(
+      addOneCivilDay(query.date),
+      "00:00",
+      settings.timezone,
+    );
+    filter.startsAt = { $gte: dayStart, $lt: dayEnd };
   }
 
   if (query.search) {

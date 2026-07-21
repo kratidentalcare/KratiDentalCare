@@ -6,6 +6,7 @@ import { PrescriptionsWorkspace } from "@/components/dashboard/prescriptions/pre
 import { PAGINATION } from "@/constants";
 import { listPrescriptionsService } from "@/features/prescriptions/services/list-prescriptions";
 import { resolvePrescriptionWorkspace } from "@/features/prescriptions/services/save-prescription";
+import type { PrescriptionWorkspaceContext } from "@/features/prescriptions/types";
 import { isAppError } from "@/lib/errors";
 import { objectIdSchema } from "@/validators/common";
 
@@ -45,21 +46,18 @@ export default async function PrescriptionsPage({
       );
     }
 
+    let context: PrescriptionWorkspaceContext | null = null;
+    let workspaceError: string | null = null;
+
     try {
-      const context = await resolvePrescriptionWorkspace(parsed.data);
-      return (
-        <div className="flex flex-col gap-6 sm:gap-8">
-          <PageHeader
-            title="E-Prescriptions"
-            description="Create, preview, and print clinic prescriptions on the official letterhead."
-          />
-          <PrescriptionForm context={context} />
-        </div>
-      );
+      context = await resolvePrescriptionWorkspace(parsed.data);
     } catch (error) {
-      const message = isAppError(error)
+      workspaceError = isAppError(error)
         ? error.message
         : "Unable to open prescription workspace.";
+    }
+
+    if (workspaceError || !context) {
       return (
         <div className="flex flex-col gap-6 sm:gap-8">
           <PageHeader
@@ -67,11 +65,21 @@ export default async function PrescriptionsPage({
             description="Create, preview, and print clinic prescriptions."
           />
           <p className="rounded-xl bg-rose-50 px-4 py-3 text-sm text-rose-800 ring-1 ring-rose-100">
-            {message}
+            {workspaceError ?? "Unable to open prescription workspace."}
           </p>
         </div>
       );
     }
+
+    return (
+      <div className="flex flex-col gap-6 sm:gap-8">
+        <PageHeader
+          title="E-Prescriptions"
+          description="Create, preview, and print clinic prescriptions on the official letterhead."
+        />
+        <PrescriptionForm context={context} />
+      </div>
+    );
   }
 
   const data = await listPrescriptionsService({

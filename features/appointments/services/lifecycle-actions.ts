@@ -17,7 +17,6 @@ import {
 } from "@/features/appointments/services/notification-events";
 import { getAppointmentDetail } from "@/features/appointments/services/list-appointments";
 import type { AppointmentDetail } from "@/features/appointments/types";
-import { getOrCreateClinicSettings } from "@/features/scheduling/services/clinic-settings";
 import { connect } from "@/lib/db";
 import {
   ConflictError,
@@ -71,7 +70,8 @@ export async function performAppointmentAction(
     case "reschedule":
       return rescheduleAppointment(appointment, actorUserId, input);
     default: {
-      const _exhaustive: never = input;
+      const exhaustive: never = input;
+      void exhaustive;
       throw new DomainError("INVALID_ACTION", "Unsupported action");
     }
   }
@@ -212,7 +212,6 @@ async function rescheduleAppointment(
     );
   }
 
-  const settings = await getOrCreateClinicSettings();
   const startsAt = new Date(input.startAt);
   const endsAt = new Date(input.endAt);
   const date = input.date;
