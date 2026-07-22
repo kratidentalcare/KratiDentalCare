@@ -18,6 +18,9 @@ export type FooterContactInfo = {
   hours: string;
   /** Optional Google Maps URL — wraps the address when present. */
   mapsUrl?: string | null;
+  /** Embeddable Maps iframe src derived from `mapsUrl`. */
+  mapsEmbedUrl?: string | null;
+  clinicName?: string | null;
   emergencyLabel?: string;
   emergencyPhone?: string;
   emergencyPhoneHref?: string;

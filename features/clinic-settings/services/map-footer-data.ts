@@ -20,6 +20,7 @@ import {
   formatClinicWorkingHours,
   toTelHref,
 } from "@/features/clinic-settings/lib/format-clinic";
+import { toGoogleMapsEmbedUrl } from "@/features/contact/lib/maps-embed";
 import { getOrCreateClinicSettings } from "@/features/scheduling/services/clinic-settings";
 import type { LeanClinicSettings } from "@/models/clinic-settings";
 
@@ -27,14 +28,17 @@ export function mapClinicContact(
   settings: LeanClinicSettings,
 ): FooterContactInfo {
   const emergency = settings.emergencyContact?.trim() || null;
+  const mapsUrl = settings.googleMapsUrl?.trim() || null;
 
   return {
+    clinicName: settings.clinicName,
     address: formatClinicAddress(settings.address),
     phone: settings.phone,
     phoneHref: toTelHref(settings.phone),
     email: settings.email,
     hours: formatClinicWorkingHours(settings),
-    mapsUrl: settings.googleMapsUrl,
+    mapsUrl,
+    mapsEmbedUrl: toGoogleMapsEmbedUrl(mapsUrl),
     ...(emergency
       ? {
           emergencyLabel: "Emergency Contact",

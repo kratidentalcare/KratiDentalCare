@@ -21,7 +21,7 @@ export function ServicesPageHero({ className }: ServicesPageHeroProps) {
       description={SERVICES_PAGE.description}
       ctaLabel={SERVICES_PAGE.ctaLabel}
       breadcrumb={<ServicesPageBreadcrumb tone="onMedia" />}
-      imageSrc="/images/hero/whychooseus.png"
+      imageSrc="/images/hero/services.png"
       imageAlt="Comfortable dental care at Krati Dental Care"
       imagePosition="object-[center_35%]"
     />

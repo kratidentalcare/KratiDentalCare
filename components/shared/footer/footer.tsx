@@ -19,6 +19,7 @@ import {
   DEFAULT_QUICK_LINKS,
   type FooterLinkItem,
 } from "./footer-links";
+import { FooterMap } from "./footer-map";
 import {
   FooterSocial,
   type FooterSocialItem,
@@ -41,7 +42,7 @@ export type FooterProps = {
 };
 
 /**
- * Public marketing footer — mobile-first stack, 3-column on desktop.
+ * Public marketing footer — mobile-first stack, 3-column on desktop + map.
  * Design is fixed; clinic/contact/link data is injected from ClinicSettings.
  */
 export function Footer({
@@ -73,6 +74,13 @@ export function Footer({
               {tagline}
             </p>
             <FooterSocial items={social} className="mt-5 sm:mt-6" />
+
+            <FooterMap
+              className="mt-5 sm:mt-6"
+              embedUrl={contact?.mapsEmbedUrl}
+              mapsUrl={contact?.mapsUrl}
+              clinicName={contact?.clinicName ?? copyrightOwner}
+            />
 
             <Link
               href={ROUTES.PUBLIC.BOOK}

@@ -21,7 +21,7 @@ export function DoctorsPageHero({ className }: DoctorsPageHeroProps) {
       description={DOCTORS_PAGE.description}
       ctaLabel={DOCTORS_PAGE.ctaLabel}
       breadcrumb={<DoctorsPageBreadcrumb tone="onMedia" />}
-      imageSrc="/images/hero/drgaurav.png"
+      imageSrc="/images/hero/doctors.png"
       imageAlt="Dental specialist at Krati Dental Care"
       imagePosition="object-[center_20%]"
     />

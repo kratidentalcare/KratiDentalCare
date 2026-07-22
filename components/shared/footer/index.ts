@@ -17,6 +17,10 @@ export {
   type FooterLinkListProps,
 } from "./footer-links";
 export {
+  FooterMap,
+  type FooterMapProps,
+} from "./footer-map";
+export {
   FooterSocial,
   DEFAULT_FOOTER_SOCIAL,
   type FooterSocialItem,

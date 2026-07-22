@@ -25,7 +25,7 @@ export type PublicPageHeroProps = {
 };
 
 /**
- * Inner-page marketing hero — full-bleed photo, left gradient, brand copy + CTA.
+ * Inner-page marketing hero — full-bleed photo filling the viewport under the navbar.
  * Shared by Services, Doctors, and Contact so the look stays consistent.
  */
 export function PublicPageHero({
@@ -45,19 +45,24 @@ export function PublicPageHero({
     <section
       aria-labelledby={id}
       className={cn(
-        "relative isolate overflow-hidden font-montserrat",
-        "min-h-[22rem] sm:min-h-[24rem] lg:min-h-[26rem]",
+        "relative isolate overflow-hidden bg-brand-dark font-montserrat",
+        // Exact height under navbar (mobile → desktop) — no leftover strip
+        "h-[calc(100svh-4.75rem)] min-h-[22rem]",
+        "sm:h-[calc(100svh-5.25rem)] sm:min-h-[26rem]",
+        "lg:h-[calc(100svh-6rem)] lg:min-h-[28rem]",
         className
       )}
     >
-      <Image
-        src={imageSrc}
-        alt={imageAlt}
-        fill
-        priority
-        sizes="100vw"
-        className={cn("object-cover", imagePosition)}
-      />
+      <div className="pointer-events-none absolute inset-0 size-full" aria-hidden>
+        <Image
+          src={imageSrc}
+          alt={imageAlt}
+          fill
+          priority
+          sizes="100vw"
+          className={cn("object-cover", imagePosition)}
+        />
+      </div>
 
       {/* Left-weighted scrim — keeps type readable without covering the whole photo */}
       <div
@@ -79,8 +84,8 @@ export function PublicPageHero({
       <PageContainer
         size="xl"
         className={cn(
-          "relative z-10 flex min-h-[inherit] flex-col justify-center",
-          "public-section-y"
+          "relative z-10 flex h-full flex-col justify-center",
+          "public-section-y md:py-10 lg:py-12"
         )}
       >
         <div className="flex max-w-xl flex-col items-start text-left">
