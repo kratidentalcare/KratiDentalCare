@@ -16,10 +16,10 @@ export const ROUTES = {
   AUTH: {
     STATUS: "/auth/status",
   },
-  /** Public marketing site (single-page section anchors until dedicated routes ship). */
+  /** Public marketing site — dedicated routes + remaining section anchors. */
   PUBLIC: {
     HOME: "/",
-    SERVICES: "/#services",
+    SERVICES: "/services",
     DOCTORS: "/#doctors",
     BOOK: "/book-appointment",
     CONTACT: "/#contact",

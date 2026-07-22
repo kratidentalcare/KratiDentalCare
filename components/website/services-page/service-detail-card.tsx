@@ -2,28 +2,31 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Check } from "lucide-react";
 
 import { ROUTES } from "@/constants/routes";
 import { cn } from "@/lib/utils";
 
-import { SERVICES_PREVIEW } from "./services-data";
+import { SERVICES_CATALOG } from "./services-catalog-data";
 
-export type ServiceCardProps = {
+export type ServiceDetailCardProps = {
   serviceId: string;
   index: number;
   className?: string;
 };
 
 /**
- * Premium interactive service preview card with scroll-enter motion.
+ * Full-catalog service card — icon, copy, benefits, and book CTA.
  * Looks up data by id so Lucide icons stay on the client boundary.
- * Styled for the brand-blue services canvas.
  */
-export function ServiceCard({ serviceId, index, className }: ServiceCardProps) {
+export function ServiceDetailCard({
+  serviceId,
+  index,
+  className,
+}: ServiceDetailCardProps) {
   const ref = useRef<HTMLElement>(null);
   const [visible, setVisible] = useState(false);
-  const service = SERVICES_PREVIEW.find((item) => item.id === serviceId);
+  const service = SERVICES_CATALOG.find((item) => item.id === serviceId);
 
   useEffect(() => {
     const node = ref.current;
@@ -36,7 +39,7 @@ export function ServiceCard({ serviceId, index, className }: ServiceCardProps) {
           observer.disconnect();
         }
       },
-      { threshold: 0.18, rootMargin: "0px 0px -32px 0px" }
+      { threshold: 0.14, rootMargin: "0px 0px -28px 0px" }
     );
 
     observer.observe(node);
@@ -51,27 +54,25 @@ export function ServiceCard({ serviceId, index, className }: ServiceCardProps) {
   return (
     <article
       ref={ref}
+      id={service.id}
       className={cn(
-        "group relative h-full",
+        "group relative h-full scroll-mt-28",
         "motion-safe:transition-[opacity,transform] motion-safe:duration-500 motion-safe:ease-out",
         visible
           ? "opacity-100 translate-y-0"
           : "opacity-0 translate-y-4 motion-reduce:opacity-100 motion-reduce:translate-y-0",
         className
       )}
-      style={visible ? { transitionDelay: `${index * 90}ms` } : undefined}
+      style={visible ? { transitionDelay: `${(index % 3) * 90}ms` } : undefined}
     >
-      <Link
-        href={`${ROUTES.PUBLIC.SERVICES}#${service.id}`}
-        aria-label={`Learn more about ${service.title}`}
+      <div
         className={cn(
-          "relative flex h-full cursor-pointer flex-col overflow-hidden rounded-2xl",
+          "relative flex h-full flex-col overflow-hidden rounded-2xl",
           "border border-slate-100 bg-white p-5 sm:p-7",
-          "shadow-[0_12px_32px_color-mix(in_srgb,black_14%,transparent)]",
+          "shadow-[0_12px_32px_color-mix(in_srgb,black_10%,transparent)]",
           "transition-all duration-300 ease-out",
-          "hover:-translate-y-1 hover:shadow-[0_18px_40px_color-mix(in_srgb,black_20%,transparent)]",
-          "hover:ring-1 hover:ring-white/80",
-          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-brand-blue"
+          "hover:-translate-y-1 hover:shadow-[0_18px_40px_color-mix(in_srgb,black_16%,transparent)]",
+          "hover:ring-1 hover:ring-brand-blue/15"
         )}
       >
         <span
@@ -108,27 +109,52 @@ export function ServiceCard({ serviceId, index, className }: ServiceCardProps) {
           {service.title}
         </h3>
 
-        <p className="relative z-10 mt-1.5 line-clamp-2 flex-1 text-[0.8125rem] leading-relaxed text-brand-muted sm:mt-2 sm:text-[0.9375rem]">
+        <p className="relative z-10 mt-1.5 text-[0.8125rem] leading-relaxed text-brand-muted sm:mt-2 sm:text-[0.9375rem]">
           {service.description}
         </p>
 
-        <span
-          className={cn(
-            "relative z-10 mt-4 inline-flex items-center gap-1.5 sm:mt-6",
-            "text-sm font-medium text-brand-blue"
-          )}
-        >
-          Learn More
-          <ArrowRight
+        <ul className="relative z-10 mt-4 flex flex-col gap-2 sm:mt-5" role="list">
+          {service.benefits.map((benefit) => (
+            <li
+              key={benefit}
+              className="flex items-start gap-2 text-[0.8125rem] leading-snug text-brand-dark/85 sm:text-sm"
+            >
+              <span
+                className={cn(
+                  "mt-0.5 flex size-4 shrink-0 items-center justify-center rounded-full",
+                  "bg-brand-teal/12 text-brand-teal"
+                )}
+                aria-hidden
+              >
+                <Check className="size-2.5" strokeWidth={3} />
+              </span>
+              {benefit}
+            </li>
+          ))}
+        </ul>
+
+        <div className="relative z-10 mt-auto pt-5 sm:pt-6">
+          <Link
+            href={ROUTES.PUBLIC.BOOK}
             className={cn(
-              "size-4",
-              "transition-transform duration-300 ease-out",
-              "group-hover:translate-x-1"
+              "inline-flex items-center gap-1.5 text-sm font-medium text-brand-blue",
+              "transition-colors hover:text-[#0870A8]",
+              "focus-visible:rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/40 focus-visible:ring-offset-2"
             )}
-            aria-hidden
-          />
-        </span>
-      </Link>
+            aria-label={`Book appointment for ${service.title}`}
+          >
+            Book Appointment
+            <ArrowRight
+              className={cn(
+                "size-4",
+                "transition-transform duration-300 ease-out",
+                "group-hover:translate-x-1"
+              )}
+              aria-hidden
+            />
+          </Link>
+        </div>
+      </div>
     </article>
   );
 }

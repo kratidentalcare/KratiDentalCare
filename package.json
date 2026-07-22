@@ -12,7 +12,9 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "test": "tsx --test features/scheduling/**/*.test.ts features/appointments/**/*.test.ts features/patients/**/*.test.ts features/prescriptions/**/*.test.ts",
-    "test:scheduling": "tsx --test features/scheduling/engine/generate-slots.test.ts"
+    "test:scheduling": "tsx --test features/scheduling/engine/generate-slots.test.ts",
+    "seed": "tsx --import ./scripts/seed/preload.ts ./scripts/seed/index.ts",
+    "seed:reset": "tsx --import ./scripts/seed/preload.ts ./scripts/seed/reset.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.6.0",
@@ -37,6 +39,7 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
+    "@faker-js/faker": "^10.5.0",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",

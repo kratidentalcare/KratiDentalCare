@@ -70,7 +70,10 @@ export function SchedulingSummary({ settings }: SchedulingSummaryProps) {
           </div>
 
           <div className="pt-2">
-            <Button render={<Link href={ROUTES.DASHBOARD.SCHEDULING} />}>
+            <Button
+              nativeButton={false}
+              render={<Link href={ROUTES.DASHBOARD.SCHEDULING} />}
+            >
               Open Scheduling
               <ArrowRightIcon className="size-4" />
             </Button>
