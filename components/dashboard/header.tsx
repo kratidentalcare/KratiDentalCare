@@ -1,9 +1,11 @@
 "use client";
 
-import { BellIcon, MenuIcon, PanelLeftCloseIcon, PanelLeftOpenIcon } from "lucide-react";
+import { MenuIcon, PanelLeftCloseIcon, PanelLeftOpenIcon } from "lucide-react";
 import { usePathname } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
+import { NotificationBell } from "@/features/notifications/components/notification-bell";
+import type { NotificationCenterData } from "@/features/notifications/types";
 import { cn } from "@/lib/utils";
 
 import { DashboardBreadcrumb } from "./breadcrumb";
@@ -13,13 +15,14 @@ import { UserMenu, type DashboardUser } from "./user-menu";
 
 export type HeaderProps = {
   user: DashboardUser;
+  notifications: NotificationCenterData;
   className?: string;
 };
 
 /**
  * Top chrome: mobile menu, page title, breadcrumb, notifications, user menu.
  */
-export function Header({ user, className }: HeaderProps) {
+export function Header({ user, notifications, className }: HeaderProps) {
   const pathname = usePathname();
   const title = getDashboardPageTitle(pathname);
   const { openMobile, collapsed, toggleCollapsed } = useDashboardChrome();
@@ -70,21 +73,7 @@ export function Header({ user, className }: HeaderProps) {
         </div>
 
         <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon"
-            className="relative text-brand-muted hover:bg-brand-blue/10 hover:text-brand-blue"
-            aria-label="Notifications (coming soon)"
-            disabled
-          >
-            <BellIcon className="size-5" aria-hidden />
-            <span
-              className="absolute top-1.5 right-1.5 size-1.5 rounded-full bg-brand-teal opacity-60"
-              aria-hidden
-            />
-          </Button>
-
+          <NotificationBell initialData={notifications} />
           <UserMenu user={user} />
         </div>
       </div>

@@ -16,7 +16,8 @@ export type CreatedContactMessage = {
 
 /**
  * Persist a validated public contact-form submission.
- * Notification hooks are prepared but do not send email/WhatsApp yet.
+ * Fires `onContactMessageCreated` for in-app Notification Center
+ * (outbound email / WhatsApp still reserved).
  */
 export async function createContactMessage(
   input: CreateContactMessageInput,

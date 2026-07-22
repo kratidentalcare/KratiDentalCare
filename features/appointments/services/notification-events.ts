@@ -7,6 +7,11 @@ import {
   BOOKING_SOURCES,
   NOTIFICATION_CHANNELS,
 } from "@/constants/appointments";
+import {
+  notifyAppointmentCancelled,
+  notifyAppointmentCompleted,
+  notifyNewAppointment,
+} from "@/features/notifications/services/emitters";
 import { connect } from "@/lib/db";
 import { AppointmentEvent } from "@/models/appointment-event";
 import { NotificationOutbox } from "@/models/notification-outbox";
@@ -114,6 +119,8 @@ export async function onAppointmentCreated(
     appointment,
     APPOINTMENT_EVENT_TYPES.CREATED,
   );
+
+  await notifyNewAppointment(appointment);
 }
 
 export async function onAppointmentConfirmed(
@@ -147,6 +154,8 @@ export async function onAppointmentCancelled(
     appointment,
     APPOINTMENT_EVENT_TYPES.CANCELLED,
   );
+
+  await notifyAppointmentCancelled(appointment, cancellationReason);
 }
 
 export async function onAppointmentCompleted(
@@ -163,6 +172,8 @@ export async function onAppointmentCompleted(
     appointment,
     APPOINTMENT_EVENT_TYPES.COMPLETED,
   );
+
+  await notifyAppointmentCompleted(appointment);
 }
 
 export async function onAppointmentRescheduled(

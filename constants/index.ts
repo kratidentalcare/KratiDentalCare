@@ -11,4 +11,5 @@ export * from "./patient";
 export * from "./scheduling";
 export * from "./clinic-settings";
 export * from "./appointments";
+export * from "./notifications";
 export * from "./routes";

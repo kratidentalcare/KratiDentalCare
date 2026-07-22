@@ -224,3 +224,14 @@ export {
   type DeleteContactMessageInput,
   type UpdateContactMessageStatusInput,
 } from "./contact-message";
+
+export {
+  createNotificationSchema,
+  knownNotificationEventSchema,
+  listNotificationsQuerySchema,
+  markNotificationReadSchema,
+  notificationTypeSchema,
+  type CreateNotificationInput,
+  type ListNotificationsQuery,
+  type MarkNotificationReadInput,
+} from "./notification";

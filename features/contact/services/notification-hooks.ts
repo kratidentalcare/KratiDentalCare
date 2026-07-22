@@ -1,19 +1,13 @@
 import "server-only";
 
+import { notifyNewContactInquiry } from "@/features/notifications/services/emitters";
+
 /**
- * Future notification seams for contact inquiries.
+ * Contact inquiry notification seams.
  *
- * Intentionally no-ops today. When email / WhatsApp / admin push land:
- * 1. Enqueue provider-neutral intents (similar to appointment NotificationOutbox)
- * 2. Let a worker deliver EMAIL / WHATSAPP / IN_APP channels
- * 3. Keep create/update paths free of provider SDKs
- *
- * Suggested future payload shape:
- * {
- *   contactMessageId: string
- *   name, email, phone, subject
- *   event: "CONTACT_MESSAGE_CREATED" | "CONTACT_MESSAGE_ADMIN_ALERT"
- * }
+ * In-app admin Notification Center is wired today.
+ * Email / WhatsApp delivery remains reserved for a future worker
+ * (similar to appointment `NotificationOutbox`).
  */
 
 export type ContactNotificationEvent =
@@ -30,13 +24,16 @@ export type ContactNotificationPayload = {
 
 /**
  * Hook after a public inquiry is persisted.
- * Future: enqueue visitor confirmation email + admin alert (email/WhatsApp).
+ * Creates an in-app admin notification; outbound channels TBD.
  */
 export async function onContactMessageCreated(
   payload: ContactNotificationPayload,
 ): Promise<void> {
-  void payload;
-  // Reserved for email / WhatsApp / admin notification workers.
+  await notifyNewContactInquiry({
+    contactMessageId: payload.contactMessageId,
+    name: payload.name,
+    subject: payload.subject,
+  });
 }
 
 /**

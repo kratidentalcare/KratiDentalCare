@@ -3,6 +3,8 @@ import type { Metadata } from "next";
 import { DashboardShell, type DashboardUser } from "@/components/dashboard";
 import { ROUTES } from "@/constants/routes";
 import { countUnreadContactMessages } from "@/features/contact/services/list-contact-messages";
+import { getNotificationCenterData } from "@/features/notifications/services/get-notification-center-data";
+import type { NotificationCenterData } from "@/features/notifications/types";
 import { requireAdminPage } from "@/lib/auth";
 
 export const metadata: Metadata = {
@@ -37,8 +39,19 @@ export default async function DashboardLayout({
     inboxUnreadCount = 0;
   }
 
+  let notifications: NotificationCenterData = { items: [], unreadCount: 0 };
+  try {
+    notifications = await getNotificationCenterData();
+  } catch {
+    notifications = { items: [], unreadCount: 0 };
+  }
+
   return (
-    <DashboardShell user={user} inboxUnreadCount={inboxUnreadCount}>
+    <DashboardShell
+      user={user}
+      inboxUnreadCount={inboxUnreadCount}
+      notifications={notifications}
+    >
       {children}
     </DashboardShell>
   );
