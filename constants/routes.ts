@@ -20,7 +20,7 @@ export const ROUTES = {
   PUBLIC: {
     HOME: "/",
     SERVICES: "/services",
-    DOCTORS: "/#doctors",
+    DOCTORS: "/doctors",
     BOOK: "/book-appointment",
     CONTACT: "/#contact",
   },
