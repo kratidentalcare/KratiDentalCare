@@ -21,7 +21,8 @@ export const AUTH_CONFIG = {
     ROUTES.PATIENT.ROOT,
     ROUTES.DASHBOARD.ROOT,
     ROUTES.ADMIN.ROOT,
-    ROUTES.PROFILE,
+    /** Legacy profile path — redirects into the dashboard profile module. */
+    "/profile",
   ] as const,
   /** Prefixes that must stay public (webhooks, static marketing). */
   publicPathPrefixes: [ROUTES.API.CLERK_WEBHOOK] as const,

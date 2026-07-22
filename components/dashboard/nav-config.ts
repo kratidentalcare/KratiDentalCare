@@ -84,8 +84,8 @@ export const DASHBOARD_NAV_ITEMS: readonly DashboardNavItem[] = [
   },
   {
     id: "profile",
-    label: "Profile",
-    href: ROUTES.PROFILE,
+    label: "My Profile",
+    href: ROUTES.DASHBOARD.PROFILE,
     icon: UserCircleIcon,
   },
   {

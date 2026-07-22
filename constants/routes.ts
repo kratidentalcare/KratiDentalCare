@@ -7,8 +7,11 @@ export const ROUTES = {
   HOME: "/",
   SIGN_IN: "/sign-in",
   SIGN_UP: "/sign-up",
-  /** Authenticated profile placeholder (full profile UI lands later). */
-  PROFILE: "/profile",
+  /**
+   * Admin profile management (lives under the dashboard shell).
+   * Legacy `/profile` redirects here.
+   */
+  PROFILE: "/dashboard/profile",
   /**
    * Auth infrastructure status pages (access denied, disabled account, …).
    * Not a dashboard surface.
@@ -42,8 +45,7 @@ export const ROUTES = {
     FAQS: "/dashboard/faqs",
     INBOX: "/dashboard/inbox",
     SETTINGS: "/dashboard/settings",
-    /** @deprecated Prefer ROUTES.PROFILE — kept for older links. */
-    PROFILE: "/profile",
+    PROFILE: "/dashboard/profile",
   },
   API: {
     CLERK_WEBHOOK: "/api/webhooks/clerk",

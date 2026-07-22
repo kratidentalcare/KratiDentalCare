@@ -1,8 +1,15 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useClerk } from "@clerk/nextjs";
-import { ChevronsUpDownIcon, LogOutIcon, UserIcon } from "lucide-react";
+import {
+  ChevronsUpDownIcon,
+  LayoutDashboardIcon,
+  LogOutIcon,
+  SettingsIcon,
+  UserIcon,
+} from "lucide-react";
 
 import {
   Avatar,
@@ -51,13 +58,24 @@ function getInitials(user: DashboardUser): string {
   return user.email.charAt(0).toUpperCase() || "A";
 }
 
+function isActivePath(pathname: string, href: string, exact = false): boolean {
+  if (exact) {
+    return pathname === href;
+  }
+  return pathname === href || pathname.startsWith(`${href}/`);
+}
+
 /**
- * Account menu — profile shortcut + Clerk sign-out.
+ * Account menu — dashboard, profile, Clerk account management, sign-out.
  */
 export function UserMenu({ user, className }: UserMenuProps) {
-  const { signOut } = useClerk();
+  const pathname = usePathname();
+  const { signOut, openUserProfile } = useClerk();
   const displayName = getDisplayName(user);
   const initials = getInitials(user);
+
+  const dashboardActive = isActivePath(pathname, ROUTES.DASHBOARD.ROOT, true);
+  const profileActive = isActivePath(pathname, ROUTES.DASHBOARD.PROFILE);
 
   return (
     <DropdownMenu>
@@ -112,11 +130,49 @@ export function UserMenu({ user, className }: UserMenuProps) {
         <DropdownMenuSeparator />
 
         <DropdownMenuItem
-          render={<Link href={ROUTES.PROFILE} />}
-          className="cursor-pointer gap-2"
+          render={<Link href={ROUTES.DASHBOARD.ROOT} />}
+          className={cn(
+            "cursor-pointer gap-2",
+            dashboardActive && "bg-brand-blue/10 text-brand-blue",
+          )}
+          data-active={dashboardActive || undefined}
         >
-          <UserIcon className="size-4 text-brand-muted" aria-hidden />
-          Profile
+          <LayoutDashboardIcon
+            className={cn(
+              "size-4",
+              dashboardActive ? "text-brand-blue" : "text-brand-muted",
+            )}
+            aria-hidden
+          />
+          Dashboard
+        </DropdownMenuItem>
+
+        <DropdownMenuItem
+          render={<Link href={ROUTES.DASHBOARD.PROFILE} />}
+          className={cn(
+            "cursor-pointer gap-2",
+            profileActive && "bg-brand-blue/10 text-brand-blue",
+          )}
+          data-active={profileActive || undefined}
+        >
+          <UserIcon
+            className={cn(
+              "size-4",
+              profileActive ? "text-brand-blue" : "text-brand-muted",
+            )}
+            aria-hidden
+          />
+          My Profile
+        </DropdownMenuItem>
+
+        <DropdownMenuItem
+          className="cursor-pointer gap-2"
+          onClick={() => {
+            openUserProfile();
+          }}
+        >
+          <SettingsIcon className="size-4 text-brand-muted" aria-hidden />
+          Manage Account
         </DropdownMenuItem>
 
         <DropdownMenuSeparator />
@@ -129,7 +185,7 @@ export function UserMenu({ user, className }: UserMenuProps) {
           }}
         >
           <LogOutIcon className="size-4" aria-hidden />
-          Logout
+          Sign Out
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

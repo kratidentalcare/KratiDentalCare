@@ -40,6 +40,14 @@ export {
 } from "./user";
 
 export {
+  PROFILE_IMAGE_MAX_BYTES,
+  PROFILE_IMAGE_MIME_TYPES,
+  profileImageFileSchema,
+  updateAdminProfileSchema,
+  type UpdateAdminProfileInput,
+} from "./profile";
+
+export {
   consultationDurationSchema,
   createDoctorSchema,
   doctorSlugSchema,
