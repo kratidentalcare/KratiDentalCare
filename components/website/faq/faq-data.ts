@@ -11,11 +11,11 @@ export interface FaqItem {
 
 /** Section copy — separate from FAQ records for CMS-friendly editing. */
 export const FAQ_SECTION = {
-  badge: "Frequently Asked Questions",
-  heading: "Everything You Need to Know",
-  headingAccent: "Before Your Visit",
+  badge: "FAQ",
+  heading: "Everything you need to know",
+  headingAccent: "before your visit",
   description:
-    "Find answers to the most common questions about appointments, treatments, payments and dental care.",
+    "Answers about appointments, treatments, payments, and dental care.",
   ctaTitle: "Still have questions?",
   ctaDescription: "Our team is happy to help.",
   ctaLabel: "Contact Us",

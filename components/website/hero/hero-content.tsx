@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { Star } from "lucide-react";
 
 import { ROUTES } from "@/constants/routes";
 import { cn } from "@/lib/utils";
@@ -11,24 +10,21 @@ export type HeroContentProps = {
   /** Hide when the banner artwork already includes trust indicators. */
   showTrustBadges?: boolean;
   /**
-   * Hide booking CTA + rating on mobile when they already appear
+   * Hide booking CTA on mobile when it already appears
    * on the full-screen image overlay.
    */
   hidePrimaryCtaOnMobile?: boolean;
-  /** Clinic Google Maps / reviews URL from ClinicSettings. */
-  mapsUrl?: string | null;
 };
 
 /**
- * Left-column editorial copy: eyebrow, serif headline, rating, CTAs, trust row.
+ * Left-column copy for the clinic banner.
+ * Brand lives in the photo (wall sign) + nav — headline must not compete with either.
  */
 export function HeroContent({
   className,
   showTrustBadges = true,
   hidePrimaryCtaOnMobile = false,
-  mapsUrl = null,
 }: HeroContentProps) {
-  const ratingHref = mapsUrl?.trim() || null;
   return (
     <div
       className={cn(
@@ -36,66 +32,32 @@ export function HeroContent({
         className
       )}
     >
-      <p
-        className={cn(
-          "hero-animate-fade-up hero-delay-1",
-          "text-[0.6875rem] font-medium tracking-[0.18em] text-brand-teal uppercase",
-          "sm:text-xs sm:tracking-[0.2em]"
-        )}
-      >
-        Trusted by 10,000+ Families Across Jaipur
-      </p>
-
       <h1
         id="hero-heading"
         className={cn(
-          "hero-animate-fade-up hero-delay-2",
-          "mt-4 font-serif text-4xl font-medium leading-[1.08] tracking-tight text-brand-dark",
-          "sm:mt-5 sm:text-5xl lg:text-6xl xl:text-7xl"
+          "hero-animate-fade-up hero-delay-1",
+          "font-serif text-4xl font-medium leading-[1.08] tracking-tight text-brand-dark",
+          "sm:text-5xl lg:text-6xl xl:text-[4.25rem]"
         )}
       >
-        <span className="block">Transform Your Smile with</span>
-        <span className="block text-brand-blue">Expert Dental Care</span>
+        <span className="block">Gentle care.</span>
+        <span className="block text-brand-blue">Lasting smiles.</span>
       </h1>
+
+      <p
+        className={cn(
+          "hero-animate-fade-up hero-delay-2",
+          "mt-5 max-w-sm text-base leading-relaxed text-brand-muted",
+          "sm:mt-6 sm:text-lg"
+        )}
+      >
+        Multi-specialty dental care in Jaipur — precise, personal, and easy to
+        book.
+      </p>
 
       <div
         className={cn(
           "hero-animate-fade-up hero-delay-3",
-          "mt-6 flex flex-col items-start gap-2 sm:mt-8",
-          hidePrimaryCtaOnMobile && "max-md:hidden"
-        )}
-      >
-        <span className="flex items-center gap-0.5 text-brand-dark" aria-hidden>
-          {Array.from({ length: 5 }).map((_, index) => (
-            <Star
-              key={index}
-              className="size-3.5 fill-current sm:size-4"
-              strokeWidth={0}
-            />
-          ))}
-        </span>
-        {ratingHref ? (
-          <a
-            href={ratingHref}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={cn(
-              "text-sm font-medium text-brand-dark underline decoration-brand-dark/40 underline-offset-4",
-              "transition-colors hover:text-brand-blue hover:decoration-brand-blue/50",
-              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/40 focus-visible:ring-offset-2"
-            )}
-            aria-label="Read 4.9 Google Rating reviews"
-          >
-            4.9 Google Rating
-          </a>
-        ) : (
-          <p className="text-sm font-medium text-brand-dark">4.9 Google Rating</p>
-        )}
-      </div>
-
-      <div
-        className={cn(
-          "hero-animate-fade-up hero-delay-5",
           "mt-8 flex w-full flex-col items-stretch gap-4 sm:flex-row sm:flex-wrap sm:items-center sm:gap-6"
         )}
       >
@@ -111,9 +73,9 @@ export function HeroContent({
             "sm:w-auto",
             hidePrimaryCtaOnMobile && "max-md:hidden"
           )}
-          aria-label="Book an appointment"
+          aria-label="Book and Smile"
         >
-          Book Appointment
+          Book and Smile
         </Link>
 
         <Link
@@ -131,7 +93,7 @@ export function HeroContent({
       </div>
 
       {showTrustBadges ? (
-        <div className="hero-animate-fade-up hero-delay-6 mt-8 w-full sm:mt-10">
+        <div className="hero-animate-fade-up hero-delay-4 mt-8 w-full sm:mt-10">
           <TrustBadges />
         </div>
       ) : null}

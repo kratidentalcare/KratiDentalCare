@@ -6,7 +6,6 @@ import { useEffect, useRef, useState } from "react";
 import {
   ArrowRight,
   Calendar,
-  Stethoscope,
   User,
 } from "lucide-react";
 
@@ -87,18 +86,11 @@ export function DoctorCard({
           >
             <p
               className={cn(
-                "inline-flex items-center gap-2 rounded-full border border-brand-blue/15",
-                "bg-white px-3 py-1.5",
-                "text-[0.625rem] font-bold tracking-[0.14em] text-brand-blue uppercase",
-                "sm:px-3.5 sm:text-[0.6875rem] sm:tracking-[0.16em]",
-                "lg:text-xs lg:tracking-[0.18em]"
+                "text-[0.625rem] font-medium tracking-[0.16em] text-brand-blue uppercase",
+                "sm:text-[0.6875rem] sm:tracking-[0.18em]",
+                "lg:text-xs lg:tracking-[0.2em]"
               )}
             >
-              <Stethoscope
-                className="size-3.5 shrink-0 text-brand-blue"
-                strokeWidth={1.75}
-                aria-hidden
-              />
               {DOCTORS_SECTION.badge}
             </p>
 
@@ -115,11 +107,6 @@ export function DoctorCard({
                 {DOCTORS_SECTION.headingAccent}
               </span>
             </h2>
-
-            <div
-              className="mt-3.5 h-1 w-10 rounded-full bg-brand-blue sm:mt-4 sm:w-12"
-              aria-hidden
-            />
           </div>
         ) : null}
 
@@ -177,7 +164,7 @@ export function DoctorCard({
             <div
               className={cn(
                 "relative z-10 size-full overflow-hidden rounded-full",
-                "border-[6px] border-white bg-slate-100 shadow-xl sm:border-8"
+                "border-[6px] border-white bg-slate-100 shadow-md sm:border-8"
               )}
             >
               <Image
@@ -196,8 +183,8 @@ export function DoctorCard({
               aria-label={`${doctor.experienceYears} ${doctor.experienceLabel}`}
               className={cn(
                 "absolute bottom-0 left-1/2 z-20 flex -translate-x-1/2 translate-y-1/2",
-                "items-center gap-2.5 rounded-2xl bg-brand-card px-3.5 py-2.5 shadow-lg",
-                "ring-1 ring-brand-blue/10",
+                "items-center gap-2.5 rounded-2xl bg-brand-card px-3.5 py-2.5",
+                "ring-1 ring-brand-blue/10 shadow-md",
                 "lg:left-auto lg:right-0 lg:translate-x-4 lg:translate-y-0 lg:gap-3 lg:p-3.5",
                 "motion-safe:transition-[opacity,transform] motion-safe:duration-500 motion-safe:ease-out",
                 visible
@@ -353,7 +340,7 @@ export function DoctorCard({
               aria-label={`Book an appointment with ${doctor.name}`}
             >
               <Calendar className="size-4 shrink-0" strokeWidth={1.75} aria-hidden />
-              Book Appointment
+              Book and Smile
               <ArrowRight
                 className="size-4 shrink-0 transition-transform duration-300 ease-out group-hover/btn:translate-x-1"
                 aria-hidden

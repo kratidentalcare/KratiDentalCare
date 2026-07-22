@@ -2,12 +2,12 @@
  * Contact page marketing copy.
  */
 export const CONTACT_PAGE = {
-  eyebrow: "Get In Touch",
-  heading: "We're Here When",
-  headingAccent: "You Need Us",
+  eyebrow: "Contact",
+  heading: "We're here when",
+  headingAccent: "you need us",
   description:
-    "Reach the clinic for appointments, treatment questions, or urgent dental concerns — our team responds with care and clarity.",
-  ctaLabel: "Book Appointment",
+    "Reach the clinic for appointments, treatment questions, or urgent concerns.",
+  ctaLabel: "Book and Smile",
   formEyebrow: "Send a Message",
   formHeading: "How Can We Help?",
   formDescription:

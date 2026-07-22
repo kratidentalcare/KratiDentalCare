@@ -15,7 +15,10 @@ import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 
 import { useDashboardChrome } from "./dashboard-chrome-context";
-import { DASHBOARD_NAV_ITEMS } from "./nav-config";
+import {
+  DASHBOARD_ACCOUNT_NAV_IDS,
+  DASHBOARD_NAV_ITEMS,
+} from "./nav-config";
 import { SidebarItem } from "./sidebar-item";
 
 export type MobileSidebarProps = {
@@ -34,11 +37,12 @@ export function MobileSidebar({
 }: MobileSidebarProps) {
   const { mobileOpen, setMobileOpen, closeMobile } = useDashboardChrome();
 
+  const accountIds = new Set<string>(DASHBOARD_ACCOUNT_NAV_IDS);
   const primaryItems = DASHBOARD_NAV_ITEMS.filter(
-    (item) => item.id !== "logout" && item.id !== "profile",
+    (item) => !accountIds.has(item.id),
   );
-  const accountItems = DASHBOARD_NAV_ITEMS.filter(
-    (item) => item.id === "profile" || item.id === "logout",
+  const accountItems = DASHBOARD_NAV_ITEMS.filter((item) =>
+    accountIds.has(item.id),
   );
 
   return (

@@ -104,7 +104,7 @@ export function DoctorsDirectory({
                 "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/40 focus-visible:ring-offset-2"
               )}
             >
-              Book Appointment
+              Book and Smile
             </Link>
           </div>
         ) : (

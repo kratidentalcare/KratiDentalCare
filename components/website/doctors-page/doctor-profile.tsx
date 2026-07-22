@@ -173,7 +173,7 @@ export function DoctorProfile({
             aria-label={`Book an appointment with ${doctor.fullName}`}
           >
             <Calendar className="size-4 shrink-0" strokeWidth={1.75} aria-hidden />
-            Book Appointment
+            Book and Smile
           </Link>
 
           <Link

@@ -47,7 +47,7 @@ const FOOTER_LINKS = [
     isActive: true,
   },
   {
-    label: "Book Appointment",
+    label: "Book and Smile",
     url: ROUTES.PUBLIC.BOOK,
     group: FOOTER_LINK_GROUPS.QUICK_LINKS,
     displayOrder: 4,

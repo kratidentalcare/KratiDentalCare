@@ -2,7 +2,6 @@ import {
   Activity,
   BadgeCheck,
   HeartHandshake,
-  Smile,
   type LucideIcon,
 } from "lucide-react";
 
@@ -24,12 +23,6 @@ export const WHY_CHOOSE_US_FEATURES: readonly WhyChooseUsFeature[] = [
     title: "Advanced Technology",
     description: "Modern imaging and precision tools",
     icon: Activity,
-  },
-  {
-    id: "painless-procedures",
-    title: "Painless Procedures",
-    description: "Gentle care at every step",
-    icon: Smile,
   },
   {
     id: "certified-specialists",

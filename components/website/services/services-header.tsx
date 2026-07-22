@@ -17,15 +17,10 @@ export function ServicesHeader({ className }: ServicesHeaderProps) {
     >
       <p
         className={cn(
-          "inline-flex items-center gap-2",
-          "text-[0.6875rem] font-medium tracking-[0.18em] text-white/85 uppercase",
+          "text-[0.6875rem] font-medium tracking-[0.18em] text-white/80 uppercase",
           "sm:text-xs sm:tracking-[0.2em]"
         )}
       >
-        <span
-          className="size-1.5 shrink-0 rounded-full bg-white"
-          aria-hidden
-        />
         Our Services
       </p>
 
@@ -36,8 +31,7 @@ export function ServicesHeader({ className }: ServicesHeaderProps) {
           "sm:mt-5 sm:text-4xl lg:text-5xl"
         )}
       >
-        Complete Dental Care for{" "}
-        <span className="text-white">Every Smile</span>
+        Care for every smile
       </h2>
     </header>
   );

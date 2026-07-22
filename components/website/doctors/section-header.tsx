@@ -1,5 +1,3 @@
-import { Stethoscope } from "lucide-react";
-
 import { cn } from "@/lib/utils";
 
 import { DOCTORS_SECTION } from "./doctors-data";
@@ -17,17 +15,10 @@ export function DoctorsSectionHeader({ className }: DoctorsSectionHeaderProps) {
     <header className={cn("flex max-w-2xl flex-col items-start text-left", className)}>
       <p
         className={cn(
-          "inline-flex items-center gap-2 rounded-full border border-brand-blue/15",
-          "bg-white px-3.5 py-1.5",
-          "text-[0.6875rem] font-bold tracking-[0.16em] text-brand-blue uppercase",
-          "sm:text-xs sm:tracking-[0.18em]"
+          "text-[0.6875rem] font-medium tracking-[0.18em] text-brand-blue uppercase",
+          "sm:text-xs sm:tracking-[0.2em]"
         )}
       >
-        <Stethoscope
-          className="size-3.5 shrink-0 text-brand-blue"
-          strokeWidth={1.75}
-          aria-hidden
-        />
         {DOCTORS_SECTION.badge}
       </p>
 
@@ -41,8 +32,6 @@ export function DoctorsSectionHeader({ className }: DoctorsSectionHeaderProps) {
         <span className="block">{DOCTORS_SECTION.heading}</span>
         <span className="block text-brand-blue">{DOCTORS_SECTION.headingAccent}</span>
       </h2>
-
-      <div className="mt-4 h-1 w-12 rounded-full bg-brand-blue" aria-hidden />
 
       <p
         className={cn(

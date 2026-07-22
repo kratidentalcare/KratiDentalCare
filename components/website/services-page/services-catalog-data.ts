@@ -150,9 +150,9 @@ export const SERVICES_CATALOG: readonly ServiceCatalogItem[] = [
 
 export const SERVICES_PAGE = {
   eyebrow: "Our Services",
-  heading: "Premium Dental Care",
-  headingAccent: "for Every Smile",
+  heading: "Dental care",
+  headingAccent: "for every smile",
   description:
-    "From preventive visits to advanced treatments, every service is delivered with precision, comfort and lasting results.",
-  ctaLabel: "Book Appointment",
+    "From preventive visits to advanced treatments — precise, comfortable care with lasting results.",
+  ctaLabel: "Book and Smile",
 } as const;

@@ -41,9 +41,7 @@ export function FeatureItem({
         <span
           className={cn(
             "flex size-10 shrink-0 items-center justify-center rounded-xl",
-            "bg-gradient-to-br from-brand-blue/10 to-brand-teal/10",
-            "transition-transform duration-300 ease-out",
-            "group-hover:scale-110"
+            "bg-brand-blue/8"
           )}
           aria-hidden
         >

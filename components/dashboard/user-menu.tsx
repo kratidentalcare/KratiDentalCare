@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useClerk } from "@clerk/nextjs";
 import {
   ChevronsUpDownIcon,
+  ExternalLinkIcon,
   LayoutDashboardIcon,
   LogOutIcon,
   SettingsIcon,
@@ -173,6 +174,16 @@ export function UserMenu({ user, className }: UserMenuProps) {
         >
           <SettingsIcon className="size-4 text-brand-muted" aria-hidden />
           Manage Account
+        </DropdownMenuItem>
+
+        <DropdownMenuSeparator />
+
+        <DropdownMenuItem
+          render={<Link href={ROUTES.PUBLIC.HOME} />}
+          className="cursor-pointer gap-2"
+        >
+          <ExternalLinkIcon className="size-4 text-brand-muted" aria-hidden />
+          View Website
         </DropdownMenuItem>
 
         <DropdownMenuSeparator />

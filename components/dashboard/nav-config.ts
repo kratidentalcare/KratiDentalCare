@@ -4,6 +4,7 @@ import {
   CalendarPlusIcon,
   CircleHelpIcon,
   ClipboardListIcon,
+  ExternalLinkIcon,
   InboxIcon,
   LayoutDashboardIcon,
   LogOutIcon,
@@ -27,6 +28,13 @@ export type DashboardNavItem = {
   /** Non-navigation action rendered as a button. */
   action?: "logout";
 };
+
+/** Sidebar account / utility row ids (below the primary module list). */
+export const DASHBOARD_ACCOUNT_NAV_IDS = [
+  "website",
+  "profile",
+  "logout",
+] as const;
 
 /**
  * Primary sidebar destinations. Module hrefs are reserved for later phases —
@@ -81,6 +89,13 @@ export const DASHBOARD_NAV_ITEMS: readonly DashboardNavItem[] = [
     label: "Clinic Settings",
     href: ROUTES.DASHBOARD.SETTINGS,
     icon: SettingsIcon,
+  },
+  {
+    id: "website",
+    label: "View Website",
+    href: ROUTES.PUBLIC.HOME,
+    icon: ExternalLinkIcon,
+    exact: true,
   },
   {
     id: "profile",

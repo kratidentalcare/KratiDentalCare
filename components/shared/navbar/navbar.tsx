@@ -33,7 +33,7 @@ const bookCtaClassName = cn(
 
 /**
  * Sticky public-site navbar: logo left, links + auth + Book CTA grouped right.
- * Text links: Home / Services / Doctors / Contact. Book Appointment is the CTA.
+ * Text links: Home / Services / Doctors / Contact. Book and Smile is the CTA.
  */
 export function Navbar({ className, isAdmin = false }: NavbarProps) {
   const pathname = usePathname();
@@ -63,7 +63,7 @@ export function Navbar({ className, isAdmin = false }: NavbarProps) {
         className
       )}
     >
-      <PageContainer size="xl" className="h-[5.25rem] sm:h-24 lg:h-[5.75rem]">
+      <PageContainer size="xl" className="h-[4.75rem] sm:h-[5.25rem] lg:h-24">
         <div className="flex h-full items-center justify-between gap-4">
           <div className="flex min-w-0 shrink-0 items-center">
             <Logo />
@@ -86,7 +86,7 @@ export function Navbar({ className, isAdmin = false }: NavbarProps) {
                   "border-[#0A84C6]/50 bg-[#0A84C6]/18 text-[#0870A8]"
               )}
             >
-              Book Appointment
+              Book and Smile
             </Link>
 
             <MobileMenu open={mobileOpen} onOpenChange={setMobileOpen} />

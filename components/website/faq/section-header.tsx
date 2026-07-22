@@ -1,5 +1,3 @@
-import { CircleHelp } from "lucide-react";
-
 import { cn } from "@/lib/utils";
 
 import { FAQ_SECTION } from "./faq-data";
@@ -9,7 +7,7 @@ export type FaqSectionHeaderProps = {
 };
 
 /**
- * Centered FAQ intro — badge, serif headline, supporting copy.
+ * Centered FAQ intro — eyebrow, serif headline, supporting copy.
  */
 export function FaqSectionHeader({ className }: FaqSectionHeaderProps) {
   return (
@@ -21,17 +19,10 @@ export function FaqSectionHeader({ className }: FaqSectionHeaderProps) {
     >
       <p
         className={cn(
-          "inline-flex items-center gap-2 rounded-full border border-brand-blue/15",
-          "bg-white px-3.5 py-1.5",
-          "text-[0.6875rem] font-bold tracking-[0.16em] text-brand-blue uppercase",
-          "sm:text-xs sm:tracking-[0.18em]"
+          "text-[0.6875rem] font-medium tracking-[0.18em] text-brand-blue uppercase",
+          "sm:text-xs sm:tracking-[0.2em]"
         )}
       >
-        <CircleHelp
-          className="size-3.5 shrink-0 text-brand-teal"
-          strokeWidth={1.75}
-          aria-hidden
-        />
         {FAQ_SECTION.badge}
       </p>
 
@@ -45,8 +36,6 @@ export function FaqSectionHeader({ className }: FaqSectionHeaderProps) {
         <span className="block">{FAQ_SECTION.heading}</span>
         <span className="block text-brand-blue">{FAQ_SECTION.headingAccent}</span>
       </h2>
-
-      <div className="mt-4 h-1 w-12 rounded-full bg-brand-teal" aria-hidden />
 
       <p
         className={cn(

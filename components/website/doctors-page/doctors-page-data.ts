@@ -2,12 +2,12 @@
  * Doctors page marketing copy — separate from doctor records for CMS-friendly editing.
  */
 export const DOCTORS_PAGE = {
-  eyebrow: "Our Clinical Team",
-  heading: "Meet the Dentists",
-  headingAccent: "Behind Your Care",
+  eyebrow: "Our Team",
+  heading: "Meet the dentists",
+  headingAccent: "behind your care",
   description:
-    "Experienced clinicians focused on gentle, precise dentistry — from routine checkups to advanced restorative care.",
-  ctaLabel: "Book Appointment",
+    "Experienced clinicians focused on gentle, precise dentistry — from checkups to restorative care.",
+  ctaLabel: "Book and Smile",
   emptyTitle: "Our doctors will be listed here soon",
   emptyDescription:
     "We're preparing detailed profiles for our clinical team. In the meantime, you can still book an appointment.",

@@ -54,11 +54,11 @@ export function WhyChooseUsContent({ className }: WhyChooseUsContentProps) {
       >
         <p
           className={cn(
-            "text-[0.6875rem] font-medium tracking-[0.18em] text-brand-teal uppercase",
+            "text-[0.6875rem] font-medium tracking-[0.18em] text-brand-blue uppercase",
             "sm:text-xs sm:tracking-[0.2em]"
           )}
         >
-          Why Choose Us
+          Why Krati
         </p>
 
         <h2
@@ -68,13 +68,12 @@ export function WhyChooseUsContent({ className }: WhyChooseUsContentProps) {
             "sm:mt-5 sm:text-4xl lg:text-[2.75rem]"
           )}
         >
-          Care Designed Around{" "}
-          <span className="text-brand-blue">You</span>
+          Care designed around{" "}
+          <span className="text-brand-blue">you</span>
         </h2>
 
         <p className="mt-4 max-w-sm text-sm leading-relaxed text-brand-muted sm:mt-5 sm:text-[0.9375rem]">
-          Every visit is built around comfort, precision and results you can
-          trust.
+          Comfort, precision, and results you can trust — every visit.
         </p>
       </div>
 

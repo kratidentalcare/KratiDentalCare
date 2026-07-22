@@ -5,7 +5,7 @@ import { getOrCreateClinicSettings } from "@/features/scheduling/services/clinic
 import { utcToCivilDate } from "@/features/scheduling/lib/timezone";
 
 export const metadata: Metadata = {
-  title: "Book Appointment",
+  title: "Book and Smile",
   description:
     "Schedule a dental appointment online. Choose an available time and submit your details.",
 };

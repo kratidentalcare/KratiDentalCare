@@ -8,54 +8,44 @@ import "./hero.css";
 
 export type HeroProps = {
   className?: string;
-  /** Clinic Google Maps / reviews URL from ClinicSettings. */
-  mapsUrl?: string | null;
 };
 
 /**
  * Mobile: stacked image (top) + copy (bottom).
- * Desktop: full-bleed banner with copy overlaid on the left panel.
+ * Desktop: full-bleed banner filling the viewport under the sticky navbar.
  */
-export function Hero({ className, mapsUrl = null }: HeroProps) {
+export function Hero({ className }: HeroProps) {
   return (
     <section
       id="hero"
       aria-labelledby="hero-heading"
       className={cn(
         "relative overflow-hidden font-montserrat",
-        "bg-brand-surface md:bg-transparent",
-        "md:min-h-[min(36rem,calc(100svh-6.5rem))]",
+        "bg-brand-surface",
+        // Exact height under navbar — avoids a leftover white strip below the banner
+        "md:h-[calc(100svh-5.25rem)] md:min-h-[32rem] md:bg-[#e4edf3]",
+        "lg:h-[calc(100svh-6rem)]",
         className
       )}
     >
-      {/* Desktop: absolute full-bleed background */}
-      <HeroImage
-        variant="desktop"
-        mapsUrl={mapsUrl}
-        className="hidden md:block"
-      />
+      <HeroImage variant="desktop" className="hidden md:block" />
 
-      <div className="relative z-10 flex flex-col md:min-h-[inherit] md:justify-center">
-        {/* Mobile: image sits above the copy */}
-        <HeroImage
-          variant="mobile"
-          mapsUrl={mapsUrl}
-          className="md:hidden"
-        />
+      <div className="relative z-10 flex h-full flex-col md:justify-center">
+        <HeroImage variant="mobile" className="md:hidden" />
 
         <PageContainer
           size="xl"
           className={cn(
             "relative flex w-full flex-col items-start",
-            "public-section-y",
-            "md:min-h-[inherit] md:justify-center",
+            // Mobile keeps section rhythm; desktop centers in the full-bleed frame
+            "public-section-y md:py-0",
+            "md:h-full md:justify-center",
             "md:pl-4 lg:pl-5 xl:pl-6"
           )}
         >
           <HeroContent
             showTrustBadges={false}
             hidePrimaryCtaOnMobile
-            mapsUrl={mapsUrl}
             className="w-full max-w-xl md:max-w-[42%] xl:max-w-[38%] md:-ml-2 lg:-ml-4 xl:-ml-6"
           />
         </PageContainer>

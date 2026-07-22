@@ -90,7 +90,7 @@ export function MobileMenu({ open, onOpenChange }: MobileMenuProps) {
                 "border-[#0A84C6]/50 bg-[#0A84C6]/18 text-[#0870A8]"
             )}
           >
-            Book Appointment
+            Book and Smile
           </Link>
         </SheetFooter>
       </SheetContent>

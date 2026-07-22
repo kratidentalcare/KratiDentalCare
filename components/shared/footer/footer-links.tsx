@@ -14,7 +14,7 @@ export const DEFAULT_QUICK_LINKS: readonly FooterLinkItem[] = [
   { label: "Services", href: ROUTES.PUBLIC.SERVICES },
   { label: "Doctors", href: ROUTES.PUBLIC.DOCTORS },
   { label: "Contact", href: ROUTES.PUBLIC.CONTACT },
-  { label: "Book Appointment", href: ROUTES.PUBLIC.BOOK },
+  { label: "Book and Smile", href: ROUTES.PUBLIC.BOOK },
 ] as const;
 
 function isExternalHref(href: string): boolean {

@@ -15,6 +15,8 @@ import { cn } from "@/lib/utils";
 
 export type ServicesPageBreadcrumbProps = {
   className?: string;
+  /** Light type for photo heroes. */
+  tone?: "default" | "onMedia";
 };
 
 /**
@@ -22,25 +24,45 @@ export type ServicesPageBreadcrumbProps = {
  */
 export function ServicesPageBreadcrumb({
   className,
+  tone = "default",
 }: ServicesPageBreadcrumbProps) {
+  const onMedia = tone === "onMedia";
+
   return (
     <Breadcrumb className={cn(className)}>
-      <BreadcrumbList className="text-[0.8125rem] text-brand-muted sm:text-sm">
+      <BreadcrumbList
+        className={cn(
+          "text-[0.8125rem] sm:text-sm",
+          onMedia ? "text-white/70" : "text-brand-muted"
+        )}
+      >
         <BreadcrumbItem>
           <BreadcrumbLink
             render={<Link href={ROUTES.PUBLIC.HOME} />}
             className={cn(
-              "font-medium text-brand-muted transition-colors",
-              "hover:text-brand-blue",
-              "focus-visible:rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/40 focus-visible:ring-offset-2"
+              "font-medium transition-colors",
+              onMedia
+                ? "text-white/70 hover:text-white"
+                : "text-brand-muted hover:text-brand-blue",
+              "focus-visible:rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2",
+              onMedia
+                ? "focus-visible:ring-white/50 focus-visible:ring-offset-brand-dark/40"
+                : "focus-visible:ring-brand-blue/40"
             )}
           >
             Home
           </BreadcrumbLink>
         </BreadcrumbItem>
-        <BreadcrumbSeparator className="text-brand-muted/50" />
+        <BreadcrumbSeparator
+          className={onMedia ? "text-white/40" : "text-brand-muted/50"}
+        />
         <BreadcrumbItem>
-          <BreadcrumbPage className="font-medium text-brand-dark">
+          <BreadcrumbPage
+            className={cn(
+              "font-medium",
+              onMedia ? "text-white" : "text-brand-dark"
+            )}
+          >
             Services
           </BreadcrumbPage>
         </BreadcrumbItem>

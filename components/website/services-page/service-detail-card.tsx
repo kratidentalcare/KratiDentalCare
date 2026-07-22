@@ -143,7 +143,7 @@ export function ServiceDetailCard({
             )}
             aria-label={`Book appointment for ${service.title}`}
           >
-            Book Appointment
+            Book and Smile
             <ArrowRight
               className={cn(
                 "size-4",

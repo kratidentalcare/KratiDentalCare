@@ -1,6 +1,5 @@
 "use client";
 
-import { Sparkles } from "lucide-react";
 import {
   useCallback,
   useEffect,
@@ -167,23 +166,6 @@ export function Testimonials({ className }: TestimonialsProps) {
     >
       <TestimonialsWave edge="top" fill="white" />
 
-      <div
-        className={cn(
-          "pointer-events-none absolute -top-20 right-[-10%] size-72 rounded-full",
-          "bg-[radial-gradient(circle,color-mix(in_srgb,var(--brand-teal)_14%,transparent)_0%,transparent_70%)]",
-          "blur-2xl sm:size-96"
-        )}
-        aria-hidden
-      />
-      <div
-        className={cn(
-          "pointer-events-none absolute -bottom-24 left-[-8%] size-80 rounded-full",
-          "bg-[radial-gradient(circle,color-mix(in_srgb,var(--brand-blue)_12%,transparent)_0%,transparent_70%)]",
-          "blur-2xl sm:size-[28rem]"
-        )}
-        aria-hidden
-      />
-
       <PageContainer size="xl" className="relative z-10 public-section-y">
         <header
           className={cn(
@@ -196,17 +178,10 @@ export function Testimonials({ className }: TestimonialsProps) {
         >
           <p
             className={cn(
-              "inline-flex items-center gap-2 rounded-full border border-brand-blue/15",
-              "bg-white px-3.5 py-1.5",
-              "text-[0.6875rem] font-bold tracking-[0.16em] text-brand-blue uppercase",
-              "sm:text-xs sm:tracking-[0.18em]"
+              "text-[0.6875rem] font-medium tracking-[0.18em] text-brand-blue uppercase",
+              "sm:text-xs sm:tracking-[0.2em]"
             )}
           >
-            <Sparkles
-              className="size-3.5 shrink-0 text-brand-teal"
-              strokeWidth={1.75}
-              aria-hidden
-            />
             {TESTIMONIALS_SECTION.badge}
           </p>
 
@@ -222,11 +197,6 @@ export function Testimonials({ className }: TestimonialsProps) {
               {TESTIMONIALS_SECTION.headingAccent}
             </span>
           </h2>
-
-          <div
-            className="mt-4 h-1 w-12 rounded-full bg-brand-teal"
-            aria-hidden
-          />
         </header>
 
         <div

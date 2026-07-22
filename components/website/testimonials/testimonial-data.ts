@@ -72,7 +72,7 @@ export const TESTIMONIALS: readonly Testimonial[] = [
 
 /** Section copy — separate from records for CMS-friendly editing. */
 export const TESTIMONIALS_SECTION = {
-  badge: "Real Smile Transformations",
-  heading: "See the Difference",
-  headingAccent: "A Beautiful Smile Can Make",
+  badge: "Smile Transformations",
+  heading: "See the difference",
+  headingAccent: "a beautiful smile can make",
 } as const;

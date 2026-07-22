@@ -18,8 +18,6 @@ export type HeroImageProps = {
   className?: string;
   /** Mobile stacks in document flow; desktop is a full-bleed absolute layer. */
   variant?: "mobile" | "desktop";
-  /** Clinic Google Maps / reviews URL from ClinicSettings. */
-  mapsUrl?: string | null;
 };
 
 /**
@@ -28,15 +26,13 @@ export type HeroImageProps = {
 export function HeroImage({
   className,
   variant = "desktop",
-  mapsUrl = null,
 }: HeroImageProps) {
   if (variant === "mobile") {
     return (
       <div
         className={cn(
           "relative w-full overflow-hidden",
-          // Fill the first screen below the sticky navbar
-          "h-[calc(100svh-5.25rem)] min-h-[28rem]",
+          "h-[calc(100svh-4.75rem)] min-h-[28rem]",
           className
         )}
       >
@@ -48,7 +44,7 @@ export function HeroImage({
           sizes="(max-width: 767px) 100vw, 1px"
           className="object-cover object-center"
         />
-        <HeroMobileCta mapsUrl={mapsUrl} />
+        <HeroMobileCta />
       </div>
     );
   }
@@ -57,7 +53,7 @@ export function HeroImage({
     <div
       aria-hidden
       className={cn(
-        "pointer-events-none absolute inset-0 select-none",
+        "pointer-events-none absolute inset-0 size-full select-none",
         className
       )}
     >

@@ -85,7 +85,7 @@ export function Footer({
                 "active:scale-[0.98]",
               )}
             >
-              Book Appointment
+              Book and Smile
             </Link>
           </div>
 

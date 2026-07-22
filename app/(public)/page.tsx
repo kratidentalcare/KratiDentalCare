@@ -51,7 +51,7 @@ export default async function HomePage() {
         Navbar (layout) → Hero → Why Choose Us → Services → Doctors
         → Testimonials → FAQ → Final CTA → Footer (layout)
       */}
-      <Hero mapsUrl={footerData?.contact.mapsUrl} />
+      <Hero />
       <WhyChooseUs />
       <Services />
       <Doctors />

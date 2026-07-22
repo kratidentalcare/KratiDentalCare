@@ -22,32 +22,6 @@ export function Doctors({ className }: DoctorsProps) {
         className
       )}
     >
-      {/* Faint large decorative rings */}
-      <div
-        className={cn(
-          "pointer-events-none absolute -top-24 -left-28 size-[28rem] rounded-full",
-          "border border-brand-blue/[0.07]",
-          "sm:size-[36rem]"
-        )}
-        aria-hidden
-      />
-      <div
-        className={cn(
-          "pointer-events-none absolute -right-32 -bottom-40 size-[32rem] rounded-full",
-          "border border-brand-blue/[0.06]",
-          "sm:size-[40rem]"
-        )}
-        aria-hidden
-      />
-      <div
-        className={cn(
-          "pointer-events-none absolute top-1/3 left-[18%] size-64 rounded-full",
-          "bg-[radial-gradient(circle,color-mix(in_srgb,var(--brand-blue)_12%,transparent)_0%,transparent_70%)]",
-          "blur-2xl"
-        )}
-        aria-hidden
-      />
-
       <PageContainer size="xl" className="relative public-section-y">
         <ul
           className="flex list-none flex-col gap-14 lg:gap-16"

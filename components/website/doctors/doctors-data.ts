@@ -51,9 +51,9 @@ export const DOCTORS: readonly Doctor[] = [
 
 /** Section copy — separate from doctor records for CMS-friendly editing. */
 export const DOCTORS_SECTION = {
-  badge: "Meet Your Dentist",
-  heading: "Meet the Expert Behind",
-  headingAccent: "Thousands of Healthy Smiles",
+  badge: "Our Doctor",
+  heading: "Meet the expert behind",
+  headingAccent: "thousands of healthy smiles",
   description:
-    "Compassionate care, advanced expertise, and a commitment to delivering the best dental experience for you and your family.",
+    "Compassionate care and advanced expertise for you and your family.",
 } as const;
