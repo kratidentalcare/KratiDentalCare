@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 
 import { DashboardShell, type DashboardUser } from "@/components/dashboard";
 import { ROUTES } from "@/constants/routes";
+import { countUnreadContactMessages } from "@/features/contact/services/list-contact-messages";
 import { requireAdminPage } from "@/lib/auth";
 
 export const metadata: Metadata = {
@@ -29,5 +30,16 @@ export default async function DashboardLayout({
     profileImage: appUser.profileImage,
   };
 
-  return <DashboardShell user={user}>{children}</DashboardShell>;
+  let inboxUnreadCount = 0;
+  try {
+    inboxUnreadCount = await countUnreadContactMessages();
+  } catch {
+    inboxUnreadCount = 0;
+  }
+
+  return (
+    <DashboardShell user={user} inboxUnreadCount={inboxUnreadCount}>
+      {children}
+    </DashboardShell>
+  );
 }

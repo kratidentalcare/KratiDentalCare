@@ -1,6 +1,7 @@
 import "server-only";
 
 import { CONTACT_MESSAGE_STATUSES } from "@/constants/statuses";
+import { onContactMessageCreated } from "@/features/contact/services/notification-hooks";
 import { connect } from "@/lib/db";
 import { ValidationError } from "@/lib/errors";
 import { ContactMessage } from "@/models/contact-message";
@@ -15,6 +16,7 @@ export type CreatedContactMessage = {
 
 /**
  * Persist a validated public contact-form submission.
+ * Notification hooks are prepared but do not send email/WhatsApp yet.
  */
 export async function createContactMessage(
   input: CreateContactMessageInput,
@@ -37,5 +39,15 @@ export async function createContactMessage(
     status: CONTACT_MESSAGE_STATUSES.NEW,
   });
 
-  return { id: String(created._id) };
+  const id = String(created._id);
+
+  await onContactMessageCreated({
+    contactMessageId: id,
+    name: created.name,
+    email: created.email,
+    phone: created.phone,
+    subject: created.subject,
+  });
+
+  return { id };
 }

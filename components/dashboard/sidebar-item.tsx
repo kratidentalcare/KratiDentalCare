@@ -15,6 +15,8 @@ export type SidebarItemProps = {
   item: DashboardNavItem;
   /** Compact icon-only presentation (tablet collapsed rail). */
   collapsed?: boolean;
+  /** Optional unread / count badge (e.g. Inbox). */
+  badgeCount?: number;
   onNavigate?: () => void;
   className?: string;
 };
@@ -52,6 +54,31 @@ function itemStateClassName(
   );
 }
 
+function NavBadge({
+  count,
+  collapsed,
+}: {
+  count: number;
+  collapsed: boolean;
+}) {
+  if (count <= 0) return null;
+
+  const label = count > 99 ? "99+" : String(count);
+
+  return (
+    <span
+      className={cn(
+        "ml-auto inline-flex min-w-5 items-center justify-center rounded-full bg-brand-blue px-1.5 py-0.5",
+        "text-[0.625rem] font-semibold leading-none text-white tabular-nums",
+        collapsed && "md:absolute md:top-1.5 md:right-1.5 md:ml-0 lg:static lg:ml-auto",
+      )}
+      aria-label={`${count} unread`}
+    >
+      {label}
+    </span>
+  );
+}
+
 /**
  * Single sidebar destination — link or logout action.
  * Shared by desktop rail and mobile drawer.
@@ -59,6 +86,7 @@ function itemStateClassName(
 export function SidebarItem({
   item,
   collapsed = false,
+  badgeCount = 0,
   onNavigate,
   className,
 }: SidebarItemProps) {
@@ -84,7 +112,11 @@ export function SidebarItem({
         className={cn("truncate", collapsed && "md:hidden lg:inline")}
       >
         {item.label}
+        {badgeCount > 0 ? (
+          <span className={cn("sr-only")}> ({badgeCount})</span>
+        ) : null}
       </span>
+      <NavBadge count={badgeCount} collapsed={collapsed} />
     </>
   );
 
@@ -108,10 +140,14 @@ export function SidebarItem({
     );
   }
 
+  const ariaLabel =
+    badgeCount > 0 ? `${item.label} (${badgeCount})` : item.label;
+
   return (
     <Link
       href={item.href}
-      title={collapsed ? item.label : undefined}
+      title={collapsed ? ariaLabel : undefined}
+      aria-label={ariaLabel}
       aria-current={active ? "page" : undefined}
       onClick={onNavigate}
       className={cn(

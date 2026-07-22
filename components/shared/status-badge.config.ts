@@ -3,6 +3,7 @@ import type { VariantProps } from "class-variance-authority";
 import type { badgeVariants } from "@/components/ui/badge";
 import type {
   AppointmentStatus,
+  ContactMessageStatus,
   ContentStatus,
   DoctorStatus,
   PatientStatus,
@@ -18,7 +19,8 @@ export type DomainStatus =
   | PrescriptionStatus
   | DoctorStatus
   | PatientStatus
-  | ContentStatus;
+  | ContentStatus
+  | ContactMessageStatus;
 
 type BadgeVariant = NonNullable<VariantProps<typeof badgeVariants>["variant"]>;
 
@@ -146,6 +148,17 @@ export const STATUS_VISUALS = {
     tone: "success",
     badgeVariant: "secondary",
     className: successClass,
+  },
+  NEW: {
+    label: "New",
+    tone: "info",
+    badgeVariant: "secondary",
+    className: infoClass,
+  },
+  READ: {
+    label: "Read",
+    tone: "neutral",
+    badgeVariant: "outline",
   },
 } as const satisfies Record<DomainStatus, StatusVisual>;
 

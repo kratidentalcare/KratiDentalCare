@@ -40,6 +40,7 @@ export const ROUTES = {
     PATIENTS: "/dashboard/patients",
     PRESCRIPTIONS: "/dashboard/prescriptions",
     FAQS: "/dashboard/faqs",
+    INBOX: "/dashboard/inbox",
     SETTINGS: "/dashboard/settings",
     /** @deprecated Prefer ROUTES.PROFILE — kept for older links. */
     PROFILE: "/profile",

@@ -8,6 +8,7 @@ export {
   contentStatusSchema,
   deletedAtSchema,
   doctorStatusSchema,
+  contactMessageStatusSchema,
   emailSchema,
   isActiveSchema,
   isoDateStringSchema,
@@ -205,7 +206,13 @@ export {
 
 export {
   contactMessageFormSchema,
+  contactMessageListQuerySchema,
   createContactMessageSchema,
+  deleteContactMessageSchema,
+  updateContactMessageStatusSchema,
   type ContactMessageFormValues,
+  type ContactMessageListQuery,
   type CreateContactMessageInput,
+  type DeleteContactMessageInput,
+  type UpdateContactMessageStatusInput,
 } from "./contact-message";

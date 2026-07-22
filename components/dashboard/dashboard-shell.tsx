@@ -13,6 +13,8 @@ import type { DashboardUser } from "./user-menu";
 export type DashboardShellProps = {
   children: ReactNode;
   user: DashboardUser;
+  /** Unread contact inquiries for sidebar Inbox badge. */
+  inboxUnreadCount?: number;
   className?: string;
 };
 
@@ -25,6 +27,7 @@ const MAIN_CONTENT_ID = "dashboard-main";
 export function DashboardShell({
   children,
   user,
+  inboxUnreadCount = 0,
   className,
 }: DashboardShellProps) {
   return (
@@ -42,8 +45,8 @@ export function DashboardShell({
           Skip to main content
         </a>
 
-        <Sidebar />
-        <MobileSidebar />
+        <Sidebar inboxUnreadCount={inboxUnreadCount} />
+        <MobileSidebar inboxUnreadCount={inboxUnreadCount} />
 
         <div className="flex min-w-0 flex-1 flex-col">
           <Header user={user} />

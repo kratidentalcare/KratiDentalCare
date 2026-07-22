@@ -16,13 +16,15 @@ import { SidebarItem } from "./sidebar-item";
 
 export type SidebarProps = {
   className?: string;
+  /** Unread contact inquiries for Inbox badge. */
+  inboxUnreadCount?: number;
 };
 
 /**
  * Permanent (desktop) / collapsible (tablet) navigation rail.
  * Hidden below `md` — mobile uses {@link MobileSidebar}.
  */
-export function Sidebar({ className }: SidebarProps) {
+export function Sidebar({ className, inboxUnreadCount = 0 }: SidebarProps) {
   const { collapsed, toggleCollapsed } = useDashboardChrome();
 
   const primaryItems = DASHBOARD_NAV_ITEMS.filter(
@@ -110,6 +112,7 @@ export function Sidebar({ className }: SidebarProps) {
               key={item.id}
               item={item}
               collapsed={collapsed}
+              badgeCount={item.id === "inbox" ? inboxUnreadCount : 0}
             />
           ))}
         </nav>

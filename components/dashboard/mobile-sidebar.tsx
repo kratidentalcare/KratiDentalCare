@@ -20,13 +20,18 @@ import { SidebarItem } from "./sidebar-item";
 
 export type MobileSidebarProps = {
   className?: string;
+  /** Unread contact inquiries for Inbox badge. */
+  inboxUnreadCount?: number;
 };
 
 /**
  * Drawer navigation for viewports below `md`.
  * Controlled by {@link useDashboardChrome}.
  */
-export function MobileSidebar({ className }: MobileSidebarProps) {
+export function MobileSidebar({
+  className,
+  inboxUnreadCount = 0,
+}: MobileSidebarProps) {
   const { mobileOpen, setMobileOpen, closeMobile } = useDashboardChrome();
 
   const primaryItems = DASHBOARD_NAV_ITEMS.filter(
@@ -85,6 +90,7 @@ export function MobileSidebar({ className }: MobileSidebarProps) {
               <SidebarItem
                 key={item.id}
                 item={item}
+                badgeCount={item.id === "inbox" ? inboxUnreadCount : 0}
                 onNavigate={closeMobile}
               />
             ))}

@@ -4,6 +4,7 @@ import {
   CalendarPlusIcon,
   CircleHelpIcon,
   ClipboardListIcon,
+  InboxIcon,
   LayoutDashboardIcon,
   LogOutIcon,
   SettingsIcon,
@@ -64,6 +65,12 @@ export const DASHBOARD_NAV_ITEMS: readonly DashboardNavItem[] = [
     icon: ClipboardListIcon,
   },
   {
+    id: "inbox",
+    label: "Inbox",
+    href: ROUTES.DASHBOARD.INBOX,
+    icon: InboxIcon,
+  },
+  {
     id: "faqs",
     label: "FAQs",
     href: ROUTES.DASHBOARD.FAQS,
@@ -115,6 +122,12 @@ export const DASHBOARD_QUICK_ACTIONS = [
     label: "Configure Scheduling",
     href: ROUTES.DASHBOARD.SCHEDULING,
     icon: CalendarPlusIcon,
+  },
+  {
+    id: "view-inbox",
+    label: "Contact Inbox",
+    href: ROUTES.DASHBOARD.INBOX,
+    icon: InboxIcon,
   },
   {
     id: "clinic-settings",
