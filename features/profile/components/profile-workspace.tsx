@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ProfileEditForm } from "@/features/profile/components/profile-edit-form";
@@ -17,6 +17,10 @@ type ProfileWorkspaceProps = {
  */
 export function ProfileWorkspace({ initialProfile }: ProfileWorkspaceProps) {
   const [profile, setProfile] = useState(initialProfile);
+
+  useEffect(() => {
+    setProfile(initialProfile);
+  }, [initialProfile]);
 
   return (
     <Tabs defaultValue="overview" className="w-full gap-6">

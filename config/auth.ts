@@ -30,7 +30,7 @@ export const AUTH_CONFIG = {
 
 /**
  * True when the pathname is under a session-protected tree
- * (`/patient`, `/dashboard`, `/admin`, `/profile`) and is not an
+ * (`/patient`, `/dashboard`, `/admin`, and legacy `/profile`) and is not an
  * explicit public exception.
  */
 export function isProtectedPath(pathname: string): boolean {

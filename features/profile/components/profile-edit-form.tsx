@@ -134,6 +134,12 @@ export function ProfileEditForm({ profile, onUpdated }: ProfileEditFormProps) {
         toast.error(result.error.message);
         return;
       }
+      setPreviewUrl((previous) => {
+        if (previous) {
+          URL.revokeObjectURL(previous);
+        }
+        return null;
+      });
       onUpdated(result.data);
       toast.success("Profile photo updated");
     });
