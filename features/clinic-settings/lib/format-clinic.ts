@@ -22,7 +22,7 @@ const WEEKDAY_ORDER: Weekday[] = [
   WEEKDAYS.SUNDAY,
 ];
 
-function formatTime12h(time: string): string {
+export function formatClinicTime12h(time: string): string {
   const [hRaw, mRaw] = time.split(":").map(Number);
   const hours = Number.isFinite(hRaw) ? hRaw : 0;
   const minutes = Number.isFinite(mRaw) ? mRaw : 0;
@@ -31,7 +31,9 @@ function formatTime12h(time: string): string {
   return `${hour12}:${String(minutes).padStart(2, "0")} ${period}`;
 }
 
-function formatWorkingDaysLabel(workingDays: readonly Weekday[]): string {
+export function formatClinicWorkingDaysLabel(
+  workingDays: readonly Weekday[],
+): string {
   if (workingDays.length === 0) {
     return "Closed";
   }
@@ -76,11 +78,11 @@ export function formatClinicWorkingHours(
     "workingDays" | "openingTime" | "closingTime"
   >,
 ): string {
-  const days = formatWorkingDaysLabel(settings.workingDays);
+  const days = formatClinicWorkingDaysLabel(settings.workingDays);
   if (days === "Closed") {
     return "Closed";
   }
-  return `${days} · ${formatTime12h(settings.openingTime)} – ${formatTime12h(settings.closingTime)}`;
+  return `${days} · ${formatClinicTime12h(settings.openingTime)} – ${formatClinicTime12h(settings.closingTime)}`;
 }
 
 export function formatClinicAddress(

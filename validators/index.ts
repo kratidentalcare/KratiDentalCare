@@ -202,3 +202,10 @@ export {
   type UpdateFaqActionInput,
   type UpdateFaqInput,
 } from "./faq";
+
+export {
+  contactMessageFormSchema,
+  createContactMessageSchema,
+  type ContactMessageFormValues,
+  type CreateContactMessageInput,
+} from "./contact-message";

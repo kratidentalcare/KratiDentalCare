@@ -105,3 +105,19 @@ export const CONTENT_STATUS_VALUES = [
   CONTENT_STATUSES.PUBLISHED,
   CONTENT_STATUSES.ARCHIVED,
 ] as const;
+
+/** Public contact form inbox lifecycle (admin review later). */
+export const CONTACT_MESSAGE_STATUSES = {
+  NEW: "NEW",
+  READ: "READ",
+  ARCHIVED: "ARCHIVED",
+} as const;
+
+export type ContactMessageStatus =
+  (typeof CONTACT_MESSAGE_STATUSES)[keyof typeof CONTACT_MESSAGE_STATUSES];
+
+export const CONTACT_MESSAGE_STATUS_VALUES = [
+  CONTACT_MESSAGE_STATUSES.NEW,
+  CONTACT_MESSAGE_STATUSES.READ,
+  CONTACT_MESSAGE_STATUSES.ARCHIVED,
+] as const;

@@ -18,3 +18,4 @@ export * from "./prescription";
 export * from "./service";
 export * from "./testimonial";
 export * from "./faq";
+export * from "./contact-message";

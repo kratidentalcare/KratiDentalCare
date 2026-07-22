@@ -22,7 +22,7 @@ export const ROUTES = {
     SERVICES: "/services",
     DOCTORS: "/doctors",
     BOOK: "/book-appointment",
-    CONTACT: "/#contact",
+    CONTACT: "/contact",
   },
   PATIENT: {
     ROOT: "/patient",
