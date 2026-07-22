@@ -8,13 +8,13 @@ export type FooterLinkItem = {
   href: string;
 };
 
-/** Quick links — align with public marketing anchors; ClinicSettings can override. */
+/** Quick links — align with public marketing routes; ClinicSettings can override. */
 export const DEFAULT_QUICK_LINKS: readonly FooterLinkItem[] = [
   { label: "Home", href: ROUTES.PUBLIC.HOME },
   { label: "Services", href: ROUTES.PUBLIC.SERVICES },
   { label: "Doctors", href: ROUTES.PUBLIC.DOCTORS },
-  { label: "Book Appointment", href: ROUTES.PUBLIC.BOOK },
   { label: "Contact", href: ROUTES.PUBLIC.CONTACT },
+  { label: "Book Appointment", href: ROUTES.PUBLIC.BOOK },
 ] as const;
 
 function isExternalHref(href: string): boolean {

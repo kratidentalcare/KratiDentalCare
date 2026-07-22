@@ -1,13 +1,17 @@
 import {
   Award,
   BookOpen,
+  Calendar,
   Clock3,
   GraduationCap,
+  MessageCircle,
   Sparkles,
 } from "lucide-react";
+import Link from "next/link";
 
 import type { PublicDoctorProfile } from "@/features/doctors";
 import { formatClinicWorkingHours } from "@/features/clinic-settings/lib/format-clinic";
+import { ROUTES } from "@/constants/routes";
 import { cn } from "@/lib/utils";
 
 import { DoctorProfileCard } from "./doctor-profile-card";
@@ -147,6 +151,48 @@ export function DoctorProfile({
             </p>
           )}
         </DoctorDetailSection>
+
+        <div
+          className={cn(
+            "flex w-full flex-col gap-3",
+            "sm:flex-row sm:items-center sm:gap-3.5"
+          )}
+        >
+          <Link
+            href={ROUTES.PUBLIC.BOOK}
+            className={cn(
+              "group/btn inline-flex h-11 w-full items-center justify-center gap-2 rounded-xl px-5",
+              "bg-brand-blue text-sm font-semibold text-white",
+              "shadow-[0_8px_22px_color-mix(in_srgb,var(--brand-blue)_28%,transparent)]",
+              "transition-all duration-300 ease-out",
+              "hover:bg-[#0870A8] hover:shadow-[0_12px_28px_color-mix(in_srgb,var(--brand-blue)_34%,transparent)]",
+              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/40 focus-visible:ring-offset-2",
+              "active:scale-[0.98]",
+              "sm:h-12 sm:w-auto sm:px-6"
+            )}
+            aria-label={`Book an appointment with ${doctor.fullName}`}
+          >
+            <Calendar className="size-4 shrink-0" strokeWidth={1.75} aria-hidden />
+            Book Appointment
+          </Link>
+
+          <Link
+            href={ROUTES.PUBLIC.CONTACT}
+            className={cn(
+              "inline-flex h-11 w-full items-center justify-center gap-2 rounded-xl px-5",
+              "border border-brand-blue/30 bg-white text-sm font-semibold text-brand-blue",
+              "transition-all duration-300 ease-out",
+              "hover:border-brand-blue/50 hover:bg-brand-blue/[0.04] hover:shadow-md",
+              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/40 focus-visible:ring-offset-2",
+              "active:scale-[0.98]",
+              "sm:h-12 sm:w-auto sm:px-6"
+            )}
+            aria-label="Contact the clinic"
+          >
+            <MessageCircle className="size-4 shrink-0" strokeWidth={1.75} aria-hidden />
+            Contact Clinic
+          </Link>
+        </div>
       </div>
     </article>
   );

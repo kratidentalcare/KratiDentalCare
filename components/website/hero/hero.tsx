@@ -8,13 +8,15 @@ import "./hero.css";
 
 export type HeroProps = {
   className?: string;
+  /** Clinic Google Maps / reviews URL from ClinicSettings. */
+  mapsUrl?: string | null;
 };
 
 /**
  * Mobile: stacked image (top) + copy (bottom).
  * Desktop: full-bleed banner with copy overlaid on the left panel.
  */
-export function Hero({ className }: HeroProps) {
+export function Hero({ className, mapsUrl = null }: HeroProps) {
   return (
     <section
       id="hero"
@@ -27,11 +29,19 @@ export function Hero({ className }: HeroProps) {
       )}
     >
       {/* Desktop: absolute full-bleed background */}
-      <HeroImage variant="desktop" className="hidden md:block" />
+      <HeroImage
+        variant="desktop"
+        mapsUrl={mapsUrl}
+        className="hidden md:block"
+      />
 
       <div className="relative z-10 flex flex-col md:min-h-[inherit] md:justify-center">
         {/* Mobile: image sits above the copy */}
-        <HeroImage variant="mobile" className="md:hidden" />
+        <HeroImage
+          variant="mobile"
+          mapsUrl={mapsUrl}
+          className="md:hidden"
+        />
 
         <PageContainer
           size="xl"
@@ -45,6 +55,7 @@ export function Hero({ className }: HeroProps) {
           <HeroContent
             showTrustBadges={false}
             hidePrimaryCtaOnMobile
+            mapsUrl={mapsUrl}
             className="w-full max-w-xl md:max-w-[42%] xl:max-w-[38%] md:-ml-2 lg:-ml-4 xl:-ml-6"
           />
         </PageContainer>

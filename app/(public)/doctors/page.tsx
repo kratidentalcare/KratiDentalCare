@@ -6,15 +6,18 @@ import {
 } from "@/components/website/doctors-page";
 import { ServicesFinalCta } from "@/components/website/services-page";
 import { APP_NAME } from "@/constants";
+import { ROUTES } from "@/constants/routes";
 import { getPublicFooterData } from "@/features/clinic-settings";
 import { formatClinicWorkingHours } from "@/features/clinic-settings/lib/format-clinic";
 import { listPublicDoctors } from "@/features/doctors";
 import { getOrCreateClinicSettings } from "@/features/scheduling/services/clinic-settings";
+import { createPublicPageMetadata } from "@/lib/seo/public-metadata";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = createPublicPageMetadata({
   title: "Doctors",
   description: `Meet the dentists at ${APP_NAME} — experienced clinicians dedicated to gentle, precise dental care.`,
-};
+  path: ROUTES.PUBLIC.DOCTORS,
+});
 
 /**
  * Dedicated public Doctors page.

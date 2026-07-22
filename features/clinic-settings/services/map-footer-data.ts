@@ -1,5 +1,7 @@
 import "server-only";
 
+import { cache } from "react";
+
 import type { FooterContactInfo } from "@/components/shared/footer/footer-contact";
 import {
   DEFAULT_QUICK_LINKS,
@@ -129,14 +131,17 @@ export function mapClinicSettingsToFooter(
 }
 
 /**
- * Fetch clinic settings once for the public Footer.
+ * Fetch clinic settings once per request for the public Footer / CTAs.
+ * Wrapped in React `cache` so layout + pages share the same promise.
  * Falls back to null if the DB is unavailable (Footer uses built-in defaults).
  */
-export async function getPublicFooterData(): Promise<PublicFooterData | null> {
-  try {
-    const settings = await getOrCreateClinicSettings();
-    return mapClinicSettingsToFooter(settings);
-  } catch {
-    return null;
-  }
-}
+export const getPublicFooterData = cache(
+  async (): Promise<PublicFooterData | null> => {
+    try {
+      const settings = await getOrCreateClinicSettings();
+      return mapClinicSettingsToFooter(settings);
+    } catch {
+      return null;
+    }
+  },
+);

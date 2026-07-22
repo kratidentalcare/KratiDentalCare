@@ -374,7 +374,7 @@ export function DoctorCard({
               )}
               aria-label={`View profile of ${doctor.name}`}
             >
-              View Profile
+              View Doctor Profile
               <span
                 className={cn(
                   "flex size-6 items-center justify-center rounded-full sm:size-7",

@@ -133,7 +133,7 @@ export function ServiceDetailCard({
           ))}
         </ul>
 
-        <div className="relative z-10 mt-auto pt-5 sm:pt-6">
+        <div className="relative z-10 mt-auto flex flex-wrap items-center gap-x-5 gap-y-2 pt-5 sm:pt-6">
           <Link
             href={ROUTES.PUBLIC.BOOK}
             className={cn(
@@ -152,6 +152,19 @@ export function ServiceDetailCard({
               )}
               aria-hidden
             />
+          </Link>
+
+          <Link
+            href={ROUTES.PUBLIC.CONTACT}
+            className={cn(
+              "inline-flex items-center text-sm font-medium text-brand-muted",
+              "underline decoration-brand-muted/35 underline-offset-4",
+              "transition-colors hover:text-brand-blue hover:decoration-brand-blue/50",
+              "focus-visible:rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/40 focus-visible:ring-offset-2"
+            )}
+            aria-label={`Learn more about ${service.title}`}
+          >
+            Learn More
           </Link>
         </div>
       </div>

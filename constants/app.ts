@@ -4,8 +4,9 @@
 
 export const APP_NAME = "Krati Dental Care";
 
+/** Public marketing description — used by the public layout + page SEO. */
 export const APP_DESCRIPTION =
-  "Dental clinic management for appointments, prescriptions, and care.";
+  "Modern, compassionate dental care for the whole family — checkups, cosmetics, root canals, and easy online booking at Krati Dental Care.";
 
 /** Default public site key for website_settings singleton. */
 export const WEBSITE_SETTINGS_KEY = "default";

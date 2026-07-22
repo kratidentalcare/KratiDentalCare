@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { MenuIcon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -31,7 +32,11 @@ export type MobileMenuProps = {
  * Closes on link click, overlay click, ESC (Sheet/Dialog defaults), and close button.
  */
 export function MobileMenu({ open, onOpenChange }: MobileMenuProps) {
+  const pathname = usePathname();
   const close = () => onOpenChange(false);
+  const bookActive =
+    pathname === ROUTES.PUBLIC.BOOK ||
+    pathname.startsWith(`${ROUTES.PUBLIC.BOOK}/`);
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
@@ -73,16 +78,19 @@ export function MobileMenu({ open, onOpenChange }: MobileMenuProps) {
           <Link
             href={ROUTES.PUBLIC.BOOK}
             onClick={close}
+            aria-current={bookActive ? "page" : undefined}
             className={cn(
               "inline-flex h-12 w-full items-center justify-center rounded-full",
               "border border-[#1F2937]/25 bg-[#0A84C6]/10 px-6 text-base font-semibold text-[#1F2937]",
               "transition-all duration-200",
               "hover:border-[#0A84C6]/40 hover:bg-[#0A84C6]/15 hover:text-[#0870A8]",
               "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0A84C6]/40 focus-visible:ring-offset-2",
-              "active:scale-[0.98]"
+              "active:scale-[0.98]",
+              bookActive &&
+                "border-[#0A84C6]/50 bg-[#0A84C6]/18 text-[#0870A8]"
             )}
           >
-            Book & Smile
+            Book Appointment
           </Link>
         </SheetFooter>
       </SheetContent>

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import { PageContainer } from "@/components/layout";
@@ -31,11 +32,16 @@ const bookCtaClassName = cn(
 );
 
 /**
- * Sticky public-site navbar: logo left, links + auth + CTA grouped right.
+ * Sticky public-site navbar: logo left, links + auth + Book CTA grouped right.
+ * Text links: Home / Services / Doctors / Contact. Book Appointment is the CTA.
  */
 export function Navbar({ className, isAdmin = false }: NavbarProps) {
+  const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const bookActive =
+    pathname === ROUTES.PUBLIC.BOOK ||
+    pathname.startsWith(`${ROUTES.PUBLIC.BOOK}/`);
 
   useEffect(() => {
     const onScroll = () => {
@@ -72,9 +78,15 @@ export function Navbar({ className, isAdmin = false }: NavbarProps) {
 
             <Link
               href={ROUTES.PUBLIC.BOOK}
-              className={cn(bookCtaClassName, "hidden lg:inline-flex")}
+              aria-current={bookActive ? "page" : undefined}
+              className={cn(
+                bookCtaClassName,
+                "hidden lg:inline-flex",
+                bookActive &&
+                  "border-[#0A84C6]/50 bg-[#0A84C6]/18 text-[#0870A8]"
+              )}
             >
-              Book & Smile
+              Book Appointment
             </Link>
 
             <MobileMenu open={mobileOpen} onOpenChange={setMobileOpen} />

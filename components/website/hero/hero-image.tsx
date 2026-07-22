@@ -18,6 +18,8 @@ export type HeroImageProps = {
   className?: string;
   /** Mobile stacks in document flow; desktop is a full-bleed absolute layer. */
   variant?: "mobile" | "desktop";
+  /** Clinic Google Maps / reviews URL from ClinicSettings. */
+  mapsUrl?: string | null;
 };
 
 /**
@@ -26,6 +28,7 @@ export type HeroImageProps = {
 export function HeroImage({
   className,
   variant = "desktop",
+  mapsUrl = null,
 }: HeroImageProps) {
   if (variant === "mobile") {
     return (
@@ -45,7 +48,7 @@ export function HeroImage({
           sizes="(max-width: 767px) 100vw, 1px"
           className="object-cover object-center"
         />
-        <HeroMobileCta />
+        <HeroMobileCta mapsUrl={mapsUrl} />
       </div>
     );
   }

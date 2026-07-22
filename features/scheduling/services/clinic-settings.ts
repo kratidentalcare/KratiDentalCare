@@ -1,6 +1,7 @@
 import "server-only";
 
 import { Types } from "mongoose";
+import { cache } from "react";
 
 import { APP_NAME, CLINIC_SETTINGS_KEY } from "@/constants/app";
 import { FOOTER_LINK_GROUPS } from "@/constants/clinic-settings";
@@ -52,15 +53,15 @@ const DEFAULT_FOOTER_LINKS = [
     isActive: true,
   },
   {
-    label: "Book Appointment",
-    url: ROUTES.PUBLIC.BOOK,
+    label: "Contact",
+    url: ROUTES.PUBLIC.CONTACT,
     group: FOOTER_LINK_GROUPS.QUICK_LINKS,
     displayOrder: 3,
     isActive: true,
   },
   {
-    label: "Contact",
-    url: ROUTES.PUBLIC.CONTACT,
+    label: "Book Appointment",
+    url: ROUTES.PUBLIC.BOOK,
     group: FOOTER_LINK_GROUPS.QUICK_LINKS,
     displayOrder: 4,
     isActive: true,
@@ -209,10 +210,10 @@ export function normalizeClinicSettings(
 
 /**
  * Load the primary clinic settings singleton, creating defaults if missing.
+ * React `cache` dedupes within a single request (layout + pages).
  */
-export async function getOrCreateClinicSettings(
-  updatedByUserId?: string,
-): Promise<LeanClinicSettings> {
+export const getOrCreateClinicSettings = cache(
+  async (updatedByUserId?: string): Promise<LeanClinicSettings> => {
   await connect();
 
   const existing = await ClinicSettings.findOne({
@@ -277,7 +278,8 @@ export async function getOrCreateClinicSettings(
     }
     throw error;
   }
-}
+  },
+);
 
 export async function getClinicSettingsOrThrow(): Promise<LeanClinicSettings> {
   await connect();
