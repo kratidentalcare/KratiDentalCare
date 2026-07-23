@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 
 import { APP_NAME } from "@/constants";
+import { ROUTES } from "@/constants/routes";
 import { cn } from "@/lib/utils";
 
 export type FooterLegalLink = {
@@ -9,10 +10,10 @@ export type FooterLegalLink = {
   href: string;
 };
 
-/** Legal placeholders — replace with CMS / static policy pages later. */
+/** Public legal pages linked from the footer bar. */
 export const DEFAULT_LEGAL_LINKS: readonly FooterLegalLink[] = [
-  { label: "Privacy Policy", href: "/privacy" },
-  { label: "Terms & Conditions", href: "/terms" },
+  { label: "Privacy Policy", href: ROUTES.PUBLIC.PRIVACY },
+  { label: "Terms & Conditions", href: ROUTES.PUBLIC.TERMS },
 ] as const;
 
 const CREDIT_HREF = "https://adityajain-os.vercel.app/";
@@ -28,7 +29,7 @@ export type FooterBottomProps = {
 };
 
 /**
- * Bottom bar: copyright + legal + designer credit — black strip.
+ * Bottom bar: copyright + legal + designer credit — brand navy strip.
  */
 export function FooterBottom({
   copyrightOwner = APP_NAME,
@@ -39,15 +40,21 @@ export function FooterBottom({
   className,
 }: FooterBottomProps) {
   return (
-    <div className={cn("border-t border-white/10 bg-[#0A0A0A]", className)}>
+    <div
+      className={cn(
+        "border-t border-white/10",
+        "bg-[linear-gradient(160deg,#12244a_0%,#1a3266_55%,#2957a4_100%)]",
+        className,
+      )}
+    >
       <div
         className={cn(
           "public-container-x mx-auto max-w-[var(--container-max-xl)]",
           "flex flex-col items-center gap-5 py-6",
-          "sm:flex-row sm:items-center sm:justify-between sm:gap-6 sm:py-5"
+          "sm:flex-row sm:items-center sm:justify-between sm:gap-6 sm:py-5",
         )}
       >
-        <p className="text-center text-[0.8125rem] leading-relaxed text-white/65 sm:text-left sm:text-sm">
+        <p className="text-center text-[0.8125rem] leading-relaxed text-white/70 sm:text-left sm:text-sm">
           © {year} {copyrightOwner}. All Rights Reserved.
         </p>
 
@@ -60,16 +67,16 @@ export function FooterBottom({
               <Link
                 href={link.href}
                 className={cn(
-                  "group relative inline-flex min-h-10 items-center text-sm text-white/65 transition-colors duration-200",
+                  "group relative inline-flex min-h-10 items-center text-sm text-white/70 transition-colors duration-200",
                   "hover:text-white",
-                  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0B8EC8]/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0A0A0A]"
+                  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/50 focus-visible:ring-offset-2 focus-visible:ring-offset-brand-navy",
                 )}
               >
                 <span className="relative">
                   {link.label}
                   <span
                     aria-hidden
-                    className="absolute inset-x-0 -bottom-0.5 h-px origin-left scale-x-0 bg-[#0B8EC8] transition-transform duration-200 group-hover:scale-x-100"
+                    className="absolute inset-x-0 -bottom-0.5 h-px origin-left scale-x-0 bg-white transition-transform duration-200 group-hover:scale-x-100"
                   />
                 </span>
               </Link>
@@ -84,21 +91,21 @@ export function FooterBottom({
           aria-label={`Designed and developed by ${creditName}`}
           className={cn(
             "group inline-flex items-center gap-2 rounded-full",
-            "border border-white/10 bg-white/[0.04] px-3.5 py-2",
-            "text-[0.75rem] text-white/55 transition-all duration-200",
-            "hover:border-[#0B8EC8]/40 hover:bg-[#0B8EC8]/10 hover:text-white/90",
-            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0B8EC8]/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0A0A0A]",
-            "sm:text-[0.8125rem]"
+            "border border-white/15 bg-white/[0.06] px-3.5 py-2",
+            "text-[0.75rem] text-white/65 transition-all duration-200",
+            "hover:border-white/30 hover:bg-white/10 hover:text-white/90",
+            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/50 focus-visible:ring-offset-2 focus-visible:ring-offset-brand-navy",
+            "sm:text-[0.8125rem]",
           )}
         >
           <span>
             Designed &amp; developed by{" "}
-            <span className="font-semibold text-[#7ec8e8] transition-colors group-hover:text-white">
+            <span className="font-semibold text-white transition-colors group-hover:text-white">
               {creditName}
             </span>
           </span>
           <ArrowUpRight
-            className="size-3.5 shrink-0 text-[#7ec8e8] transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-white"
+            className="size-3.5 shrink-0 text-white/80 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-white"
             aria-hidden
           />
         </a>

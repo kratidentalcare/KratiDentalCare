@@ -39,8 +39,8 @@ export const TESTIMONIALS: readonly Testimonial[] = [
     afterImage: "/images/testimonials/testimonial-2-b.png",
   },
   {
-    id: "ananya-verma",
-    patientName: "Ananya Verma",
+    id: "rajesh-kumar",
+    patientName: "Rajesh Kumar",
     treatment: "Veneers",
     rating: 5,
     review:
@@ -49,8 +49,8 @@ export const TESTIMONIALS: readonly Testimonial[] = [
     afterImage: "/images/testimonials/testimonial-3-b.png",
   },
   {
-    id: "vikram-singh",
-    patientName: "Vikram Singh",
+    id: "ananya-verma",
+    patientName: "Ananya Verma",
     treatment: "Dental Implants",
     rating: 5,
     review:
@@ -59,8 +59,8 @@ export const TESTIMONIALS: readonly Testimonial[] = [
     afterImage: "/images/testimonials/testimonial-4-b.png",
   },
   {
-    id: "neha-kapoor",
-    patientName: "Neha Kapoor",
+    id: "sourabh-jain",
+    patientName: "Sourabh Jain",
     treatment: "Orthodontic Alignment",
     rating: 5,
     review:

@@ -99,16 +99,7 @@ function FaqSection({ items, className }: FaqSectionProps) {
               : "opacity-0 translate-y-6 motion-reduce:opacity-100 motion-reduce:translate-y-0"
           )}
         >
-          <Accordion
-            multiple={false}
-            className={cn(
-              "grid w-full grid-cols-1 gap-x-10 md:grid-cols-2 md:gap-x-14 lg:gap-x-16"
-            )}
-          >
-            {items.map((item) => (
-              <FaqItem key={item.id} item={item} />
-            ))}
-          </Accordion>
+          <FaqAccordion items={items} />
         </div>
 
         <div
@@ -155,5 +146,37 @@ function FaqSection({ items, className }: FaqSectionProps) {
         </div>
       </PageContainer>
     </section>
+  );
+}
+
+/**
+ * Mobile: single stacked list (reading order preserved via half-split columns).
+ * Desktop: two independent columns so opening one FAQ doesn't shift the neighbor's border.
+ */
+function FaqAccordion({ items }: { items: readonly FaqItemData[] }) {
+  const mid = Math.ceil(items.length / 2);
+  const leftItems = items.slice(0, mid);
+  const rightItems = items.slice(mid);
+
+  return (
+    <Accordion multiple={false} className="w-full">
+      <div
+        className={cn(
+          "flex flex-col",
+          "md:grid md:grid-cols-2 md:items-start md:gap-x-14 lg:gap-x-16",
+        )}
+      >
+        <div className="flex min-w-0 flex-col">
+          {leftItems.map((item) => (
+            <FaqItem key={item.id} item={item} />
+          ))}
+        </div>
+        <div className="flex min-w-0 flex-col">
+          {rightItems.map((item) => (
+            <FaqItem key={item.id} item={item} />
+          ))}
+        </div>
+      </div>
+    </Accordion>
   );
 }
