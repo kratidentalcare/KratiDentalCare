@@ -62,7 +62,7 @@ export function AuthStatusView({ reason, className }: AuthStatusViewProps) {
       )}
     >
       <div
-        className="flex size-14 items-center justify-center rounded-full bg-[#0A84C6]/10 text-[#0A84C6]"
+        className="flex size-14 items-center justify-center rounded-full bg-[#0B8EC8]/10 text-[#0B8EC8]"
         aria-hidden
       >
         <Icon className="size-7" strokeWidth={1.75} />
@@ -77,10 +77,10 @@ export function AuthStatusView({ reason, className }: AuthStatusViewProps) {
         href={ROUTES.PUBLIC.HOME}
         className={cn(
           "inline-flex h-11 items-center justify-center rounded-full px-6",
-          "border border-[#1F2937]/25 bg-[#0A84C6]/10 text-base font-semibold text-[#1F2937]",
+          "border border-[#1F2937]/25 bg-[#0B8EC8]/10 text-base font-semibold text-[#1F2937]",
           "transition-all duration-200",
-          "hover:border-[#0A84C6]/40 hover:bg-[#0A84C6]/15 hover:text-[#0870A8]",
-          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0A84C6]/40 focus-visible:ring-offset-2",
+          "hover:border-[#0B8EC8]/40 hover:bg-[#0B8EC8]/15 hover:text-[#0978AB]",
+          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0B8EC8]/40 focus-visible:ring-offset-2",
           "active:scale-[0.98]"
         )}
       >

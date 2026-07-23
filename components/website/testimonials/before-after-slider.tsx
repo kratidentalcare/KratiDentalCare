@@ -163,7 +163,7 @@ export function BeforeAfterSlider({
       <span
         className={cn(
           "pointer-events-none absolute top-3 right-3 z-10",
-          "rounded-full bg-brand-teal/90 px-2.5 py-1",
+          "rounded-full bg-brand-blue/90 px-2.5 py-1",
           "text-[0.625rem] font-semibold tracking-[0.14em] text-white uppercase backdrop-blur-sm",
           "sm:top-4 sm:right-4 sm:px-3 sm:text-[0.6875rem]"
         )}

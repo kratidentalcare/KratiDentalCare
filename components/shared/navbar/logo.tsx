@@ -21,7 +21,7 @@ export function Logo({ className, onClick }: LogoProps) {
       href={ROUTES.PUBLIC.HOME}
       onClick={onClick}
       className={cn(
-        "group inline-flex items-center rounded-md outline-none transition-opacity hover:opacity-80 focus-visible:ring-2 focus-visible:ring-[#0A84C6]/35 focus-visible:ring-offset-2",
+        "group inline-flex items-center rounded-md outline-none transition-opacity hover:opacity-80 focus-visible:ring-2 focus-visible:ring-brand-blue/35 focus-visible:ring-offset-2",
         className
       )}
       aria-label={`${APP_NAME} home`}

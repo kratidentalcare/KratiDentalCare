@@ -121,7 +121,7 @@ export function ContactMapSection({
               rel="noopener noreferrer"
               className={cn(
                 "inline-flex items-center gap-2 text-sm font-semibold text-brand-blue",
-                "transition-colors hover:text-[#0870A8]",
+                "transition-colors hover:text-brand-hover",
                 "focus-visible:rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/40 focus-visible:ring-offset-2"
               )}
             >

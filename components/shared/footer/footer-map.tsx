@@ -22,8 +22,8 @@ export function FooterMap({
     <div className={cn("w-full max-w-xs", className)}>
       <div
         className={cn(
-          "overflow-hidden rounded-xl border border-[#0A84C6]/10 bg-white",
-          "shadow-[0_4px_16px_color-mix(in_srgb,#0A84C6_8%,transparent)]"
+          "overflow-hidden rounded-xl border border-brand-blue/10 bg-white",
+          "shadow-[0_4px_16px_color-mix(in_srgb,var(--brand-blue)_8%,transparent)]"
         )}
       >
         {embedUrl ? (
@@ -40,11 +40,11 @@ export function FooterMap({
         ) : (
           <div className="flex h-36 flex-col items-center justify-center gap-2 px-4 text-center sm:h-40">
             <MapPinned
-              className="size-5 text-[#0A84C6]"
+              className="size-5 text-brand-blue"
               strokeWidth={1.75}
               aria-hidden
             />
-            <p className="text-xs leading-snug text-[#6B7280]">
+            <p className="text-xs leading-snug text-brand-muted">
               Map link not configured yet.
             </p>
           </div>
@@ -57,9 +57,9 @@ export function FooterMap({
           target="_blank"
           rel="noopener noreferrer"
           className={cn(
-            "mt-2.5 inline-flex items-center gap-1.5 text-xs font-semibold text-[#0A84C6]",
-            "transition-colors hover:text-[#0870A8]",
-            "focus-visible:rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0A84C6]/40 focus-visible:ring-offset-2"
+            "mt-2.5 inline-flex items-center gap-1.5 text-xs font-semibold text-brand-blue",
+            "transition-colors hover:text-brand-hover",
+            "focus-visible:rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/40 focus-visible:ring-offset-2"
           )}
         >
           Open in Google Maps

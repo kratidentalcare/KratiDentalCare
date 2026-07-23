@@ -23,7 +23,7 @@ export function Hero({ className }: HeroProps) {
         "relative overflow-hidden font-montserrat",
         "bg-brand-surface",
         // Exact height under navbar — avoids a leftover white strip below the banner
-        "md:h-[calc(100svh-5.25rem)] md:min-h-[32rem] md:bg-[#e4edf3]",
+        "md:h-[calc(100svh-5.25rem)] md:min-h-[32rem] md:bg-[#eaf2f7]",
         "lg:h-[calc(100svh-6rem)]",
         className
       )}

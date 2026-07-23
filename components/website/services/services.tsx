@@ -14,7 +14,7 @@ export type ServicesProps = {
 };
 
 /**
- * Soft wave divider — previous/next section color cutting into brand-blue.
+ * Soft wave divider — previous/next section color cutting into navy band.
  */
 function ServicesWave({
   edge,
@@ -64,11 +64,16 @@ export function Services({ className }: ServicesProps) {
       id="services"
       aria-labelledby="services-heading"
       className={cn(
-        "relative overflow-hidden bg-brand-blue font-montserrat",
+        "relative overflow-hidden font-montserrat",
+        "bg-[linear-gradient(160deg,#071833_0%,#0a1f44_42%,#0d4578_100%)]",
         className
       )}
     >
-      <ServicesWave edge="top" fill="var(--brand-surface)" />
+      <div
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,color-mix(in_srgb,var(--brand-blue)_22%,transparent)_0%,transparent_55%)]"
+        aria-hidden
+      />
+      <ServicesWave edge="top" fill="#ffffff" />
 
       <PageContainer size="xl" className="relative z-10 public-section-y">
         <ServicesHeader />
@@ -106,10 +111,11 @@ export function Services({ className }: ServicesProps) {
             className={cn(
               "group inline-flex h-11 items-center justify-center gap-2 rounded-full px-7",
               "sm:h-12 sm:px-8",
-              "bg-white text-sm font-semibold text-brand-blue sm:text-base",
+              "bg-brand-blue text-sm font-semibold text-white sm:text-base",
+              "shadow-[0_10px_28px_color-mix(in_srgb,var(--brand-blue)_40%,transparent)]",
               "transition-colors duration-200",
-              "hover:bg-white/95",
-              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-brand-blue",
+              "hover:bg-brand-hover",
+              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/50 focus-visible:ring-offset-2 focus-visible:ring-offset-brand-navy",
               "active:scale-[0.98]"
             )}
             aria-label="View all dental services"
@@ -125,7 +131,7 @@ export function Services({ className }: ServicesProps) {
 
       <ServicesWave
         edge="bottom"
-        fill="color-mix(in srgb, var(--brand-blue) 8%, white)"
+        fill="var(--brand-surface)"
       />
     </section>
   );

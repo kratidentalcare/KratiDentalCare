@@ -25,7 +25,7 @@ export function FeatureItem({
       className={cn(
         "group -mx-2.5 list-none rounded-xl px-2.5 py-2",
         "motion-safe:transition-[opacity,transform,background-color] motion-safe:duration-300 motion-safe:ease-out",
-        "hover:bg-blue-50/40",
+        "hover:bg-brand-blue/[0.06]",
         visible
           ? "opacity-100 translate-y-0"
           : "opacity-0 translate-y-3 motion-reduce:opacity-100 motion-reduce:translate-y-0",
@@ -40,8 +40,9 @@ export function FeatureItem({
       <div className="flex items-start gap-3.5">
         <span
           className={cn(
-            "flex size-10 shrink-0 items-center justify-center rounded-xl",
-            "bg-brand-blue/8"
+            "flex size-11 shrink-0 items-center justify-center rounded-2xl",
+            "bg-brand-blue/[0.08] ring-1 ring-brand-blue/10",
+            "transition-colors duration-300 group-hover:bg-brand-blue/[0.12]"
           )}
           aria-hidden
         >

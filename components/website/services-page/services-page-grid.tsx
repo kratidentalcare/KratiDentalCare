@@ -25,17 +25,9 @@ export function ServicesPageGrid({ className }: ServicesPageGridProps) {
     >
       <div
         className={cn(
-          "pointer-events-none absolute top-1/4 -left-24 size-72 rounded-full",
-          "bg-[radial-gradient(circle,color-mix(in_srgb,var(--brand-blue)_10%,transparent)_0%,transparent_70%)]",
-          "blur-2xl sm:size-96"
-        )}
-        aria-hidden
-      />
-      <div
-        className={cn(
-          "pointer-events-none absolute -right-20 bottom-0 size-64 rounded-full",
-          "bg-[radial-gradient(circle,color-mix(in_srgb,var(--brand-teal)_10%,transparent)_0%,transparent_70%)]",
-          "blur-2xl sm:size-80"
+          "pointer-events-none absolute top-0 right-0 size-[26rem] translate-x-1/4 -translate-y-1/4 rounded-full",
+          "bg-[radial-gradient(circle,color-mix(in_srgb,var(--brand-blue)_7%,transparent)_0%,transparent_70%)]",
+          "blur-3xl"
         )}
         aria-hidden
       />

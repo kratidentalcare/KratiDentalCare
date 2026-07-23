@@ -89,9 +89,9 @@ export function ServiceDetailCard({
         <div
           className={cn(
             "relative z-10 mb-4 flex size-10 items-center justify-center rounded-xl",
-            "bg-gradient-to-br from-blue-50 to-teal-50 sm:mb-5 sm:size-12",
+            "bg-gradient-to-br from-[#eef5f9] to-[#e0eef6] sm:mb-5 sm:size-12",
             "transition-all duration-300 ease-out",
-            "group-hover:from-blue-100 group-hover:to-teal-100"
+            "group-hover:from-[#e0eef6] group-hover:to-[#d2e7f2]"
           )}
         >
           <Icon
@@ -138,7 +138,7 @@ export function ServiceDetailCard({
             href={ROUTES.PUBLIC.BOOK}
             className={cn(
               "inline-flex items-center gap-1.5 text-sm font-medium text-brand-blue",
-              "transition-colors hover:text-[#0870A8]",
+              "transition-colors hover:text-brand-hover",
               "focus-visible:rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/40 focus-visible:ring-offset-2"
             )}
             aria-label={`Book appointment for ${service.title}`}

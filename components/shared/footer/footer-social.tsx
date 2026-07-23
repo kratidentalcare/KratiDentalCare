@@ -80,8 +80,8 @@ export function FooterSocial({
                 "inline-flex size-11 items-center justify-center rounded-full sm:size-10",
                 "border border-[#E5E7EB] bg-[#FFFFFF] text-[#6B7280]",
                 "transition-all duration-200",
-                "hover:-translate-y-0.5 hover:border-[#0A84C6]/40 hover:bg-[#0A84C6]/10 hover:text-[#0A84C6]",
-                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0A84C6]/40 focus-visible:ring-offset-2",
+                "hover:-translate-y-0.5 hover:border-[#0B8EC8]/40 hover:bg-[#0B8EC8]/10 hover:text-[#0B8EC8]",
+                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0B8EC8]/40 focus-visible:ring-offset-2",
                 "active:scale-95",
               )}
             >

@@ -17,7 +17,7 @@ export function WhyChooseUs({ className }: WhyChooseUsProps) {
       id="why-choose-us"
       aria-labelledby="why-choose-us-heading"
       className={cn(
-        "relative overflow-hidden bg-brand-surface font-montserrat",
+        "relative overflow-hidden bg-white font-montserrat",
         className
       )}
     >

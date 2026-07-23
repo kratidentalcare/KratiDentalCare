@@ -3,12 +3,14 @@ import Link from "next/link";
 import { ROUTES } from "@/constants/routes";
 import { cn } from "@/lib/utils";
 
+import { GoogleRating } from "./google-rating";
+
 export type HeroMobileCtaProps = {
   className?: string;
 };
 
 /**
- * Mobile-only bottom panel — short promise + primary CTA.
+ * Mobile-only bottom panel — rating, short promise + primary CTA.
  * Brand is already in the photo / nav; keep overlay light.
  */
 export function HeroMobileCta({ className }: HeroMobileCtaProps) {
@@ -16,13 +18,15 @@ export function HeroMobileCta({ className }: HeroMobileCtaProps) {
     <div
       className={cn(
         "absolute inset-x-0 bottom-0 z-10",
-        "bg-gradient-to-t from-brand-dark/85 via-brand-dark/40 to-transparent",
+        "bg-gradient-to-t from-brand-dark/90 via-brand-dark/45 to-transparent",
         "px-5 pb-7 pt-24",
         "hero-animate-fade-up hero-delay-2",
         className
       )}
     >
-      <div className="mx-auto flex w-full max-w-md flex-col items-stretch gap-5">
+      <div className="mx-auto flex w-full max-w-md flex-col items-stretch gap-4">
+        <GoogleRating variant="dark" className="self-start" />
+
         <div className="flex flex-col gap-2 text-left">
           <p className="font-serif text-2xl font-medium leading-snug tracking-tight text-white sm:text-[1.75rem]">
             Gentle care. Lasting smiles.
@@ -39,7 +43,7 @@ export function HeroMobileCta({ className }: HeroMobileCtaProps) {
             "bg-brand-blue text-base font-semibold text-white",
             "shadow-[0_12px_28px_rgba(0,0,0,0.28)]",
             "transition-all duration-200",
-            "hover:bg-[#0870A8]",
+            "hover:bg-brand-hover",
             "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-brand-dark/40",
             "active:scale-[0.98]"
           )}

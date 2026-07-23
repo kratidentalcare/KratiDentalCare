@@ -47,7 +47,7 @@ export function ContactWorkingHours({
       aria-labelledby="working-hours-heading"
       className={cn(
         "relative overflow-hidden font-montserrat",
-        "bg-[linear-gradient(180deg,color-mix(in_srgb,var(--brand-blue)_6%,white)_0%,var(--brand-surface)_55%,white_100%)]",
+        "bg-white",
         className
       )}
     >

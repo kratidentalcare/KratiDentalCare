@@ -5,7 +5,7 @@ export type ServicesHeaderProps = {
 };
 
 /**
- * Centered section intro — white typography for the brand-blue canvas.
+ * Centered section intro — white typography for the navy services canvas.
  */
 export function ServicesHeader({ className }: ServicesHeaderProps) {
   return (

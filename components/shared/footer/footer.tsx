@@ -58,7 +58,7 @@ export function Footer({
   return (
     <footer
       className={cn(
-        "mt-auto w-full border-t border-[#E5E7EB] bg-[#0A84C6]/10 font-montserrat",
+        "mt-auto w-full border-t border-brand-navy/8 bg-white font-montserrat",
         className,
       )}
     >
@@ -70,7 +70,7 @@ export function Footer({
           {/* Brand */}
           <div className="flex flex-col items-center pb-8 text-center sm:items-start sm:text-left lg:pb-0">
             <Logo />
-            <p className="mt-4 max-w-[20rem] text-[0.9375rem] leading-relaxed text-[#6B7280] sm:max-w-sm sm:text-sm">
+            <p className="mt-4 max-w-[20rem] text-[0.9375rem] leading-relaxed text-brand-muted sm:max-w-sm sm:text-sm">
               {tagline}
             </p>
             <FooterSocial items={social} className="mt-5 sm:mt-6" />
@@ -86,10 +86,11 @@ export function Footer({
               href={ROUTES.PUBLIC.BOOK}
               className={cn(
                 "mt-6 inline-flex h-11 w-full max-w-xs items-center justify-center rounded-full sm:w-auto sm:px-6 lg:hidden",
-                "border border-[#1F2937]/25 bg-[#FFFFFF]/80 px-5 text-sm font-semibold text-[#1F2937]",
+                "bg-brand-blue px-5 text-sm font-semibold text-white",
+                "shadow-[0_8px_22px_color-mix(in_srgb,var(--brand-blue)_28%,transparent)]",
                 "transition-all duration-200",
-                "hover:border-[#0A84C6]/40 hover:bg-[#0A84C6]/15 hover:text-[#0870A8]",
-                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0A84C6]/40 focus-visible:ring-offset-2",
+                "hover:bg-brand-hover",
+                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/40 focus-visible:ring-offset-2",
                 "active:scale-[0.98]",
               )}
             >

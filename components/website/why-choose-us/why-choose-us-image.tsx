@@ -67,7 +67,7 @@ export function WhyChooseUsImage({ className }: WhyChooseUsImageProps) {
 
       <div
         className={cn(
-          "relative overflow-hidden rounded-2xl border border-blue-50 shadow-xl",
+          "relative overflow-hidden rounded-2xl border border-brand-blue/10 shadow-xl",
           "aspect-[4/3]",
           "motion-safe:transition-[opacity,transform] motion-safe:duration-500 motion-safe:ease-out",
           visible

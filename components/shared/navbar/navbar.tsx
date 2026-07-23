@@ -24,10 +24,11 @@ export type NavbarProps = {
 
 const bookCtaClassName = cn(
   "inline-flex h-11 items-center justify-center rounded-full",
-  "border border-[#1F2937]/25 bg-[#0A84C6]/10 px-6 text-base font-semibold text-[#1F2937]",
+  "bg-brand-blue px-6 text-base font-semibold text-white",
+  "shadow-[0_6px_18px_color-mix(in_srgb,var(--brand-blue)_22%,transparent)]",
   "transition-all duration-200",
-  "hover:border-[#0A84C6]/40 hover:bg-[#0A84C6]/15 hover:text-[#0870A8]",
-  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0A84C6]/40 focus-visible:ring-offset-2",
+  "hover:bg-brand-hover",
+  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/40 focus-visible:ring-offset-2",
   "active:scale-[0.98]"
 );
 
@@ -56,10 +57,10 @@ export function Navbar({ className, isAdmin = false }: NavbarProps) {
   return (
     <header
       className={cn(
-        "sticky top-0 z-40 w-full border-b bg-[#FFFFFF] font-montserrat transition-shadow duration-300",
+        "sticky top-0 z-40 w-full border-b font-montserrat transition-[background-color,box-shadow,border-color] duration-300",
         scrolled
-          ? "border-transparent shadow-[0_4px_20px_rgba(31,41,55,0.08)]"
-          : "border-[#E5E7EB]/80 shadow-none",
+          ? "border-brand-navy/8 bg-white/90 shadow-[0_8px_28px_rgba(10,31,68,0.08)] backdrop-blur-md"
+          : "border-transparent bg-white/95 shadow-none backdrop-blur-sm",
         className
       )}
     >
@@ -74,7 +75,7 @@ export function Navbar({ className, isAdmin = false }: NavbarProps) {
               <NavLinks />
             </nav>
 
-            <AuthControls isAdmin={isAdmin} />
+            <AuthControls isAdmin={isAdmin} className="hidden lg:flex" />
 
             <Link
               href={ROUTES.PUBLIC.BOOK}
@@ -82,14 +83,17 @@ export function Navbar({ className, isAdmin = false }: NavbarProps) {
               className={cn(
                 bookCtaClassName,
                 "hidden lg:inline-flex",
-                bookActive &&
-                  "border-[#0A84C6]/50 bg-[#0A84C6]/18 text-[#0870A8]"
+                bookActive && "bg-brand-hover"
               )}
             >
               Book and Smile
             </Link>
 
-            <MobileMenu open={mobileOpen} onOpenChange={setMobileOpen} />
+            <MobileMenu
+              open={mobileOpen}
+              onOpenChange={setMobileOpen}
+              isAdmin={isAdmin}
+            />
           </div>
         </div>
       </PageContainer>

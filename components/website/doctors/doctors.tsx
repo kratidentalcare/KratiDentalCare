@@ -18,7 +18,7 @@ export function Doctors({ className }: DoctorsProps) {
       aria-labelledby="doctors-heading"
       className={cn(
         "relative overflow-hidden font-montserrat",
-        "bg-[linear-gradient(180deg,color-mix(in_srgb,var(--brand-blue)_8%,white)_0%,var(--brand-surface)_55%,white_100%)]",
+        "bg-brand-surface",
         className
       )}
     >

@@ -138,10 +138,10 @@ export function NavLinks({
               aria-current={active ? "page" : undefined}
               className={cn(
                 "relative inline-flex items-center rounded-md px-3 py-2.5 text-base font-medium transition-colors duration-200 outline-none",
-                "focus-visible:ring-2 focus-visible:ring-[#0A84C6]/40 focus-visible:ring-offset-2",
+                "focus-visible:ring-2 focus-visible:ring-brand-blue/40 focus-visible:ring-offset-2",
                 active
-                  ? "text-[#0A84C6]"
-                  : "text-[#1F2937] hover:text-[#0A84C6]",
+                  ? "text-brand-blue"
+                  : "text-brand-dark hover:text-brand-blue",
                 orientation === "vertical" && "w-full px-3 py-3.5 text-lg",
                 linkClassName
               )}
@@ -150,7 +150,7 @@ export function NavLinks({
               <span
                 aria-hidden
                 className={cn(
-                  "absolute inset-x-3 bottom-1 h-0.5 origin-left rounded-full bg-[#0A84C6] transition-transform duration-200",
+                  "absolute inset-x-3 bottom-1 h-0.5 origin-left rounded-full bg-brand-blue transition-transform duration-200",
                   orientation === "vertical" && "inset-x-0 bottom-0",
                   active ? "scale-x-100" : "scale-x-0"
                 )}

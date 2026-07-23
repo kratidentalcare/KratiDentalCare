@@ -25,10 +25,15 @@ export function ServicesFinalCta({
     <section
       aria-labelledby="services-final-cta-heading"
       className={cn(
-        "relative overflow-hidden bg-brand-blue font-montserrat",
+        "relative overflow-hidden font-montserrat",
+        "bg-[linear-gradient(160deg,#071833_0%,#0a1f44_45%,#0d4578_100%)]",
         className
       )}
     >
+      <div
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,color-mix(in_srgb,var(--brand-blue)_18%,transparent)_0%,transparent_60%)]"
+        aria-hidden
+      />
       <PageContainer size="xl" className="relative z-10 public-section-y">
         <div className="mx-auto flex max-w-2xl flex-col items-center text-center">
           <h2
@@ -61,10 +66,11 @@ export function ServicesFinalCta({
               href={ROUTES.PUBLIC.BOOK}
               className={cn(
                 "group inline-flex h-12 items-center justify-center gap-2 rounded-full px-8",
-                "bg-white text-base font-semibold text-brand-blue",
+                "bg-brand-blue text-base font-semibold text-white",
+                "shadow-[0_10px_28px_color-mix(in_srgb,var(--brand-blue)_40%,transparent)]",
                 "transition-colors duration-200",
-                "hover:bg-white/95",
-                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-brand-blue",
+                "hover:bg-brand-hover",
+                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/50 focus-visible:ring-offset-2 focus-visible:ring-offset-brand-navy",
                 "active:scale-[0.98]"
               )}
               aria-label="Book and Smile"
@@ -84,7 +90,7 @@ export function ServicesFinalCta({
                   "border border-white/35 bg-transparent text-base font-semibold text-white",
                   "transition-colors duration-200",
                   "hover:border-white/60 hover:bg-white/10",
-                  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-brand-blue",
+                  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-brand-navy",
                   "active:scale-[0.98]"
                 )}
                 aria-label={`Call clinic at ${phone}`}

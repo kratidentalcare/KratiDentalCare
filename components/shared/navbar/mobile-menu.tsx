@@ -18,20 +18,27 @@ import { APP_NAME } from "@/constants";
 import { ROUTES } from "@/constants/routes";
 import { cn } from "@/lib/utils";
 
+import { AuthControls } from "./auth-controls";
 import { Logo } from "./logo";
 import { NavLinks } from "./nav-links";
 
 export type MobileMenuProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  /** When true, expose the admin Dashboard link in the user menu. */
+  isAdmin?: boolean;
 };
 
 /**
  * Mobile navigation drawer (right slide-in via shadcn Sheet).
- * Auth controls live in the sticky header; this sheet focuses on links + Book CTA.
+ * Links + auth (Login / Sign up or profile) + Book CTA.
  * Closes on link click, overlay click, ESC (Sheet/Dialog defaults), and close button.
  */
-export function MobileMenu({ open, onOpenChange }: MobileMenuProps) {
+export function MobileMenu({
+  open,
+  onOpenChange,
+  isAdmin = false,
+}: MobileMenuProps) {
   const pathname = usePathname();
   const close = () => onOpenChange(false);
   const bookActive =
@@ -46,7 +53,7 @@ export function MobileMenu({ open, onOpenChange }: MobileMenuProps) {
             type="button"
             variant="ghost"
             size="icon"
-            className="size-11 text-[#1A1A1A] hover:bg-transparent hover:text-[#0A84C6] lg:hidden"
+            className="size-11 text-brand-dark hover:bg-transparent hover:text-brand-blue lg:hidden"
             aria-label="Open navigation menu"
           />
         }
@@ -57,9 +64,9 @@ export function MobileMenu({ open, onOpenChange }: MobileMenuProps) {
       <SheetContent
         side="right"
         showCloseButton
-        className="flex w-full max-w-xs flex-col gap-0 border-[#E5E7EB] bg-[#FFFFFF] p-0 font-montserrat sm:max-w-sm"
+        className="flex w-full max-w-xs flex-col gap-0 border-border bg-white p-0 font-montserrat sm:max-w-sm"
       >
-        <SheetHeader className="border-b border-[#E5E7EB] px-5 py-4 text-left">
+        <SheetHeader className="border-b border-border px-5 py-4 text-left">
           <SheetTitle className="sr-only">{APP_NAME} navigation</SheetTitle>
           <SheetDescription className="sr-only">
             Navigate the {APP_NAME} website
@@ -74,20 +81,26 @@ export function MobileMenu({ open, onOpenChange }: MobileMenuProps) {
           <NavLinks orientation="vertical" onNavigate={close} />
         </nav>
 
-        <SheetFooter className="border-t border-[#E5E7EB] p-5">
+        <SheetFooter className="gap-3 border-t border-border p-5">
+          <AuthControls
+            isAdmin={isAdmin}
+            orientation="vertical"
+            onNavigate={close}
+          />
+
           <Link
             href={ROUTES.PUBLIC.BOOK}
             onClick={close}
             aria-current={bookActive ? "page" : undefined}
             className={cn(
               "inline-flex h-12 w-full items-center justify-center rounded-full",
-              "border border-[#1F2937]/25 bg-[#0A84C6]/10 px-6 text-base font-semibold text-[#1F2937]",
+              "bg-brand-blue px-6 text-base font-semibold text-white",
+              "shadow-[0_8px_22px_color-mix(in_srgb,var(--brand-blue)_22%,transparent)]",
               "transition-all duration-200",
-              "hover:border-[#0A84C6]/40 hover:bg-[#0A84C6]/15 hover:text-[#0870A8]",
-              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0A84C6]/40 focus-visible:ring-offset-2",
+              "hover:bg-brand-hover",
+              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/40 focus-visible:ring-offset-2",
               "active:scale-[0.98]",
-              bookActive &&
-                "border-[#0A84C6]/50 bg-[#0A84C6]/18 text-[#0870A8]"
+              bookActive && "bg-brand-hover"
             )}
           >
             Book and Smile

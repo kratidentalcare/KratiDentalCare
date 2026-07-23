@@ -27,7 +27,7 @@ export function PublicShell({
   return (
     <div
       className={cn(
-        "flex min-h-full flex-1 flex-col bg-background text-foreground",
+        "flex min-h-full flex-1 flex-col bg-background font-montserrat text-foreground",
         className
       )}
     >

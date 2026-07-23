@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ROUTES } from "@/constants/routes";
 import { cn } from "@/lib/utils";
 
+import { GoogleRating } from "./google-rating";
 import { TrustBadges } from "./trust-badges";
 
 export type HeroContentProps = {
@@ -32,12 +33,17 @@ export function HeroContent({
         className
       )}
     >
+      <div className="hero-animate-fade-up hero-delay-1 max-md:hidden">
+        <GoogleRating variant="light" />
+      </div>
+
       <h1
         id="hero-heading"
         className={cn(
           "hero-animate-fade-up hero-delay-1",
-          "font-serif text-4xl font-medium leading-[1.08] tracking-tight text-brand-dark",
-          "sm:text-5xl lg:text-6xl xl:text-[4.25rem]"
+          "mt-5 font-serif text-4xl font-medium leading-[1.08] tracking-tight text-brand-dark md:mt-6",
+          "sm:text-5xl lg:text-6xl xl:text-[4.25rem]",
+          "max-md:mt-0"
         )}
       >
         <span className="block">Gentle care.</span>
@@ -66,9 +72,9 @@ export function HeroContent({
           className={cn(
             "hero-btn-lift inline-flex h-12 w-full items-center justify-center rounded-full px-8",
             "bg-brand-blue text-base font-semibold text-white",
-            "shadow-[0_10px_28px_color-mix(in_srgb,var(--brand-blue)_28%,transparent)]",
+            "shadow-[0_8px_24px_color-mix(in_srgb,var(--brand-blue)_24%,transparent)]",
             "transition-all duration-200",
-            "hover:bg-[#0870A8]",
+            "hover:bg-brand-hover",
             "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/40 focus-visible:ring-offset-2",
             "sm:w-auto",
             hidePrimaryCtaOnMobile && "max-md:hidden"
@@ -81,9 +87,10 @@ export function HeroContent({
         <Link
           href={ROUTES.PUBLIC.SERVICES}
           className={cn(
-            "inline-flex min-h-12 w-full items-center justify-center text-base font-medium text-brand-dark sm:w-auto sm:justify-start",
-            "underline decoration-brand-dark/35 underline-offset-[6px]",
-            "transition-colors hover:text-brand-blue hover:decoration-brand-blue/50",
+            "inline-flex h-12 w-full items-center justify-center rounded-full px-7 sm:w-auto",
+            "border border-brand-navy/20 bg-white/70 text-base font-semibold text-brand-dark",
+            "backdrop-blur-sm transition-all duration-200",
+            "hover:border-brand-blue/40 hover:bg-white hover:text-brand-blue",
             "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/40 focus-visible:ring-offset-2"
           )}
           aria-label="Explore dental services"

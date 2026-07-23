@@ -46,18 +46,18 @@ type ContactRowProps = {
 
 function ContactRow({ icon: Icon, label, children }: ContactRowProps) {
   return (
-    <div className="flex gap-3 rounded-xl bg-[#FFFFFF]/50 px-3 py-3 sm:bg-transparent sm:px-0 sm:py-0">
+    <div className="flex gap-3 rounded-xl bg-white/50 px-3 py-3 sm:bg-transparent sm:px-0 sm:py-0">
       <span
-        className="mt-0.5 flex size-10 shrink-0 items-center justify-center rounded-full bg-[#0A84C6]/10 text-[#0A84C6] sm:size-9"
+        className="mt-0.5 flex size-10 shrink-0 items-center justify-center rounded-full bg-brand-blue/10 text-brand-blue sm:size-9"
         aria-hidden
       >
         <Icon className="size-4" />
       </span>
       <div className="min-w-0 flex-1 text-left">
-        <p className="text-[0.6875rem] font-medium tracking-[0.12em] text-[#6B7280] uppercase sm:text-xs sm:tracking-wide">
+        <p className="text-[0.6875rem] font-medium tracking-[0.12em] text-brand-muted uppercase sm:text-xs sm:tracking-wide">
           {label}
         </p>
-        <div className="mt-1 text-[0.9375rem] leading-relaxed text-[#1F2937] sm:text-sm">
+        <div className="mt-1 text-[0.9375rem] leading-relaxed text-brand-dark sm:text-sm">
           {children}
         </div>
       </div>
@@ -87,7 +87,7 @@ export function FooterContact({
         className,
       )}
     >
-      <h3 className="text-xs font-semibold tracking-[0.16em] text-[#1F2937] uppercase sm:text-sm sm:tracking-wide">
+      <h3 className="text-xs font-semibold tracking-[0.16em] text-brand-dark uppercase sm:text-sm sm:tracking-wide">
         Contact
       </h3>
 
@@ -98,7 +98,7 @@ export function FooterContact({
               href={contact.mapsUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex min-h-6 transition-colors duration-200 hover:text-[#0A84C6] focus-visible:rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0A84C6]/40 focus-visible:ring-offset-2"
+              className="inline-flex min-h-6 transition-colors duration-200 hover:text-brand-blue focus-visible:rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/40 focus-visible:ring-offset-2"
             >
               {contact.address}
             </a>
@@ -110,7 +110,7 @@ export function FooterContact({
         <ContactRow icon={Phone} label="Phone">
           <a
             href={contact.phoneHref}
-            className="inline-flex min-h-6 items-center transition-colors duration-200 hover:text-[#0A84C6] focus-visible:rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0A84C6]/40 focus-visible:ring-offset-2"
+            className="inline-flex min-h-6 items-center transition-colors duration-200 hover:text-brand-blue focus-visible:rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/40 focus-visible:ring-offset-2"
           >
             {contact.phone}
           </a>
@@ -119,7 +119,7 @@ export function FooterContact({
         <ContactRow icon={Mail} label="Email">
           <a
             href={`mailto:${contact.email}`}
-            className="inline-flex min-h-6 break-all transition-colors duration-200 hover:text-[#0A84C6] focus-visible:rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0A84C6]/40 focus-visible:ring-offset-2"
+            className="inline-flex min-h-6 break-all transition-colors duration-200 hover:text-brand-blue focus-visible:rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/40 focus-visible:ring-offset-2"
           >
             {contact.email}
           </a>
@@ -133,23 +133,23 @@ export function FooterContact({
           <a
             href={contact.emergencyPhoneHref}
             className={cn(
-              "mt-1 flex items-center gap-3 rounded-xl border border-[#16A39A]/25 bg-[#16A39A]/10 px-3 py-3.5 text-left transition-colors duration-200",
-              "hover:border-[#16A39A]/40 hover:bg-[#16A39A]/15",
-              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#16A39A]/40 focus-visible:ring-offset-2",
+              "mt-1 flex items-center gap-3 rounded-xl border border-brand-blue/25 bg-brand-blue/10 px-3 py-3.5 text-left transition-colors duration-200",
+              "hover:border-brand-blue/40 hover:bg-brand-blue/15",
+              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/40 focus-visible:ring-offset-2",
               "sm:mt-0 sm:border-0 sm:bg-transparent sm:p-0 sm:hover:bg-transparent",
             )}
           >
             <span
-              className="flex size-10 shrink-0 items-center justify-center rounded-full bg-[#16A39A]/15 text-[#16A39A] sm:size-9 sm:bg-[#0A84C6]/10 sm:text-[#0A84C6]"
+              className="flex size-10 shrink-0 items-center justify-center rounded-full bg-brand-blue/15 text-brand-blue sm:size-9 sm:bg-brand-blue/10 sm:text-brand-blue"
               aria-hidden
             >
               <PhoneCall className="size-4" />
             </span>
             <span className="min-w-0">
-              <span className="block text-[0.6875rem] font-medium tracking-[0.12em] text-[#6B7280] uppercase sm:text-xs">
+              <span className="block text-[0.6875rem] font-medium tracking-[0.12em] text-brand-muted uppercase sm:text-xs">
                 {contact.emergencyLabel ?? "Emergency Contact"}
               </span>
-              <span className="mt-1 block text-[0.9375rem] font-semibold text-[#16A39A] sm:text-sm sm:font-medium">
+              <span className="mt-1 block text-[0.9375rem] font-semibold text-brand-blue sm:text-sm sm:font-medium">
                 {contact.emergencyPhone}
               </span>
             </span>

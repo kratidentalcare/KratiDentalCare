@@ -56,8 +56,8 @@ export function FooterLinkList({
         {links.map((link) => {
           const classNameLink = cn(
             "group relative inline-flex min-h-11 w-full items-center justify-center rounded-md px-2 text-[0.9375rem] text-[#6B7280] transition-colors duration-200 sm:w-auto sm:justify-start sm:px-0 sm:text-sm",
-            "hover:text-[#0A84C6]",
-            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0A84C6]/40 focus-visible:ring-offset-2",
+            "hover:text-[#0B8EC8]",
+            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0B8EC8]/40 focus-visible:ring-offset-2",
           );
 
           const label = (
@@ -65,7 +65,7 @@ export function FooterLinkList({
               {link.label}
               <span
                 aria-hidden
-                className="absolute inset-x-0 -bottom-0.5 hidden h-px origin-left scale-x-0 bg-[#0A84C6] transition-transform duration-200 group-hover:scale-x-100 sm:block"
+                className="absolute inset-x-0 -bottom-0.5 hidden h-px origin-left scale-x-0 bg-[#0B8EC8] transition-transform duration-200 group-hover:scale-x-100 sm:block"
               />
             </span>
           );

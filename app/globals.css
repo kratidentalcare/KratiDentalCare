@@ -11,9 +11,11 @@
   --font-mono: var(--font-mono);
   --font-montserrat: var(--font-montserrat);
   --font-serif: var(--font-serif);
-  --font-heading: var(--font-sans);
+  --font-heading: var(--font-serif);
   --color-brand-blue: var(--brand-blue);
   --color-brand-teal: var(--brand-teal);
+  --color-brand-navy: var(--brand-navy);
+  --color-brand-hover: var(--brand-hover);
   --color-brand-dark: var(--brand-dark);
   --color-brand-muted: var(--brand-muted);
   --color-brand-surface: var(--brand-surface);
@@ -70,46 +72,52 @@
   --section-gap: 1.5rem;
   --stack-gap: 1rem;
 
-  /* Public marketing brand palette */
-  --brand-blue: #0a84c6;
-  --brand-teal: #16a39a;
-  --brand-dark: #1f2937;
-  --brand-muted: #6b7280;
-  --brand-surface: #f8fbfd;
+  /*
+   * Soft/premium clinic palette — logo navy + restrained cyan.
+   * Cyan is for CTAs/accents only; surfaces stay calm white/gray-blue.
+   */
+  --brand-navy: #0a1f44;
+  --brand-blue: #0b8ec8;
+  --brand-hover: #0978ab;
+  /* Secondary accent (mid blue) — used where `brand-teal` classes remain */
+  --brand-teal: #2b6cb0;
+  --brand-dark: #0a1f44;
+  --brand-muted: #5a6a7c;
+  --brand-surface: #f7fafc;
   --brand-card: #ffffff;
 
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
+  --background: #ffffff;
+  --foreground: #0a1f44;
+  --card: #ffffff;
+  --card-foreground: #0a1f44;
+  --popover: #ffffff;
+  --popover-foreground: #0a1f44;
+  --primary: #0b8ec8;
+  --primary-foreground: #ffffff;
+  --secondary: #eef5f9;
+  --secondary-foreground: #0a1f44;
+  --muted: #f7fafc;
+  --muted-foreground: #5a6a7c;
+  --accent: #eef5f9;
+  --accent-foreground: #0a1f44;
   --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
+  --border: #e2e8f0;
+  --input: #e2e8f0;
+  --ring: #0b8ec8;
   --chart-1: oklch(0.87 0 0);
   --chart-2: oklch(0.556 0 0);
   --chart-3: oklch(0.439 0 0);
   --chart-4: oklch(0.371 0 0);
   --chart-5: oklch(0.269 0 0);
-  --radius: 0.625rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  --radius: 0.75rem;
+  --sidebar: #f7fafc;
+  --sidebar-foreground: #0a1f44;
+  --sidebar-primary: #0b8ec8;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #eef5f9;
+  --sidebar-accent-foreground: #0a1f44;
+  --sidebar-border: #e2e8f0;
+  --sidebar-ring: #0b8ec8;
 }
 
 .dark {
@@ -233,7 +241,7 @@
     border-left: 0 !important;
     border-radius: 1.25rem 1.25rem 0 0 !important;
     padding-bottom: max(1rem, env(safe-area-inset-bottom)) !important;
-    box-shadow: 0 -12px 36px rgb(15 23 42 / 16%) !important;
+    box-shadow: 0 -12px 36px rgb(10 31 68 / 16%) !important;
   }
 
   .clerk-modal-close-button {
@@ -242,7 +250,7 @@
     min-width: 2.75rem !important;
     min-height: 2.75rem !important;
     border-radius: 9999px !important;
-    background: rgb(248 251 253 / 92%) !important;
+    background: rgb(247 250 252 / 92%) !important;
   }
 
   .clerk-auth-footer {

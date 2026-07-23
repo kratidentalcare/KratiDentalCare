@@ -65,23 +65,15 @@ function FaqSection({ items, className }: FaqSectionProps) {
       id="faq"
       aria-labelledby="faq-heading"
       className={cn(
-        "relative overflow-hidden bg-brand-surface font-montserrat",
+        "relative overflow-hidden bg-white font-montserrat",
         className
       )}
     >
       <div
         className={cn(
-          "pointer-events-none absolute top-1/4 -right-24 size-72 rounded-full",
-          "bg-[radial-gradient(circle,color-mix(in_srgb,var(--brand-blue)_12%,transparent)_0%,transparent_70%)]",
-          "blur-2xl sm:size-96"
-        )}
-        aria-hidden
-      />
-      <div
-        className={cn(
-          "pointer-events-none absolute -bottom-20 -left-16 size-64 rounded-full",
-          "bg-[radial-gradient(circle,color-mix(in_srgb,var(--brand-teal)_10%,transparent)_0%,transparent_70%)]",
-          "blur-2xl sm:size-80"
+          "pointer-events-none absolute top-0 right-0 size-[28rem] -translate-y-1/4 translate-x-1/4 rounded-full",
+          "bg-[radial-gradient(circle,color-mix(in_srgb,var(--brand-blue)_8%,transparent)_0%,transparent_70%)]",
+          "blur-3xl"
         )}
         aria-hidden
       />
@@ -141,9 +133,9 @@ function FaqSection({ items, className }: FaqSectionProps) {
               "group mt-6 inline-flex h-11 items-center justify-center gap-2 rounded-full px-7",
               "sm:mt-7 sm:h-12 sm:px-8",
               "bg-brand-blue text-sm font-semibold text-white sm:text-base",
-              "shadow-[0_10px_28px_color-mix(in_srgb,var(--brand-blue)_28%,transparent)]",
+              "shadow-[0_8px_22px_color-mix(in_srgb,var(--brand-blue)_22%,transparent)]",
               "transition-all duration-300 ease-out",
-              "hover:bg-[#0870A8] hover:shadow-[0_14px_32px_color-mix(in_srgb,var(--brand-blue)_34%,transparent)]",
+              "hover:bg-brand-hover hover:shadow-[0_12px_28px_color-mix(in_srgb,var(--brand-blue)_28%,transparent)]",
               "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/40 focus-visible:ring-offset-2",
               "active:scale-[0.98]"
             )}

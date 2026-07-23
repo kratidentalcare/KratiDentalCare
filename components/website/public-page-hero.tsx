@@ -110,7 +110,7 @@ export function PublicPageHero({
             )}
           >
             <span className="block">{heading}</span>
-            <span className="block text-[#8ecae6]">{headingAccent}</span>
+            <span className="block text-brand-blue/90">{headingAccent}</span>
           </h1>
 
           <p
@@ -132,7 +132,7 @@ export function PublicPageHero({
               "bg-brand-blue text-base font-semibold text-white",
               "shadow-[0_10px_28px_rgba(0,0,0,0.28)]",
               "transition-colors duration-200",
-              "hover:bg-[#0870A8]",
+              "hover:bg-brand-hover",
               "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-brand-dark/40",
               "active:scale-[0.98]"
             )}

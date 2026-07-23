@@ -66,11 +66,11 @@ export function ServiceCard({ serviceId, index, className }: ServiceCardProps) {
         aria-label={`Learn more about ${service.title}`}
         className={cn(
           "relative flex h-full cursor-pointer flex-col overflow-hidden rounded-2xl",
-          "border border-white/40 bg-white p-5 sm:p-7",
-          "shadow-[0_8px_24px_color-mix(in_srgb,black_10%,transparent)]",
-          "transition-colors duration-200",
-          "hover:border-white hover:bg-white",
-          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-brand-blue"
+          "border border-white/50 bg-white p-5 sm:p-7",
+          "shadow-[0_10px_30px_rgba(7,24,51,0.14)]",
+          "transition-all duration-300 ease-out",
+          "hover:-translate-y-1 hover:border-white hover:shadow-[0_16px_40px_rgba(7,24,51,0.2)]",
+          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-brand-navy"
         )}
       >
         <span

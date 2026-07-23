@@ -229,7 +229,7 @@ export function ContactFormSection({ className }: ContactFormSectionProps) {
                   disabled={isPending}
                   className={cn(
                     "h-12 w-full rounded-full bg-brand-blue text-base font-semibold text-white",
-                    "hover:bg-[#0870A8]",
+                    "hover:bg-brand-hover",
                     "sm:w-auto sm:min-w-48"
                   )}
                 >

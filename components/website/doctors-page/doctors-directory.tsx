@@ -30,7 +30,7 @@ export function DoctorsDirectory({
       aria-labelledby="doctor-profiles-heading"
       className={cn(
         "relative overflow-hidden font-montserrat",
-        "bg-[linear-gradient(180deg,color-mix(in_srgb,var(--brand-blue)_6%,white)_0%,var(--brand-surface)_50%,white_100%)]",
+        "bg-brand-surface",
         className
       )}
     >
@@ -100,7 +100,7 @@ export function DoctorsDirectory({
               className={cn(
                 "mt-6 inline-flex h-11 items-center justify-center rounded-full px-6",
                 "bg-brand-blue text-sm font-semibold text-white",
-                "transition-colors hover:bg-[#0870A8]",
+                "transition-colors hover:bg-brand-hover",
                 "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/40 focus-visible:ring-offset-2"
               )}
             >

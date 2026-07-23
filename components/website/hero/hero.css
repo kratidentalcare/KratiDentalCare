@@ -81,7 +81,7 @@
 
 .hero-btn-lift:hover {
   transform: translateY(-2px);
-  box-shadow: 0 14px 32px color-mix(in srgb, var(--brand-blue) 34%, transparent);
+  box-shadow: 0 12px 28px color-mix(in srgb, var(--brand-blue) 26%, transparent);
 }
 
 /** Arch mask — flat bottom, semicircular top */

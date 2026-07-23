@@ -160,11 +160,11 @@ export function Testimonials({ className }: TestimonialsProps) {
       onKeyDown={onSectionKeyDown}
       className={cn(
         "relative overflow-hidden font-montserrat outline-none",
-        "bg-[#0A84C6]/10",
+        "bg-white",
         className
       )}
     >
-      <TestimonialsWave edge="top" fill="white" />
+      <TestimonialsWave edge="top" fill="var(--brand-surface)" />
 
       <PageContainer size="xl" className="relative z-10 public-section-y">
         <header
@@ -226,7 +226,7 @@ export function Testimonials({ className }: TestimonialsProps) {
         </div>
       </PageContainer>
 
-      <TestimonialsWave edge="bottom" fill="var(--brand-surface)" />
+      <TestimonialsWave edge="bottom" fill="#ffffff" />
     </section>
   );
 }

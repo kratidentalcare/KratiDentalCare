@@ -69,10 +69,16 @@ export function WhyChooseUsContent({ className }: WhyChooseUsContentProps) {
           )}
         >
           Care designed around{" "}
-          <span className="text-brand-blue">you</span>
+          <span className="relative inline-block text-brand-blue">
+            you
+            <span
+              className="absolute inset-x-0 -bottom-1 h-[3px] rounded-full bg-brand-blue/30"
+              aria-hidden
+            />
+          </span>
         </h2>
 
-        <p className="mt-4 max-w-sm text-sm leading-relaxed text-brand-muted sm:mt-5 sm:text-[0.9375rem]">
+        <p className="mt-5 max-w-sm text-sm leading-relaxed text-brand-muted sm:mt-6 sm:text-[0.9375rem]">
           Comfort, precision, and results you can trust — every visit.
         </p>
       </div>

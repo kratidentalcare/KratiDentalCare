@@ -165,7 +165,7 @@ export function DoctorProfile({
               "bg-brand-blue text-sm font-semibold text-white",
               "shadow-[0_8px_22px_color-mix(in_srgb,var(--brand-blue)_28%,transparent)]",
               "transition-all duration-300 ease-out",
-              "hover:bg-[#0870A8] hover:shadow-[0_12px_28px_color-mix(in_srgb,var(--brand-blue)_34%,transparent)]",
+              "hover:bg-brand-hover hover:shadow-[0_12px_28px_color-mix(in_srgb,var(--brand-blue)_34%,transparent)]",
               "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/40 focus-visible:ring-offset-2",
               "active:scale-[0.98]",
               "sm:h-12 sm:w-auto sm:px-6"
