@@ -15,7 +15,7 @@ export function DoctorsSectionHeader({ className }: DoctorsSectionHeaderProps) {
     <header className={cn("flex max-w-2xl flex-col items-start text-left", className)}>
       <p
         className={cn(
-          "text-[0.6875rem] font-medium tracking-[0.18em] text-brand-blue uppercase",
+          "text-[0.6875rem] font-medium tracking-[0.18em] text-brand-red uppercase",
           "sm:text-xs sm:tracking-[0.2em]"
         )}
       >

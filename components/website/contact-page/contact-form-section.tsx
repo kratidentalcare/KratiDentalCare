@@ -91,7 +91,7 @@ export function ContactFormSection({ className }: ContactFormSectionProps) {
           <header className="flex flex-col items-center text-center lg:items-start lg:text-left lg:pt-4">
             <p
               className={cn(
-                "text-[0.6875rem] font-medium tracking-[0.18em] text-brand-teal uppercase",
+                "text-[0.6875rem] font-medium tracking-[0.18em] text-brand-red uppercase",
                 "sm:text-xs sm:tracking-[0.2em]"
               )}
             >
@@ -106,7 +106,7 @@ export function ContactFormSection({ className }: ContactFormSectionProps) {
             >
               {CONTACT_PAGE.formHeading}
             </h2>
-            <div className="mt-4 h-1 w-12 rounded-full bg-brand-blue" aria-hidden />
+            <div className="mt-4 h-1 w-12 rounded-full bg-brand-red" aria-hidden />
             <p className="mt-5 max-w-md text-sm leading-relaxed text-brand-muted sm:text-[0.9375rem]">
               {CONTACT_PAGE.formDescription}
             </p>

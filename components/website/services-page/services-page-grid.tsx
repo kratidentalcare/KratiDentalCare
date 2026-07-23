@@ -38,7 +38,7 @@ export function ServicesPageGrid({ className }: ServicesPageGridProps) {
             className={cn(
               "inline-flex items-center gap-2 rounded-full border border-brand-blue/15",
               "bg-brand-surface px-3.5 py-1.5",
-              "text-[0.6875rem] font-bold tracking-[0.16em] text-brand-blue uppercase",
+              "text-[0.6875rem] font-bold tracking-[0.16em] text-brand-red uppercase",
               "sm:text-xs sm:tracking-[0.18em]"
             )}
           >
@@ -61,7 +61,7 @@ export function ServicesPageGrid({ className }: ServicesPageGridProps) {
             <span className="block text-brand-blue">to Your Needs</span>
           </h2>
 
-          <div className="mt-4 h-1 w-12 rounded-full bg-brand-teal" aria-hidden />
+          <div className="mt-4 h-1 w-12 rounded-full bg-brand-red" aria-hidden />
 
           <p
             className={cn(

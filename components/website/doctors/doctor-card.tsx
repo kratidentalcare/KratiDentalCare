@@ -86,7 +86,7 @@ export function DoctorCard({
           >
             <p
               className={cn(
-                "text-[0.625rem] font-medium tracking-[0.16em] text-brand-blue uppercase",
+                "text-[0.625rem] font-medium tracking-[0.16em] text-brand-red uppercase",
                 "sm:text-[0.6875rem] sm:tracking-[0.18em]",
                 "lg:text-xs lg:tracking-[0.2em]"
               )}
@@ -237,7 +237,7 @@ export function DoctorCard({
           <div>
             <p
               className={cn(
-                "text-[0.625rem] font-bold tracking-[0.14em] text-brand-blue uppercase",
+                "text-[0.625rem] font-bold tracking-[0.14em] text-brand-red uppercase",
                 "sm:text-[0.6875rem] sm:tracking-[0.16em]",
                 "lg:text-xs lg:tracking-[0.18em]"
               )}
@@ -256,7 +256,7 @@ export function DoctorCard({
             </h3>
 
             <div
-              className="mx-auto mt-2 h-0.5 w-8 rounded-full bg-brand-blue/35 lg:mx-0"
+              className="mx-auto mt-2 h-0.5 w-8 rounded-full bg-brand-red/70 lg:mx-0"
               aria-hidden
             />
           </div>

@@ -95,7 +95,7 @@ export function TestimonialNavigation({
                 "h-2 rounded-full transition-all duration-300 ease-out",
                 "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/40 focus-visible:ring-offset-2",
                 active
-                  ? "w-7 bg-brand-blue"
+                  ? "w-7 bg-brand-red"
                   : "w-2 bg-brand-blue/25 hover:bg-brand-blue/45"
               )}
             />

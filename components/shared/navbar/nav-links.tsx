@@ -150,7 +150,7 @@ export function NavLinks({
               <span
                 aria-hidden
                 className={cn(
-                  "absolute inset-x-3 bottom-1 h-0.5 origin-left rounded-full bg-brand-blue transition-transform duration-200",
+                  "absolute inset-x-3 bottom-1 h-0.5 origin-left rounded-full bg-brand-red transition-transform duration-200",
                   orientation === "vertical" && "inset-x-0 bottom-0",
                   active ? "scale-x-100" : "scale-x-0"
                 )}

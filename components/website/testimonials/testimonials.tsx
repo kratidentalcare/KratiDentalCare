@@ -178,7 +178,7 @@ export function Testimonials({ className }: TestimonialsProps) {
         >
           <p
             className={cn(
-              "text-[0.6875rem] font-medium tracking-[0.18em] text-brand-blue uppercase",
+              "text-[0.6875rem] font-medium tracking-[0.18em] text-brand-red uppercase",
               "sm:text-xs sm:tracking-[0.2em]"
             )}
           >
@@ -197,6 +197,8 @@ export function Testimonials({ className }: TestimonialsProps) {
               {TESTIMONIALS_SECTION.headingAccent}
             </span>
           </h2>
+
+          <div className="mt-5 h-1 w-12 rounded-full bg-brand-red" aria-hidden />
         </header>
 
         <div

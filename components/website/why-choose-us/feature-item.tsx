@@ -42,11 +42,11 @@ export function FeatureItem({
           className={cn(
             "flex size-11 shrink-0 items-center justify-center rounded-2xl",
             "bg-brand-blue/[0.08] ring-1 ring-brand-blue/10",
-            "transition-colors duration-300 group-hover:bg-brand-blue/[0.12]"
+            "transition-colors duration-300 group-hover:bg-brand-blue/[0.12] group-hover:ring-brand-red/25"
           )}
           aria-hidden
         >
-          <Icon className="size-[1.125rem] text-brand-blue" strokeWidth={1.75} />
+          <Icon className="size-[1.125rem] text-brand-blue transition-colors duration-300 group-hover:text-brand-red" strokeWidth={1.75} />
         </span>
 
         <div className="min-w-0 pt-0.5">

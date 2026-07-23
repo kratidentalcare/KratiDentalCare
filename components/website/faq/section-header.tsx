@@ -19,7 +19,7 @@ export function FaqSectionHeader({ className }: FaqSectionHeaderProps) {
     >
       <p
         className={cn(
-          "text-[0.6875rem] font-medium tracking-[0.18em] text-brand-blue uppercase",
+          "text-[0.6875rem] font-medium tracking-[0.18em] text-brand-red uppercase",
           "sm:text-xs sm:tracking-[0.2em]"
         )}
       >
@@ -36,6 +36,8 @@ export function FaqSectionHeader({ className }: FaqSectionHeaderProps) {
         <span className="block">{FAQ_SECTION.heading}</span>
         <span className="block text-brand-blue">{FAQ_SECTION.headingAccent}</span>
       </h2>
+
+      <div className="mt-5 h-1 w-12 rounded-full bg-brand-red" aria-hidden />
 
       <p
         className={cn(

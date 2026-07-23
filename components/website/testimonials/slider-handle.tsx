@@ -13,6 +13,7 @@ export function SliderHandle({ className }: SliderHandleProps) {
       className={cn(
         "pointer-events-none flex size-11 items-center justify-center rounded-full",
         "border-[3px] border-white bg-brand-blue text-white",
+        "ring-2 ring-brand-red/80 ring-offset-2 ring-offset-white",
         "shadow-[0_8px_24px_color-mix(in_srgb,var(--brand-blue)_35%,transparent)]",
         "sm:size-12",
         className

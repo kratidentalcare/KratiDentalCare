@@ -17,7 +17,7 @@ export function ServicesHeader({ className }: ServicesHeaderProps) {
     >
       <p
         className={cn(
-          "text-[0.6875rem] font-medium tracking-[0.18em] text-white/80 uppercase",
+          "text-[0.6875rem] font-medium tracking-[0.18em] text-brand-red uppercase",
           "sm:text-xs sm:tracking-[0.2em]"
         )}
       >
@@ -33,6 +33,8 @@ export function ServicesHeader({ className }: ServicesHeaderProps) {
       >
         Care for every smile
       </h2>
+
+      <div className="mt-5 h-1 w-12 rounded-full bg-brand-red" aria-hidden />
     </header>
   );
 }

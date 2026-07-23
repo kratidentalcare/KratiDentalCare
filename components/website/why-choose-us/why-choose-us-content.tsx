@@ -54,7 +54,7 @@ export function WhyChooseUsContent({ className }: WhyChooseUsContentProps) {
       >
         <p
           className={cn(
-            "text-[0.6875rem] font-medium tracking-[0.18em] text-brand-blue uppercase",
+            "text-[0.6875rem] font-medium tracking-[0.18em] text-brand-red uppercase",
             "sm:text-xs sm:tracking-[0.2em]"
           )}
         >
@@ -72,7 +72,7 @@ export function WhyChooseUsContent({ className }: WhyChooseUsContentProps) {
           <span className="relative inline-block text-brand-blue">
             you
             <span
-              className="absolute inset-x-0 -bottom-1 h-[3px] rounded-full bg-brand-blue/30"
+              className="absolute inset-x-0 -bottom-1 h-[3px] rounded-full bg-brand-red/70"
               aria-hidden
             />
           </span>
