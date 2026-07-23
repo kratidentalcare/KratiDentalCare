@@ -49,18 +49,11 @@ export function InstagramIcon(props: IconProps) {
   );
 }
 
-export function LinkedInIcon(props: IconProps) {
+export function XIcon(props: IconProps) {
   return (
     <SocialSvg {...props}>
       <path
-        d="M6.5 9.5v9M6.5 6.2v.2M10.5 18.5v-5.2c0-1.4.9-2.3 2.1-2.3 1.1 0 1.9.8 1.9 2.3v5.2M16.5 18.5v-5.8c0-2.4 1.4-3.7 3.5-3.7 1.5 0 2.5.8 2.5 2.8v6.7"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M6.5 6.2a1.2 1.2 0 1 0 0-2.4 1.2 1.2 0 0 0 0 2.4Z"
+        d="M17.5 3.5h2.8l-6.1 7 7.2 9.5h-5.6l-4.4-5.7-5 5.7H3.6l6.5-7.4L3.2 3.5h5.8l4 5.2 4.5-5.2Zm-1 15h1.5L7.6 5.1H6L16.5 18.5Z"
         fill="currentColor"
       />
     </SocialSvg>

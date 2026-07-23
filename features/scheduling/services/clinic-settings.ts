@@ -130,7 +130,7 @@ const DEFAULT_SETTINGS_SEED = {
   socialLinks: {
     facebook: null as string | null,
     instagram: null as string | null,
-    linkedin: null as string | null,
+    twitter: null as string | null,
     youtube: null as string | null,
   },
   footerLinks: [...DEFAULT_FOOTER_LINKS],
@@ -187,20 +187,25 @@ async function assertBookableDoctor(doctorId: string | null): Promise<void> {
 
 /**
  * Normalize lean settings so older documents missing new fields still work.
+ * Migrates legacy `socialLinks.linkedin` → `twitter` when present.
  */
 export function normalizeClinicSettings(
   settings: LeanClinicSettings,
 ): LeanClinicSettings {
+  const legacySocial = settings.socialLinks as
+    | (LeanClinicSettings["socialLinks"] & { linkedin?: string | null })
+    | undefined;
+
   return {
     ...settings,
     secondaryPhone: settings.secondaryPhone ?? null,
     emergencyContact: settings.emergencyContact ?? null,
     googleMapsUrl: settings.googleMapsUrl ?? null,
     socialLinks: {
-      facebook: settings.socialLinks?.facebook ?? null,
-      instagram: settings.socialLinks?.instagram ?? null,
-      linkedin: settings.socialLinks?.linkedin ?? null,
-      youtube: settings.socialLinks?.youtube ?? null,
+      facebook: legacySocial?.facebook ?? null,
+      instagram: legacySocial?.instagram ?? null,
+      twitter: legacySocial?.twitter ?? legacySocial?.linkedin ?? null,
+      youtube: legacySocial?.youtube ?? null,
     },
     footerLinks: Array.isArray(settings.footerLinks)
       ? settings.footerLinks
@@ -236,7 +241,7 @@ export const getOrCreateClinicSettings = cache(
             socialLinks: {
               facebook: existing.socialLinks?.facebook ?? null,
               instagram: existing.socialLinks?.instagram ?? null,
-              linkedin: existing.socialLinks?.linkedin ?? null,
+              twitter: existing.socialLinks?.twitter ?? null,
               youtube: existing.socialLinks?.youtube ?? null,
             },
           },
@@ -420,10 +425,10 @@ export async function updateClinicSettings(
       input.socialLinks?.instagram !== undefined
         ? (input.socialLinks.instagram ?? null)
         : (current.socialLinks.instagram ?? null),
-    linkedin:
-      input.socialLinks?.linkedin !== undefined
-        ? (input.socialLinks.linkedin ?? null)
-        : (current.socialLinks.linkedin ?? null),
+    twitter:
+      input.socialLinks?.twitter !== undefined
+        ? (input.socialLinks.twitter ?? null)
+        : (current.socialLinks.twitter ?? null),
     youtube:
       input.socialLinks?.youtube !== undefined
         ? (input.socialLinks.youtube ?? null)
@@ -529,8 +534,11 @@ export async function updateClinicSettings(
         isActive: merged.isActive,
         updatedByUserId: new Types.ObjectId(updatedByUserId),
       },
+      $unset: {
+        "socialLinks.linkedin": 1,
+      },
     },
-    { new: true },
+    { new: true, runValidators: true },
   ).lean<LeanClinicSettings>();
 
   if (!updated) {

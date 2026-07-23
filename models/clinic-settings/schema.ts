@@ -219,17 +219,17 @@ const socialLinksSchema = new Schema(
         message: "socialLinks.instagram must be a valid https URL",
       },
     },
-    linkedin: {
+    twitter: {
       type: String,
       default: null,
       trim: true,
-      maxlength: [URL_MAX, "socialLinks.linkedin is too long"],
+      maxlength: [URL_MAX, "socialLinks.twitter is too long"],
       set: emptyToNull,
       validate: {
         validator(value: string | null) {
           return value == null || isSafeHttpsUrl(value);
         },
-        message: "socialLinks.linkedin must be a valid https URL",
+        message: "socialLinks.twitter must be a valid https URL",
       },
     },
     youtube: {

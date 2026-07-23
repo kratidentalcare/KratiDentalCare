@@ -52,7 +52,7 @@ export function toClinicSettingsView(
     socialLinks: {
       facebook: settings.socialLinks.facebook,
       instagram: settings.socialLinks.instagram,
-      linkedin: settings.socialLinks.linkedin,
+      twitter: settings.socialLinks.twitter,
       youtube: settings.socialLinks.youtube,
     },
     footerLinks: settings.footerLinks.map((link) => ({

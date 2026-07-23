@@ -3,7 +3,7 @@ import type { ComponentType, SVGProps } from "react";
 import {
   FacebookIcon,
   InstagramIcon,
-  LinkedInIcon,
+  XIcon,
   YouTubeIcon,
 } from "./social-icons";
 import { cn } from "@/lib/utils";
@@ -29,9 +29,9 @@ export const DEFAULT_FOOTER_SOCIAL: readonly FooterSocialItem[] = [
     icon: InstagramIcon,
   },
   {
-    label: "LinkedIn",
-    href: "https://linkedin.com",
-    icon: LinkedInIcon,
+    label: "X",
+    href: "https://x.com",
+    icon: XIcon,
   },
   {
     label: "YouTube",

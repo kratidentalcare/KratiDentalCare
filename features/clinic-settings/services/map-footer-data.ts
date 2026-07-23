@@ -11,7 +11,7 @@ import type { FooterSocialItem } from "@/components/shared/footer/footer-social"
 import {
   FacebookIcon,
   InstagramIcon,
-  LinkedInIcon,
+  XIcon,
   YouTubeIcon,
 } from "@/components/shared/footer/social-icons";
 import { FOOTER_LINK_GROUPS } from "@/constants/clinic-settings";
@@ -68,11 +68,11 @@ export function mapClinicSocialLinks(
       icon: InstagramIcon,
     });
   }
-  if (socialLinks.linkedin) {
+  if (socialLinks.twitter) {
     items.push({
-      label: "LinkedIn",
-      href: socialLinks.linkedin,
-      icon: LinkedInIcon,
+      label: "X",
+      href: socialLinks.twitter,
+      icon: XIcon,
     });
   }
   if (socialLinks.youtube) {

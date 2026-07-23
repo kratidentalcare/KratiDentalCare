@@ -158,7 +158,7 @@ export const clinicAddressSchema = patientAddressSchema;
 export const clinicSocialLinksSchema = z.object({
   facebook: optionalHttpsUrlSchema.optional(),
   instagram: optionalHttpsUrlSchema.optional(),
-  linkedin: optionalHttpsUrlSchema.optional(),
+  twitter: optionalHttpsUrlSchema.optional(),
   youtube: optionalHttpsUrlSchema.optional(),
 });
 
@@ -230,7 +230,7 @@ const scheduleWindowRefine = <
 const emptySocialLinks = {
   facebook: null as string | null,
   instagram: null as string | null,
-  linkedin: null as string | null,
+  twitter: null as string | null,
   youtube: null as string | null,
 };
 

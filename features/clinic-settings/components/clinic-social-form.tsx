@@ -40,7 +40,7 @@ export function ClinicSocialForm({
     defaultValues: {
       facebook: settings.socialLinks.facebook ?? "",
       instagram: settings.socialLinks.instagram ?? "",
-      linkedin: settings.socialLinks.linkedin ?? "",
+      twitter: settings.socialLinks.twitter ?? "",
       youtube: settings.socialLinks.youtube ?? "",
     },
   });
@@ -49,7 +49,7 @@ export function ClinicSocialForm({
     form.reset({
       facebook: settings.socialLinks.facebook ?? "",
       instagram: settings.socialLinks.instagram ?? "",
-      linkedin: settings.socialLinks.linkedin ?? "",
+      twitter: settings.socialLinks.twitter ?? "",
       youtube: settings.socialLinks.youtube ?? "",
     });
   }, [settings.socialLinks, form]);
@@ -69,7 +69,7 @@ export function ClinicSocialForm({
     const socialLinks = {
       facebook: values.facebook ?? null,
       instagram: values.instagram ?? null,
-      linkedin: values.linkedin ?? null,
+      twitter: values.twitter ?? null,
       youtube: values.youtube ?? null,
     };
     const result = await updateClinicSettingsAction({ socialLinks });

@@ -23,7 +23,7 @@ export const FOOTER_LINK_GROUP_LABELS: Record<FooterLinkGroup, string> = {
 export const SOCIAL_LINK_KEYS = [
   "facebook",
   "instagram",
-  "linkedin",
+  "twitter",
   "youtube",
 ] as const;
 
@@ -32,6 +32,6 @@ export type SocialLinkKey = (typeof SOCIAL_LINK_KEYS)[number];
 export const SOCIAL_LINK_LABELS: Record<SocialLinkKey, string> = {
   facebook: "Facebook",
   instagram: "Instagram",
-  linkedin: "LinkedIn",
+  twitter: "X",
   youtube: "YouTube",
 };

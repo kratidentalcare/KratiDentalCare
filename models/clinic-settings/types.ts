@@ -45,7 +45,7 @@ export type ClinicAddress = {
 export type ClinicSocialLinks = {
   facebook: string | null;
   instagram: string | null;
-  linkedin: string | null;
+  twitter: string | null;
   youtube: string | null;
 };
 

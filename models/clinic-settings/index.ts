@@ -7,6 +7,7 @@ import type { ClinicSettingsDocument, ClinicSettingsModel } from "./types";
 
 /**
  * ClinicSettings model — hot-reload safe via `getOrCreateModel`.
+ * Schema path changes (e.g. socialLinks.twitter) re-register the model.
  * Always `await connect()` from `@/lib/db` before querying.
  */
 export const ClinicSettings = getOrCreateModel<ClinicSettingsDocument>(

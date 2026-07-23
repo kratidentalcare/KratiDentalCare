@@ -121,7 +121,7 @@ export async function seedClinicSettings(ctx: SeedContext): Promise<void> {
       socialLinks: {
         facebook: "https://www.facebook.com/kratidentalcare",
         instagram: "https://www.instagram.com/kratidentalcare",
-        linkedin: null,
+        twitter: null,
         youtube: null,
       },
       footerLinks: [...FOOTER_LINKS],
