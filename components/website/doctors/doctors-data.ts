@@ -18,8 +18,10 @@ export interface Doctor {
   slug: string;
   name: string;
   designation: string;
+  /** Short number/label for the floating experience badge (e.g. "15+"). */
   experienceYears: string;
   experienceLabel: string;
+  blurb: string;
   specializations: readonly DoctorSpecialty[];
   imageSrc: string;
   imageAlt: string;
@@ -37,8 +39,10 @@ export const DOCTORS: readonly Doctor[] = [
     slug: "dr-gaurav",
     name: "Dr. Gaurav Jaiswal",
     designation: "BDS · Dental Surgeon",
-    experienceYears: "15+ Years",
-    experienceLabel: "Experience",
+    experienceYears: "15+",
+    experienceLabel: "Years of trusted care",
+    blurb:
+      "Precision dentistry with a gentle approach — focused on comfort, clarity, and lasting results for every patient.",
     specializations: [
       { id: "general", label: "General Dentistry", icon: "tooth" },
       { id: "cosmetic", label: "Cosmetic Dentistry", icon: "sparkles" },

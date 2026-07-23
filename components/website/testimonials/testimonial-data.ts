@@ -75,4 +75,6 @@ export const TESTIMONIALS_SECTION = {
   badge: "Smile Transformations",
   heading: "See the difference",
   headingAccent: "a beautiful smile can make",
+  description:
+    "Real patients. Real results. Drag the slider to compare before and after — then read what they shared.",
 } as const;

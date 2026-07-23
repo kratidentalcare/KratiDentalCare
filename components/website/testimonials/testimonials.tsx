@@ -160,11 +160,26 @@ export function Testimonials({ className }: TestimonialsProps) {
       onKeyDown={onSectionKeyDown}
       className={cn(
         "relative overflow-hidden font-montserrat outline-none",
-        "bg-white",
+        "bg-brand-surface",
         className
       )}
     >
-      <TestimonialsWave edge="top" fill="var(--brand-surface)" />
+      <div
+        className={cn(
+          "pointer-events-none absolute -right-20 top-24 size-72 rounded-full",
+          "bg-[radial-gradient(circle,color-mix(in_srgb,var(--brand-blue)_10%,transparent)_0%,transparent_70%)]",
+          "blur-2xl sm:size-96",
+        )}
+        aria-hidden
+      />
+      <div
+        className={cn(
+          "pointer-events-none absolute -left-16 bottom-20 size-64 rounded-full",
+          "bg-[radial-gradient(circle,color-mix(in_srgb,var(--brand-red)_6%,transparent)_0%,transparent_70%)]",
+          "blur-2xl sm:size-80",
+        )}
+        aria-hidden
+      />
 
       <PageContainer size="xl" className="relative z-10 public-section-y">
         <header
@@ -199,6 +214,15 @@ export function Testimonials({ className }: TestimonialsProps) {
           </h2>
 
           <div className="mt-5 h-1 w-12 rounded-full bg-brand-red" aria-hidden />
+
+          <p
+            className={cn(
+              "mt-5 max-w-xl text-sm leading-relaxed text-brand-muted",
+              "sm:mt-6 sm:text-[0.9375rem]",
+            )}
+          >
+            {TESTIMONIALS_SECTION.description}
+          </p>
         </header>
 
         <div
@@ -218,7 +242,7 @@ export function Testimonials({ className }: TestimonialsProps) {
           <TestimonialCard testimonial={active} animating={animating} />
 
           <TestimonialNavigation
-            className="mt-8 sm:mt-10"
+            className="mt-10 sm:mt-12"
             currentIndex={index}
             total={total}
             onPrevious={goPrevious}
