@@ -27,12 +27,12 @@ export function Logo({ className, onClick }: LogoProps) {
       aria-label={`${APP_NAME} home`}
     >
       <Image
-        src="/images/logonavbar.png"
+        src="/images/logo-navbar.png"
         alt={APP_NAME}
-        width={968}
-        height={377}
+        width={1600}
+        height={551}
         priority
-        className="h-12 w-auto object-contain sm:h-14 lg:h-16"
+        className="h-10 w-auto object-contain sm:h-11 lg:h-12"
       />
     </Link>
   );

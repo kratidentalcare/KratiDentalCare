@@ -89,7 +89,7 @@ export function ServiceDetailCard({
         <div
           className={cn(
             "relative z-10 mb-4 flex size-10 items-center justify-center rounded-xl",
-            "bg-gradient-to-br from-[#eef5f9] to-[#e0eef6] sm:mb-5 sm:size-12",
+            "bg-gradient-to-br from-[#eef2f9] to-[#dde6f4] sm:mb-5 sm:size-12",
             "transition-all duration-300 ease-out",
             "group-hover:from-[#e0eef6] group-hover:to-[#d2e7f2]"
           )}

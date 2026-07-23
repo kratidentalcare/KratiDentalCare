@@ -16,6 +16,8 @@
   --color-brand-teal: var(--brand-teal);
   --color-brand-navy: var(--brand-navy);
   --color-brand-hover: var(--brand-hover);
+  --color-brand-red: var(--brand-red);
+  --color-brand-red-hover: var(--brand-red-hover);
   --color-brand-dark: var(--brand-dark);
   --color-brand-muted: var(--brand-muted);
   --color-brand-surface: var(--brand-surface);
@@ -73,51 +75,52 @@
   --stack-gap: 1rem;
 
   /*
-   * Soft/premium clinic palette — logo navy + restrained cyan.
-   * Cyan is for CTAs/accents only; surfaces stay calm white/gray-blue.
+   * Brand palette from logo-navbar.png:
+   * blue #2957a4 (KRATI / tooth), red #ec3237 (DENTAL CARE accent).
    */
-  --brand-navy: #0a1f44;
-  --brand-blue: #0b8ec8;
-  --brand-hover: #0978ab;
-  /* Secondary accent (mid blue) — used where `brand-teal` classes remain */
-  --brand-teal: #2b6cb0;
-  --brand-dark: #0a1f44;
+  --brand-blue: #2957a4;
+  --brand-hover: #214890;
+  --brand-teal: #2957a4;
+  --brand-navy: #1a3266;
+  --brand-dark: #1a3266;
+  --brand-red: #ec3237;
+  --brand-red-hover: #d4282d;
   --brand-muted: #5a6a7c;
-  --brand-surface: #f7fafc;
+  --brand-surface: #f6f8fc;
   --brand-card: #ffffff;
 
   --background: #ffffff;
-  --foreground: #0a1f44;
+  --foreground: #1a3266;
   --card: #ffffff;
-  --card-foreground: #0a1f44;
+  --card-foreground: #1a3266;
   --popover: #ffffff;
-  --popover-foreground: #0a1f44;
-  --primary: #0b8ec8;
+  --popover-foreground: #1a3266;
+  --primary: #2957a4;
   --primary-foreground: #ffffff;
-  --secondary: #eef5f9;
-  --secondary-foreground: #0a1f44;
-  --muted: #f7fafc;
+  --secondary: #eef2f9;
+  --secondary-foreground: #1a3266;
+  --muted: #f6f8fc;
   --muted-foreground: #5a6a7c;
-  --accent: #eef5f9;
-  --accent-foreground: #0a1f44;
-  --destructive: oklch(0.577 0.245 27.325);
+  --accent: #eef2f9;
+  --accent-foreground: #1a3266;
+  --destructive: #ec3237;
   --border: #e2e8f0;
   --input: #e2e8f0;
-  --ring: #0b8ec8;
+  --ring: #2957a4;
   --chart-1: oklch(0.87 0 0);
   --chart-2: oklch(0.556 0 0);
   --chart-3: oklch(0.439 0 0);
   --chart-4: oklch(0.371 0 0);
   --chart-5: oklch(0.269 0 0);
   --radius: 0.75rem;
-  --sidebar: #f7fafc;
-  --sidebar-foreground: #0a1f44;
-  --sidebar-primary: #0b8ec8;
+  --sidebar: #f6f8fc;
+  --sidebar-foreground: #1a3266;
+  --sidebar-primary: #2957a4;
   --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #eef5f9;
-  --sidebar-accent-foreground: #0a1f44;
+  --sidebar-accent: #eef2f9;
+  --sidebar-accent-foreground: #1a3266;
   --sidebar-border: #e2e8f0;
-  --sidebar-ring: #0b8ec8;
+  --sidebar-ring: #2957a4;
 }
 
 .dark {
@@ -241,7 +244,7 @@
     border-left: 0 !important;
     border-radius: 1.25rem 1.25rem 0 0 !important;
     padding-bottom: max(1rem, env(safe-area-inset-bottom)) !important;
-    box-shadow: 0 -12px 36px rgb(10 31 68 / 16%) !important;
+    box-shadow: 0 -12px 36px rgb(26 50 102 / 16%) !important;
   }
 
   .clerk-modal-close-button {

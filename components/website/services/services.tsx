@@ -65,7 +65,7 @@ export function Services({ className }: ServicesProps) {
       aria-labelledby="services-heading"
       className={cn(
         "relative overflow-hidden font-montserrat",
-        "bg-[linear-gradient(160deg,#071833_0%,#0a1f44_42%,#0d4578_100%)]",
+        "bg-[linear-gradient(160deg,#12244a_0%,#1a3266_42%,#2957a4_100%)]",
         className
       )}
     >

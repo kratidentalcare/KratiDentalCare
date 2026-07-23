@@ -59,7 +59,7 @@ export function Navbar({ className, isAdmin = false }: NavbarProps) {
       className={cn(
         "sticky top-0 z-40 w-full border-b font-montserrat transition-[background-color,box-shadow,border-color] duration-300",
         scrolled
-          ? "border-brand-navy/8 bg-white/90 shadow-[0_8px_28px_rgba(10,31,68,0.08)] backdrop-blur-md"
+          ? "border-brand-navy/8 bg-white/90 shadow-[0_8px_28px_rgba(26,50,102,0.08)] backdrop-blur-md"
           : "border-transparent bg-white/95 shadow-none backdrop-blur-sm",
         className
       )}

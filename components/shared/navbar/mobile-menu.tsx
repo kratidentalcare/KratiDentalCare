@@ -53,7 +53,7 @@ export function MobileMenu({
             type="button"
             variant="ghost"
             size="icon"
-            className="size-11 text-brand-dark hover:bg-transparent hover:text-brand-blue lg:hidden"
+            className="size-11 text-brand-teal hover:bg-transparent hover:text-brand-teal lg:hidden"
             aria-label="Open navigation menu"
           />
         }
