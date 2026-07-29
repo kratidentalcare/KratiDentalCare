@@ -10,6 +10,7 @@ import {
   generatePrescriptionNumber,
 } from "@/features/prescriptions/lib/format";
 import { mapPrescriptionDetail } from "@/features/prescriptions/lib/map-prescription";
+import { sanitizeMedicalHistoryForSave } from "@/features/prescriptions/lib/medical-history";
 import {
   findPrescriptionByAppointmentId,
   findPrescriptionByIdOrThrow,
@@ -210,12 +211,18 @@ export async function savePrescriptionForAppointment(
 
   const medications = mapFormMedications(input.medications);
   const followUpDate = parseFollowUpDate(input.followUpDate, settings.timezone);
+  const medicalHistory = sanitizeMedicalHistoryForSave(
+    input.medicalHistory,
+    patient.gender,
+    (civil) => parseFollowUpDate(civil, settings.timezone),
+  );
 
   const clinicalFields = {
     diagnosis: input.diagnosis,
     chiefComplaint: input.chiefComplaint,
     clinicalNotes: input.clinicalNotes,
     advice: input.advice,
+    medicalHistory,
     followUpDate,
     medications,
     status: PRESCRIPTION_STATUSES.ISSUED,

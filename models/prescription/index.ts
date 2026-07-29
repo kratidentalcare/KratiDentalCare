@@ -22,6 +22,7 @@ export type {
   PrescriptionDoctorSnapshot,
   PrescriptionDocument,
   PrescriptionFields,
+  PrescriptionMedicalHistory,
   PrescriptionMedication,
   PrescriptionModel,
   PrescriptionPatientSnapshot,

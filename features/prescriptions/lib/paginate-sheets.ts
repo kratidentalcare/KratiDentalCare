@@ -1,5 +1,12 @@
 import { PRESCRIPTION_LAYOUT } from "@/features/prescriptions/lib/layout";
+import {
+  buildMedicalHistoryBlocks,
+  medicalHistoryLineCost,
+  type MedicalHistoryRenderBlock,
+} from "@/features/prescriptions/lib/medical-history";
 import type {
+  PrescriptionMedicalHistoryDto,
+  PrescriptionMedicalHistorySheet,
   PrescriptionMedicineDto,
   PrescriptionPreviewData,
   PrescriptionPreviewSheet,
@@ -49,6 +56,52 @@ type TextBucket = {
   label: string;
   lines: string[];
 };
+
+function blocksToSheet(
+  blocks: MedicalHistoryRenderBlock[],
+): PrescriptionMedicalHistorySheet | null {
+  if (blocks.length === 0) {
+    return null;
+  }
+
+  let currentMedication: string | null = null;
+  let pregnantDueDateLabel: string | null = null;
+  let nursing = false;
+  let habits: string[] = [];
+  let allergy: string | null = null;
+
+  for (const block of blocks) {
+    switch (block.kind) {
+      case "kv":
+        if (block.label === "Current Medication") {
+          currentMedication = block.value;
+        }
+        break;
+      case "pregnant":
+        pregnantDueDateLabel = block.dueDateLabel;
+        break;
+      case "nursing":
+        nursing = true;
+        break;
+      case "habits":
+        habits = block.items;
+        break;
+      case "allergy":
+        allergy = block.value;
+        break;
+      default:
+        break;
+    }
+  }
+
+  return {
+    currentMedication,
+    pregnantDueDateLabel,
+    nursing,
+    habits,
+    allergy,
+  };
+}
 
 function buildTextBuckets(data: PrescriptionPreviewData): TextBucket[] {
   const chars = PRESCRIPTION_LAYOUT.charsPerLine;
@@ -107,6 +160,7 @@ function medicineLineCost(medicine: PrescriptionMedicineDto): number {
 
 function emptySheetBody(): Pick<
   PrescriptionPreviewSheet,
+  | "medicalHistory"
   | "diagnosisLines"
   | "chiefComplaintLines"
   | "clinicalNotesLines"
@@ -115,6 +169,7 @@ function emptySheetBody(): Pick<
   | "followUpLabel"
 > {
   return {
+    medicalHistory: null,
     diagnosisLines: [],
     chiefComplaintLines: [],
     clinicalNotesLines: [],
@@ -131,6 +186,12 @@ function emptySheetBody(): Pick<
 export function paginatePrescriptionSheets(
   data: PrescriptionPreviewData,
 ): PrescriptionPreviewSheet[] {
+  const historyBlocks = buildMedicalHistoryBlocks(data.medicalHistory);
+  const historySheet = blocksToSheet(historyBlocks);
+  const historyCost = medicalHistoryLineCost(
+    historyBlocks,
+    PRESCRIPTION_LAYOUT.charsPerLine,
+  );
   const buckets = buildTextBuckets(data);
   const medicines = data.medications;
   const followUp = data.followUpLabel.trim();
@@ -162,6 +223,12 @@ export function paginatePrescriptionSheets(
       return;
     }
     page = startPage(true);
+  }
+
+  // Medical History always leads content on the first sheet when present.
+  if (historySheet && historyCost > 0) {
+    page.body.medicalHistory = historySheet;
+    page.lineBudget -= historyCost;
   }
 
   function appendLabeledLines(
@@ -204,6 +271,7 @@ export function paginatePrescriptionSheets(
     }
     const itemCost = medicineLineCost(medicine);
     const pageHasContent =
+      page.body.medicalHistory != null ||
       page.body.diagnosisLines.length > 0 ||
       page.body.chiefComplaintLines.length > 0 ||
       page.body.clinicalNotesLines.length > 0 ||
@@ -245,6 +313,7 @@ export function paginatePrescriptionSheets(
       dateLabel: data.dateLabel,
       opdLabel: data.opdLabel,
     },
+    medicalHistory: draft.body.medicalHistory,
     diagnosisLines: draft.body.diagnosisLines,
     chiefComplaintLines: draft.body.chiefComplaintLines,
     clinicalNotesLines: draft.body.clinicalNotesLines,
@@ -263,6 +332,7 @@ export function toPreviewData(input: {
   ageSexLabel: string;
   dateLabel: string;
   opdLabel: string;
+  medicalHistory?: PrescriptionMedicalHistoryDto | null;
   diagnosis: string;
   chiefComplaint: string;
   clinicalNotes: string;
@@ -274,6 +344,7 @@ export function toPreviewData(input: {
 }): PrescriptionPreviewData {
   return {
     ...input,
+    medicalHistory: input.medicalHistory ?? null,
     signatureLabel: "Doctor's Signature",
   };
 }

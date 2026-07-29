@@ -22,6 +22,24 @@ export type PrescriptionMedication = {
   quantity: string | null;
 };
 
+/**
+ * Structured medical history captured on the prescription.
+ * Optional on legacy documents — treat missing as empty at DTO boundaries.
+ */
+export type PrescriptionMedicalHistory = {
+  takingMedication: boolean;
+  currentMedication: string | null;
+  pregnant: boolean;
+  dueDate: Date | null;
+  nursing: boolean;
+  panMasala: boolean;
+  tobacco: boolean;
+  smoking: boolean;
+  cigarettesPerDay: number | null;
+  hasAllergy: boolean;
+  allergyName: string | null;
+};
+
 /** Patient fields frozen at issue/amend time. */
 export type PrescriptionPatientSnapshot = {
   fullName: string;
@@ -53,6 +71,8 @@ export type PrescriptionFields = {
   chiefComplaint: string | null;
   clinicalNotes: string | null;
   advice: string | null;
+  /** Optional for backward compatibility with pre-history prescriptions. */
+  medicalHistory: PrescriptionMedicalHistory | null;
   followUpDate: Date | null;
   medications: PrescriptionMedication[];
   issuedAt: Date | null;

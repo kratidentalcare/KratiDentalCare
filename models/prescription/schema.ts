@@ -33,6 +33,9 @@ const SNAPSHOT_NAME_MAX = 120;
 const SNAPSHOT_PHONE_MAX = 20;
 const QUALIFICATION_MAX = 200;
 const MAX_MEDICATIONS = 50;
+const CURRENT_MEDICATION_MAX = 1000;
+const ALLERGY_NAME_MAX = 500;
+const CIGARETTES_PER_DAY_MAX = 100;
 
 const PHONE_PATTERN = /^[+]?[\d\s()-]+$/;
 const RX_NUMBER_PATTERN = /^[A-Z0-9][A-Z0-9-_]*$/i;
@@ -158,6 +161,79 @@ const doctorSnapshotSchema = new Schema(
   { _id: false },
 );
 
+const medicalHistorySchema = new Schema(
+  {
+    takingMedication: {
+      type: Boolean,
+      default: false,
+    },
+    currentMedication: {
+      type: String,
+      default: null,
+      trim: true,
+      maxlength: [
+        CURRENT_MEDICATION_MAX,
+        "medicalHistory.currentMedication is too long",
+      ],
+      set: emptyToNull,
+    },
+    pregnant: {
+      type: Boolean,
+      default: false,
+    },
+    dueDate: {
+      type: Date,
+      default: null,
+    },
+    nursing: {
+      type: Boolean,
+      default: false,
+    },
+    panMasala: {
+      type: Boolean,
+      default: false,
+    },
+    tobacco: {
+      type: Boolean,
+      default: false,
+    },
+    smoking: {
+      type: Boolean,
+      default: false,
+    },
+    cigarettesPerDay: {
+      type: Number,
+      default: null,
+      min: [1, "medicalHistory.cigarettesPerDay must be at least 1"],
+      max: [
+        CIGARETTES_PER_DAY_MAX,
+        "medicalHistory.cigarettesPerDay is unrealistically high",
+      ],
+      validate: {
+        validator(value: number | null) {
+          if (value == null) {
+            return true;
+          }
+          return Number.isInteger(value);
+        },
+        message: "medicalHistory.cigarettesPerDay must be an integer",
+      },
+    },
+    hasAllergy: {
+      type: Boolean,
+      default: false,
+    },
+    allergyName: {
+      type: String,
+      default: null,
+      trim: true,
+      maxlength: [ALLERGY_NAME_MAX, "medicalHistory.allergyName is too long"],
+      set: emptyToNull,
+    },
+  },
+  { _id: false },
+);
+
 /**
  * Prescription schema.
  * Collection: `prescriptions`
@@ -245,6 +321,10 @@ export const prescriptionSchema = createBaseSchema(
       trim: true,
       maxlength: [ADVICE_MAX, "advice is too long"],
       set: emptyToNull,
+    },
+    medicalHistory: {
+      type: medicalHistorySchema,
+      default: null,
     },
     followUpDate: {
       type: Date,

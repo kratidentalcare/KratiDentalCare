@@ -5,6 +5,7 @@ import {
   formatDisplayDate,
   shortOpdLabel,
 } from "@/features/prescriptions/lib/format";
+import { mapStoredMedicalHistory } from "@/features/prescriptions/lib/medical-history";
 import { toPreviewData } from "@/features/prescriptions/lib/paginate-sheets";
 import type {
   PrescriptionDetail,
@@ -64,6 +65,10 @@ export function mapPrescriptionDetail(
     diagnosis: prescription.diagnosis,
     clinicalNotes: prescription.clinicalNotes,
     advice: prescription.advice,
+    medicalHistory: mapStoredMedicalHistory(
+      prescription.medicalHistory,
+      (date) => utcToCivilDate(date, timezone),
+    ),
     followUpDate: prescription.followUpDate
       ? utcToCivilDate(prescription.followUpDate, timezone)
       : null,
@@ -104,6 +109,7 @@ export function detailToPreviewData(
     ),
     dateLabel: detail.issuedDateLabel,
     opdLabel: shortOpdLabel(detail.appointmentId, detail.prescriptionNumber),
+    medicalHistory: detail.medicalHistory,
     diagnosis: detail.diagnosis ?? "",
     chiefComplaint: detail.chiefComplaint ?? "",
     clinicalNotes: detail.clinicalNotes ?? "",

@@ -18,7 +18,7 @@ export type OverlayBox = {
 
 export const prescriptionPositions = {
   patientName: {
-    top: 25.75,
+    top: 19.75,
     left: 25.5,
     width: 28.5,
   } satisfies OverlayBox,

@@ -110,7 +110,7 @@ export function PublicPageHero({
             )}
           >
             <span className="block">{heading}</span>
-            <span className="block text-brand-blue/90">{headingAccent}</span>
+            <span className="block">{headingAccent}</span>
           </h1>
 
           <p

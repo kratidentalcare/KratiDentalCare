@@ -8,6 +8,7 @@ import {
 } from "@/features/prescriptions/lib/layout";
 import { paginatePrescriptionSheets } from "@/features/prescriptions/lib/paginate-sheets";
 import type {
+  PrescriptionMedicalHistorySheet,
   PrescriptionMedicineDto,
   PrescriptionPreviewData,
 } from "@/features/prescriptions/types";
@@ -73,6 +74,69 @@ function PrescriptionTextSection({ lines }: { lines: string[] }) {
       {continuationLines.map((line, index) => (
         <p key={`${line}-${index}`}>{line}</p>
       ))}
+    </div>
+  );
+}
+
+function MedicalHistorySection({
+  history,
+}: {
+  history: PrescriptionMedicalHistorySheet;
+}) {
+  const hasContent =
+    history.currentMedication ||
+    history.pregnantDueDateLabel ||
+    history.nursing ||
+    history.habits.length > 0 ||
+    history.allergy;
+
+  if (!hasContent) {
+    return null;
+  }
+
+  return (
+    <div className="mb-1.5">
+      <p className="mb-0.5 text-[12pt] font-bold">Medical History</p>
+
+      {history.currentMedication ? (
+        <div className="mb-0.5">
+          <p>
+            <strong className="font-semibold">Current Medication:</strong>
+          </p>
+          <p>{history.currentMedication}</p>
+        </div>
+      ) : null}
+
+      {history.pregnantDueDateLabel ? (
+        <div className="mb-0.5">
+          <p>
+            <strong className="font-semibold">Pregnant:</strong>
+          </p>
+          <p>Due Date: {history.pregnantDueDateLabel}</p>
+        </div>
+      ) : null}
+
+      {history.nursing ? (
+        <p className="mb-0.5 font-semibold">Nursing Mother</p>
+      ) : null}
+
+      {history.habits.length > 0 ? (
+        <div className="mb-0.5">
+          <p className="font-semibold">Habits</p>
+          <ul className="list-none pl-0">
+            {history.habits.map((habit) => (
+              <li key={habit}>• {habit}</li>
+            ))}
+          </ul>
+        </div>
+      ) : null}
+
+      {history.allergy ? (
+        <div className="mb-0.5">
+          <p className="font-semibold">Allergy</p>
+          <p>{history.allergy}</p>
+        </div>
+      ) : null}
     </div>
   );
 }
@@ -196,6 +260,10 @@ export function PrescriptionPreview({
                   <p className="mb-1 text-[10pt] font-medium text-slate-500">
                     Prescription continued
                   </p>
+                ) : null}
+
+                {sheet.medicalHistory ? (
+                  <MedicalHistorySection history={sheet.medicalHistory} />
                 ) : null}
 
                 <PrescriptionTextSection lines={sheet.diagnosisLines} />

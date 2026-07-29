@@ -11,6 +11,22 @@ export type PrescriptionMedicineDto = {
   instructions: string | null;
 };
 
+/** Medical history as edited in the form and shown in preview / PDF. */
+export type PrescriptionMedicalHistoryDto = {
+  takingMedication: boolean;
+  currentMedication: string | null;
+  pregnant: boolean;
+  /** Civil YYYY-MM-DD when pregnant. */
+  dueDate: string | null;
+  nursing: boolean;
+  panMasala: boolean;
+  tobacco: boolean;
+  smoking: boolean;
+  cigarettesPerDay: number | null;
+  hasAllergy: boolean;
+  allergyName: string | null;
+};
+
 /** Full prescription DTO for dashboard surfaces. */
 export type PrescriptionDetail = {
   id: string;
@@ -33,6 +49,7 @@ export type PrescriptionDetail = {
   diagnosis: string | null;
   clinicalNotes: string | null;
   advice: string | null;
+  medicalHistory: PrescriptionMedicalHistoryDto;
   followUpDate: string | null;
   medications: PrescriptionMedicineDto[];
   createdAt: string;
@@ -109,6 +126,7 @@ export type PrescriptionPreviewData = {
   ageSexLabel: string;
   dateLabel: string;
   opdLabel: string;
+  medicalHistory: PrescriptionMedicalHistoryDto | null;
   diagnosis: string;
   chiefComplaint: string;
   clinicalNotes: string;
@@ -120,6 +138,14 @@ export type PrescriptionPreviewData = {
   signatureLabel: string;
 };
 
+export type PrescriptionMedicalHistorySheet = {
+  currentMedication: string | null;
+  pregnantDueDateLabel: string | null;
+  nursing: boolean;
+  habits: string[];
+  allergy: string | null;
+};
+
 export type PrescriptionPreviewSheet = {
   pageIndex: number;
   pageCount: number;
@@ -128,6 +154,7 @@ export type PrescriptionPreviewSheet = {
     PrescriptionPreviewData,
     "patientName" | "ageSexLabel" | "dateLabel" | "opdLabel"
   >;
+  medicalHistory: PrescriptionMedicalHistorySheet | null;
   diagnosisLines: string[];
   chiefComplaintLines: string[];
   clinicalNotesLines: string[];

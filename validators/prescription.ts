@@ -50,6 +50,86 @@ const optionalText = (max: number) =>
     .optional()
     .transform((value) => (value == null || value === "" ? null : value));
 
+const optionalCivilDate = z
+  .union([
+    z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid date"),
+    z.literal(""),
+    z.null(),
+  ])
+  .optional()
+  .transform((value) => (value == null || value === "" ? null : value));
+
+const optionalBoolean = z.boolean().optional().default(false);
+
+/**
+ * Doctor-facing medical history form fields.
+ * Dependent text/date/count values are required only when their flag is true.
+ */
+export const prescriptionMedicalHistoryFormSchema = z
+  .object({
+    takingMedication: optionalBoolean,
+    currentMedication: optionalText(1000),
+    pregnant: optionalBoolean,
+    dueDate: optionalCivilDate,
+    nursing: optionalBoolean,
+    panMasala: optionalBoolean,
+    tobacco: optionalBoolean,
+    smoking: optionalBoolean,
+    cigarettesPerDay: z
+      .union([
+        z.coerce.number().int().min(1).max(100),
+        z.literal(""),
+        z.null(),
+      ])
+      .optional()
+      .transform((value) =>
+        value == null || value === "" ? null : Number(value),
+      ),
+    hasAllergy: optionalBoolean,
+    allergyName: optionalText(500),
+  })
+  .superRefine((value, ctx) => {
+    if (value.takingMedication) {
+      if (value.currentMedication == null || value.currentMedication === "") {
+        ctx.addIssue({
+          code: "custom",
+          message: "Enter current medication",
+          path: ["currentMedication"],
+        });
+      }
+    }
+
+    if (value.pregnant) {
+      if (value.dueDate == null || value.dueDate === "") {
+        ctx.addIssue({
+          code: "custom",
+          message: "Enter due date",
+          path: ["dueDate"],
+        });
+      }
+    }
+
+    if (value.smoking) {
+      if (value.cigarettesPerDay == null) {
+        ctx.addIssue({
+          code: "custom",
+          message: "Enter cigarettes per day",
+          path: ["cigarettesPerDay"],
+        });
+      }
+    }
+
+    if (value.hasAllergy) {
+      if (value.allergyName == null || value.allergyName === "") {
+        ctx.addIssue({
+          code: "custom",
+          message: "Enter allergy name",
+          path: ["allergyName"],
+        });
+      }
+    }
+  });
+
 /** Medicine row as edited in the clinical form (maps to medications[].name). */
 export const prescriptionFormMedicineSchema = z.object({
   medicineName: nonEmptyStringSchema.max(200),
@@ -74,6 +154,7 @@ export const prescriptionFormSchema = z.object({
   diagnosis: nonEmptyStringSchema.max(1000),
   clinicalNotes: optionalText(5000),
   advice: optionalText(5000),
+  medicalHistory: prescriptionMedicalHistoryFormSchema.optional(),
   followUpDate: z
     .union([
       z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid follow-up date"),
@@ -88,6 +169,24 @@ export const prescriptionFormSchema = z.object({
     .max(50),
 });
 
+/** Persistence-shaped medical history (Date objects for dueDate). */
+export const prescriptionMedicalHistorySchema = z
+  .object({
+    takingMedication: z.boolean().default(false),
+    currentMedication: z.string().trim().max(1000).nullable().optional(),
+    pregnant: z.boolean().default(false),
+    dueDate: z.coerce.date().nullable().optional(),
+    nursing: z.boolean().default(false),
+    panMasala: z.boolean().default(false),
+    tobacco: z.boolean().default(false),
+    smoking: z.boolean().default(false),
+    cigarettesPerDay: z.number().int().min(1).max(100).nullable().optional(),
+    hasAllergy: z.boolean().default(false),
+    allergyName: z.string().trim().max(500).nullable().optional(),
+  })
+  .nullable()
+  .optional();
+
 export const createPrescriptionSchema = z
   .object({
     prescriptionNumber: prescriptionNumberSchema,
@@ -99,6 +198,7 @@ export const createPrescriptionSchema = z
     chiefComplaint: z.string().trim().max(1000).nullable().optional(),
     clinicalNotes: z.string().trim().max(5000).nullable().optional(),
     advice: z.string().trim().max(5000).nullable().optional(),
+    medicalHistory: prescriptionMedicalHistorySchema,
     followUpDate: z.coerce.date().nullable().optional(),
     medications: z.array(prescriptionMedicationSchema).max(50).optional(),
     issuedAt: z.coerce.date().nullable().optional(),
@@ -197,6 +297,7 @@ export const updatePrescriptionSchema = z
     chiefComplaint: z.string().trim().max(1000).nullable().optional(),
     clinicalNotes: z.string().trim().max(5000).nullable().optional(),
     advice: z.string().trim().max(5000).nullable().optional(),
+    medicalHistory: prescriptionMedicalHistorySchema,
     followUpDate: z.coerce.date().nullable().optional(),
     medications: z.array(prescriptionMedicationSchema).max(50).optional(),
     issuedAt: z.coerce.date().nullable().optional(),
@@ -234,5 +335,8 @@ export type PrescriptionMedicationInput = z.infer<
 export type PrescriptionFormInput = z.infer<typeof prescriptionFormSchema>;
 export type PrescriptionFormMedicineInput = z.infer<
   typeof prescriptionFormMedicineSchema
+>;
+export type PrescriptionMedicalHistoryFormInput = z.infer<
+  typeof prescriptionMedicalHistoryFormSchema
 >;
 export type PrescriptionListQuery = z.infer<typeof prescriptionListQuerySchema>;

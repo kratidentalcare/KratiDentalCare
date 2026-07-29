@@ -6,8 +6,12 @@ import {
   formatAgeSexLabel,
   generatePrescriptionNumber,
 } from "@/features/prescriptions/lib/format";
+import {
+  buildMedicalHistoryBlocks,
+} from "@/features/prescriptions/lib/medical-history";
 import { paginatePrescriptionSheets } from "@/features/prescriptions/lib/paginate-sheets";
 import { GENDERS } from "@/constants/patient";
+import type { PrescriptionMedicalHistoryDto } from "@/features/prescriptions/types";
 
 describe("calculateAgeYears", () => {
   it("returns whole years for a past birthday", () => {
@@ -44,6 +48,79 @@ describe("generatePrescriptionNumber", () => {
   });
 });
 
+describe("buildMedicalHistoryBlocks", () => {
+  it("returns empty for null or all-false history", () => {
+    assert.deepEqual(buildMedicalHistoryBlocks(null), []);
+    assert.deepEqual(
+      buildMedicalHistoryBlocks({
+        takingMedication: false,
+        currentMedication: null,
+        pregnant: false,
+        dueDate: null,
+        nursing: false,
+        panMasala: false,
+        tobacco: false,
+        smoking: false,
+        cigarettesPerDay: null,
+        hasAllergy: false,
+        allergyName: null,
+      }),
+      [],
+    );
+  });
+
+  it("only emits meaningful Yes values", () => {
+    const history: PrescriptionMedicalHistoryDto = {
+      takingMedication: true,
+      currentMedication: "Metformin 500 mg",
+      pregnant: true,
+      dueDate: "2026-08-15",
+      nursing: true,
+      panMasala: false,
+      tobacco: true,
+      smoking: true,
+      cigarettesPerDay: 10,
+      hasAllergy: true,
+      allergyName: "Penicillin",
+    };
+
+    const blocks = buildMedicalHistoryBlocks(history);
+    assert.equal(blocks.some((b) => b.kind === "kv"), true);
+    assert.equal(blocks.some((b) => b.kind === "pregnant"), true);
+    assert.equal(blocks.some((b) => b.kind === "nursing"), true);
+    assert.equal(blocks.some((b) => b.kind === "habits"), true);
+    assert.equal(blocks.some((b) => b.kind === "allergy"), true);
+
+    const habits = blocks.find((b) => b.kind === "habits");
+    assert.ok(habits && habits.kind === "habits");
+    assert.deepEqual(habits.items, [
+      "Tobacco Chewing",
+      "Smoking (10 Cigarettes/Day)",
+    ]);
+    assert.equal(
+      habits.items.includes("Pan Masala Chewing"),
+      false,
+    );
+  });
+
+  it("hides medication text when flag is false even if text exists", () => {
+    const blocks = buildMedicalHistoryBlocks({
+      takingMedication: false,
+      currentMedication: "Should not print",
+      pregnant: false,
+      dueDate: "2026-08-15",
+      nursing: false,
+      panMasala: false,
+      tobacco: false,
+      smoking: false,
+      cigarettesPerDay: 5,
+      hasAllergy: false,
+      allergyName: "Penicillin",
+    });
+    assert.deepEqual(blocks, []);
+  });
+});
+
 describe("paginatePrescriptionSheets", () => {
   it("keeps a normal prescription on one A4 sheet", () => {
     const medications = Array.from({ length: 3 }, (_, index) => ({
@@ -59,6 +136,7 @@ describe("paginatePrescriptionSheets", () => {
       ageSexLabel: "30 / M",
       dateLabel: "18 Jul 2026",
       opdLabel: "RX123",
+      medicalHistory: null,
       diagnosis: "Dental caries",
       chiefComplaint: "Pain while chewing",
       clinicalNotes: "Tenderness around the affected tooth",
@@ -72,6 +150,102 @@ describe("paginatePrescriptionSheets", () => {
 
     assert.equal(sheets.length, 1);
     assert.equal(sheets[0]?.showSignature, true);
+    assert.equal(sheets[0]?.medicalHistory, null);
+  });
+
+  it("places medical history before diagnosis and collapses empty history", () => {
+    const sheets = paginatePrescriptionSheets({
+      patientName: "Test Patient",
+      ageSexLabel: "28 / F",
+      dateLabel: "18 Jul 2026",
+      opdLabel: "RX123",
+      medicalHistory: {
+        takingMedication: true,
+        currentMedication: "Metformin 500 mg",
+        pregnant: true,
+        dueDate: "2026-08-15",
+        nursing: false,
+        panMasala: false,
+        tobacco: true,
+        smoking: true,
+        cigarettesPerDay: 5,
+        hasAllergy: true,
+        allergyName: "Penicillin",
+      },
+      diagnosis: "Dental caries",
+      chiefComplaint: "",
+      clinicalNotes: "",
+      advice: "",
+      followUpLabel: "",
+      medications: [
+        {
+          medicineName: "Amoxicillin",
+          dosage: "500 mg",
+          frequency: "TDS",
+          duration: "5 days",
+          instructions: null,
+        },
+      ],
+      doctorName: "Dr Test",
+      doctorQualification: "BDS",
+      signatureLabel: "Doctor's Signature",
+    });
+
+    assert.equal(sheets.length, 1);
+    const sheet = sheets[0];
+    assert.ok(sheet?.medicalHistory);
+    assert.equal(sheet?.medicalHistory?.currentMedication, "Metformin 500 mg");
+    assert.ok(sheet?.medicalHistory?.pregnantDueDateLabel);
+    assert.equal(sheet?.medicalHistory?.nursing, false);
+    assert.deepEqual(sheet?.medicalHistory?.habits, [
+      "Tobacco Chewing",
+      "Smoking (5 Cigarettes/Day)",
+    ]);
+    assert.equal(sheet?.medicalHistory?.allergy, "Penicillin");
+    assert.ok(sheet?.diagnosisLines[0]?.startsWith("Diagnosis:"));
+  });
+
+  it("keeps a compact 5-medicine Rx with light history on one sheet", () => {
+    const medications = Array.from({ length: 5 }, (_, index) => ({
+      medicineName: `Med ${index + 1}`,
+      dosage: "1 tab",
+      frequency: "BD",
+      duration: "5 days",
+      instructions: null,
+    }));
+
+    const sheets = paginatePrescriptionSheets({
+      patientName: "Test Patient",
+      ageSexLabel: "30 / M",
+      dateLabel: "18 Jul 2026",
+      opdLabel: "RX123",
+      medicalHistory: {
+        takingMedication: false,
+        currentMedication: null,
+        pregnant: false,
+        dueDate: null,
+        nursing: false,
+        panMasala: false,
+        tobacco: true,
+        smoking: false,
+        cigarettesPerDay: null,
+        hasAllergy: false,
+        allergyName: null,
+      },
+      diagnosis: "",
+      chiefComplaint: "",
+      clinicalNotes: "",
+      advice: "",
+      followUpLabel: "",
+      medications,
+      doctorName: "Dr Test",
+      doctorQualification: "BDS",
+      signatureLabel: "Doctor's Signature",
+    });
+
+    assert.equal(sheets.length, 1);
+    assert.equal(sheets[0]?.medications.length, 5);
+    assert.deepEqual(sheets[0]?.medicalHistory?.habits, ["Tobacco Chewing"]);
   });
 
   it("creates continuation pages for many medicines", () => {
@@ -88,6 +262,7 @@ describe("paginatePrescriptionSheets", () => {
       ageSexLabel: "30 / M",
       dateLabel: "18 Jul 2026",
       opdLabel: "RX123",
+      medicalHistory: null,
       diagnosis: "Dental caries",
       chiefComplaint: "Pain",
       clinicalNotes: "",
@@ -114,6 +289,7 @@ describe("paginatePrescriptionSheets", () => {
       ageSexLabel: "",
       dateLabel: "",
       opdLabel: "",
+      medicalHistory: null,
       diagnosis: "",
       chiefComplaint: "",
       clinicalNotes: "",
