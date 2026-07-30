@@ -25,6 +25,11 @@ export function formatAgeSexLabel(
   return `${age} / ${sex}`;
 }
 
+export function formatPhoneLabel(phone: string | null | undefined): string {
+  const trimmed = phone?.trim();
+  return trimmed ? trimmed : "—";
+}
+
 export function formatDisplayDate(isoOrDate: string | Date | null): string {
   if (!isoOrDate) {
     return "—";

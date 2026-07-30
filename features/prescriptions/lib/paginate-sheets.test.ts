@@ -135,6 +135,7 @@ describe("paginatePrescriptionSheets", () => {
       patientName: "Test Patient",
       ageSexLabel: "30 / M",
       dateLabel: "18 Jul 2026",
+      mobileLabel: "+91 98765 43210",
       opdLabel: "RX123",
       medicalHistory: null,
       diagnosis: "Dental caries",
@@ -150,7 +151,7 @@ describe("paginatePrescriptionSheets", () => {
 
     assert.equal(sheets.length, 1);
     assert.equal(sheets[0]?.showSignature, true);
-    assert.equal(sheets[0]?.medicalHistory, null);
+    assert.deepEqual(sheets[0]?.medicalHistory, []);
   });
 
   it("places medical history before diagnosis and collapses empty history", () => {
@@ -158,6 +159,7 @@ describe("paginatePrescriptionSheets", () => {
       patientName: "Test Patient",
       ageSexLabel: "28 / F",
       dateLabel: "18 Jul 2026",
+      mobileLabel: "+91 98765 43210",
       opdLabel: "RX123",
       medicalHistory: {
         takingMedication: true,
@@ -193,15 +195,15 @@ describe("paginatePrescriptionSheets", () => {
 
     assert.equal(sheets.length, 1);
     const sheet = sheets[0];
-    assert.ok(sheet?.medicalHistory);
-    assert.equal(sheet?.medicalHistory?.currentMedication, "Metformin 500 mg");
-    assert.ok(sheet?.medicalHistory?.pregnantDueDateLabel);
-    assert.equal(sheet?.medicalHistory?.nursing, false);
-    assert.deepEqual(sheet?.medicalHistory?.habits, [
-      "Tobacco Chewing",
-      "Smoking (5 Cigarettes/Day)",
+    assert.deepEqual(sheet?.medicalHistory, [
+      { label: "Current Medication", value: "Metformin 500 mg" },
+      { label: "Pregnant", value: "Yes (Due Date: 15 Aug 2026)" },
+      {
+        label: "Habits",
+        value: "Tobacco Chewing, Smoking (5 Cigarettes/Day)",
+      },
+      { label: "Allergy", value: "Penicillin" },
     ]);
-    assert.equal(sheet?.medicalHistory?.allergy, "Penicillin");
     assert.ok(sheet?.diagnosisLines[0]?.startsWith("Diagnosis:"));
   });
 
@@ -218,6 +220,7 @@ describe("paginatePrescriptionSheets", () => {
       patientName: "Test Patient",
       ageSexLabel: "30 / M",
       dateLabel: "18 Jul 2026",
+      mobileLabel: "+91 98765 43210",
       opdLabel: "RX123",
       medicalHistory: {
         takingMedication: false,
@@ -245,7 +248,9 @@ describe("paginatePrescriptionSheets", () => {
 
     assert.equal(sheets.length, 1);
     assert.equal(sheets[0]?.medications.length, 5);
-    assert.deepEqual(sheets[0]?.medicalHistory?.habits, ["Tobacco Chewing"]);
+    assert.deepEqual(sheets[0]?.medicalHistory, [
+      { label: "Habits", value: "Tobacco Chewing" },
+    ]);
   });
 
   it("creates continuation pages for many medicines", () => {
@@ -261,6 +266,7 @@ describe("paginatePrescriptionSheets", () => {
       patientName: "Test Patient",
       ageSexLabel: "30 / M",
       dateLabel: "18 Jul 2026",
+      mobileLabel: "+91 98765 43210",
       opdLabel: "RX123",
       medicalHistory: null,
       diagnosis: "Dental caries",
@@ -288,6 +294,7 @@ describe("paginatePrescriptionSheets", () => {
       patientName: "",
       ageSexLabel: "",
       dateLabel: "",
+      mobileLabel: "",
       opdLabel: "",
       medicalHistory: null,
       diagnosis: "",

@@ -125,6 +125,7 @@ export type PrescriptionPreviewData = {
   patientName: string;
   ageSexLabel: string;
   dateLabel: string;
+  mobileLabel: string;
   opdLabel: string;
   medicalHistory: PrescriptionMedicalHistoryDto | null;
   diagnosis: string;
@@ -138,12 +139,10 @@ export type PrescriptionPreviewData = {
   signatureLabel: string;
 };
 
-export type PrescriptionMedicalHistorySheet = {
-  currentMedication: string | null;
-  pregnantDueDateLabel: string | null;
-  nursing: boolean;
-  habits: string[];
-  allergy: string | null;
+/** One printable Medical History row — label and value share a line. */
+export type PrescriptionMedicalHistoryLine = {
+  label: string;
+  value: string;
 };
 
 export type PrescriptionPreviewSheet = {
@@ -152,9 +151,9 @@ export type PrescriptionPreviewSheet = {
   isContinuation: boolean;
   header: Pick<
     PrescriptionPreviewData,
-    "patientName" | "ageSexLabel" | "dateLabel" | "opdLabel"
+    "patientName" | "ageSexLabel" | "dateLabel" | "mobileLabel" | "opdLabel"
   >;
-  medicalHistory: PrescriptionMedicalHistorySheet | null;
+  medicalHistory: PrescriptionMedicalHistoryLine[];
   diagnosisLines: string[];
   chiefComplaintLines: string[];
   clinicalNotesLines: string[];

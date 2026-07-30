@@ -1,6 +1,9 @@
 import { GENDERS, type Gender } from "@/constants/patient";
 import { formatCivilDateLabel } from "@/features/prescriptions/lib/format";
-import type { PrescriptionMedicalHistoryDto } from "@/features/prescriptions/types";
+import type {
+  PrescriptionMedicalHistoryDto,
+  PrescriptionMedicalHistoryLine,
+} from "@/features/prescriptions/types";
 import type { LeanPrescription } from "@/models/prescription";
 import type { PrescriptionMedicalHistoryFormInput } from "@/validators/prescription";
 
@@ -104,42 +107,45 @@ export function buildMedicalHistoryBlocks(
   return blocks;
 }
 
+/**
+ * Printable Medical History rows — the single source of truth for the label
+ * text, shared by the renderer and the pagination cost estimator.
+ */
+export function buildMedicalHistoryLines(
+  history: PrescriptionMedicalHistoryDto | null | undefined,
+): PrescriptionMedicalHistoryLine[] {
+  return buildMedicalHistoryBlocks(history).map((block) => {
+    switch (block.kind) {
+      case "kv":
+        return { label: block.label, value: block.value };
+      case "pregnant":
+        return {
+          label: "Pregnant",
+          value: `Yes (Due Date: ${block.dueDateLabel})`,
+        };
+      case "nursing":
+        return { label: "Nursing Mother", value: "Yes" };
+      case "habits":
+        return { label: "Habits", value: block.items.join(", ") };
+      case "allergy":
+        return { label: "Allergy", value: block.value };
+    }
+  });
+}
+
 /** Approximate line cost for pagination budgeting. */
 export function medicalHistoryLineCost(
-  blocks: MedicalHistoryRenderBlock[],
+  lines: PrescriptionMedicalHistoryLine[],
   charsPerLine: number,
 ): number {
-  if (blocks.length === 0) {
+  if (lines.length === 0) {
     return 0;
   }
 
-  let lines = 1; // "Medical History" heading
-
-  for (const block of blocks) {
-    switch (block.kind) {
-      case "kv": {
-        const text = `${block.label}: ${block.value}`;
-        lines += Math.max(1, Math.ceil(text.length / charsPerLine));
-        break;
-      }
-      case "pregnant":
-        lines += 2; // Pregnant + Due Date
-        break;
-      case "nursing":
-        lines += 1;
-        break;
-      case "habits":
-        lines += 1 + block.items.length; // heading + bullets
-        break;
-      case "allergy":
-        lines += 1 + Math.max(1, Math.ceil(block.value.length / charsPerLine));
-        break;
-      default:
-        break;
-    }
-  }
-
-  return lines;
+  return lines.reduce((total, line) => {
+    const text = `${line.label}: ${line.value}`;
+    return total + Math.max(1, Math.ceil(text.length / charsPerLine));
+  }, 1); // seed of 1 covers the "Medical History" heading
 }
 
 export function mapStoredMedicalHistory(

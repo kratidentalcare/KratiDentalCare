@@ -1,12 +1,13 @@
-import { PRESCRIPTION_LAYOUT } from "@/features/prescriptions/lib/layout";
 import {
-  buildMedicalHistoryBlocks,
+  PRESCRIPTION_LAYOUT,
+  PRESCRIPTION_MEDICINE_COLUMNS,
+} from "@/features/prescriptions/lib/layout";
+import {
+  buildMedicalHistoryLines,
   medicalHistoryLineCost,
-  type MedicalHistoryRenderBlock,
 } from "@/features/prescriptions/lib/medical-history";
 import type {
   PrescriptionMedicalHistoryDto,
-  PrescriptionMedicalHistorySheet,
   PrescriptionMedicineDto,
   PrescriptionPreviewData,
   PrescriptionPreviewSheet,
@@ -57,52 +58,6 @@ type TextBucket = {
   lines: string[];
 };
 
-function blocksToSheet(
-  blocks: MedicalHistoryRenderBlock[],
-): PrescriptionMedicalHistorySheet | null {
-  if (blocks.length === 0) {
-    return null;
-  }
-
-  let currentMedication: string | null = null;
-  let pregnantDueDateLabel: string | null = null;
-  let nursing = false;
-  let habits: string[] = [];
-  let allergy: string | null = null;
-
-  for (const block of blocks) {
-    switch (block.kind) {
-      case "kv":
-        if (block.label === "Current Medication") {
-          currentMedication = block.value;
-        }
-        break;
-      case "pregnant":
-        pregnantDueDateLabel = block.dueDateLabel;
-        break;
-      case "nursing":
-        nursing = true;
-        break;
-      case "habits":
-        habits = block.items;
-        break;
-      case "allergy":
-        allergy = block.value;
-        break;
-      default:
-        break;
-    }
-  }
-
-  return {
-    currentMedication,
-    pregnantDueDateLabel,
-    nursing,
-    habits,
-    allergy,
-  };
-}
-
 function buildTextBuckets(data: PrescriptionPreviewData): TextBucket[] {
   const chars = PRESCRIPTION_LAYOUT.charsPerLine;
   const buckets: TextBucket[] = [];
@@ -138,24 +93,27 @@ function buildTextBuckets(data: PrescriptionPreviewData): TextBucket[] {
   return buckets;
 }
 
+/** A table row is as tall as its tallest wrapped cell. */
 function medicineLineCost(medicine: PrescriptionMedicineDto): number {
-  const charsPerLine = PRESCRIPTION_LAYOUT.charsPerLine;
-  const title = [medicine.medicineName, medicine.dosage]
-    .filter(Boolean)
-    .join(" ");
-  const directions = [
-    medicine.frequency,
-    medicine.duration,
-    medicine.instructions,
-  ]
-    .filter(Boolean)
-    .join(" · ");
+  const cellValues: Record<string, string> = {
+    serial: "00",
+    medicineName: medicine.medicineName,
+    dosage: medicine.dosage,
+    frequency: medicine.frequency,
+    duration: medicine.duration,
+    instructions: medicine.instructions ?? "",
+  };
 
-  return (
-    Math.max(1, wrapText(title, charsPerLine).length) +
-    Math.max(1, wrapText(directions, charsPerLine).length) +
-    PRESCRIPTION_LAYOUT.medicineSpacingLineCost
-  );
+  const tallestCell = PRESCRIPTION_MEDICINE_COLUMNS.reduce((tallest, column) => {
+    const columnChars = Math.max(
+      1,
+      Math.floor((PRESCRIPTION_LAYOUT.charsPerLine * column.widthPercent) / 100),
+    );
+    const cellLines = wrapText(cellValues[column.key] ?? "", columnChars).length;
+    return Math.max(tallest, cellLines);
+  }, 1);
+
+  return tallestCell + PRESCRIPTION_LAYOUT.medicineRowPaddingLineCost;
 }
 
 function emptySheetBody(): Pick<
@@ -169,7 +127,7 @@ function emptySheetBody(): Pick<
   | "followUpLabel"
 > {
   return {
-    medicalHistory: null,
+    medicalHistory: [],
     diagnosisLines: [],
     chiefComplaintLines: [],
     clinicalNotesLines: [],
@@ -186,11 +144,10 @@ function emptySheetBody(): Pick<
 export function paginatePrescriptionSheets(
   data: PrescriptionPreviewData,
 ): PrescriptionPreviewSheet[] {
-  const historyBlocks = buildMedicalHistoryBlocks(data.medicalHistory);
-  const historySheet = blocksToSheet(historyBlocks);
+  const historyLines = buildMedicalHistoryLines(data.medicalHistory);
   const historyCost = medicalHistoryLineCost(
-    historyBlocks,
-    PRESCRIPTION_LAYOUT.charsPerLine,
+    historyLines,
+    PRESCRIPTION_LAYOUT.medicalHistoryCharsPerLine,
   );
   const buckets = buildTextBuckets(data);
   const medicines = data.medications;
@@ -226,8 +183,8 @@ export function paginatePrescriptionSheets(
   }
 
   // Medical History always leads content on the first sheet when present.
-  if (historySheet && historyCost > 0) {
-    page.body.medicalHistory = historySheet;
+  if (historyLines.length > 0) {
+    page.body.medicalHistory = historyLines;
     page.lineBudget -= historyCost;
   }
 
@@ -269,9 +226,14 @@ export function paginatePrescriptionSheets(
     if (!medicine) {
       break;
     }
-    const itemCost = medicineLineCost(medicine);
+    // The table header reprints on every page that carries medicines.
+    const headerCost =
+      page.body.medications.length === 0
+        ? PRESCRIPTION_LAYOUT.medicineTableHeaderLineCost
+        : 0;
+    const itemCost = medicineLineCost(medicine) + headerCost;
     const pageHasContent =
-      page.body.medicalHistory != null ||
+      page.body.medicalHistory.length > 0 ||
       page.body.diagnosisLines.length > 0 ||
       page.body.chiefComplaintLines.length > 0 ||
       page.body.clinicalNotesLines.length > 0 ||
@@ -311,6 +273,7 @@ export function paginatePrescriptionSheets(
       patientName: data.patientName,
       ageSexLabel: data.ageSexLabel,
       dateLabel: data.dateLabel,
+      mobileLabel: data.mobileLabel,
       opdLabel: data.opdLabel,
     },
     medicalHistory: draft.body.medicalHistory,
@@ -331,6 +294,7 @@ export function toPreviewData(input: {
   patientName: string;
   ageSexLabel: string;
   dateLabel: string;
+  mobileLabel: string;
   opdLabel: string;
   medicalHistory?: PrescriptionMedicalHistoryDto | null;
   diagnosis: string;

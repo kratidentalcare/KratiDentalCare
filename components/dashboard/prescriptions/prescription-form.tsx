@@ -33,6 +33,7 @@ import { savePrescriptionAction } from "@/features/prescriptions/actions";
 import {
   formatAgeSexLabel,
   formatCivilDateLabel,
+  formatPhoneLabel,
   shortOpdLabel,
 } from "@/features/prescriptions/lib/format";
 import { EMPTY_MEDICAL_HISTORY } from "@/features/prescriptions/lib/medical-history";
@@ -134,6 +135,7 @@ function readOnlyMeta(context: PrescriptionWorkspaceContext) {
     return {
       patientName: rx.patientName,
       patientGender: rx.patientGender,
+      mobileLabel: formatPhoneLabel(rx.patientPhone),
       ageSexLabel: formatAgeSexLabel(rx.patientAgeYears, rx.patientGender),
       doctorName: rx.doctorName,
       doctorQualification: rx.doctorQualification,
@@ -150,6 +152,7 @@ function readOnlyMeta(context: PrescriptionWorkspaceContext) {
   return {
     patientName: context.patientName,
     patientGender: context.patientGender,
+    mobileLabel: formatPhoneLabel(context.patientPhone),
     ageSexLabel: formatAgeSexLabel(
       context.patientAgeYears,
       context.patientGender,
@@ -207,6 +210,7 @@ export function PrescriptionForm({ context }: PrescriptionFormProps) {
       patientName: meta.patientName,
       ageSexLabel: meta.ageSexLabel,
       dateLabel: meta.dateLabel,
+      mobileLabel: meta.mobileLabel,
       opdLabel: meta.opdLabel,
       medicalHistory,
       diagnosis: watched.diagnosis ?? "",
@@ -305,6 +309,7 @@ export function PrescriptionForm({ context }: PrescriptionFormProps) {
             <div className="grid gap-3 sm:grid-cols-2">
               <ReadOnlyField label="Patient" value={meta.patientName} />
               <ReadOnlyField label="Age / Gender" value={meta.ageSexLabel} />
+              <ReadOnlyField label="Mobile no" value={meta.mobileLabel} />
               <ReadOnlyField label="Doctor" value={meta.doctorName} />
               <ReadOnlyField label="Date" value={meta.dateLabel} />
               <ReadOnlyField

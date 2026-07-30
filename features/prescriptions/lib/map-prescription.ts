@@ -3,6 +3,7 @@ import {
   formatAgeSexLabel,
   formatCivilDateLabel,
   formatDisplayDate,
+  formatPhoneLabel,
   shortOpdLabel,
 } from "@/features/prescriptions/lib/format";
 import { mapStoredMedicalHistory } from "@/features/prescriptions/lib/medical-history";
@@ -108,6 +109,7 @@ export function detailToPreviewData(
       detail.patientGender,
     ),
     dateLabel: detail.issuedDateLabel,
+    mobileLabel: formatPhoneLabel(detail.patientPhone),
     opdLabel: shortOpdLabel(detail.appointmentId, detail.prescriptionNumber),
     medicalHistory: detail.medicalHistory,
     diagnosis: detail.diagnosis ?? "",
