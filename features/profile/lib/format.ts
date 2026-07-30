@@ -10,12 +10,10 @@ export function formatUserRoleLabel(role: UserRole): string {
       return "Admin";
     case USER_ROLES.DOCTOR:
       return "Doctor";
+    case USER_ROLES.STAFF:
+      return "Staff";
     case USER_ROLES.PATIENT:
       return "Patient";
-    case USER_ROLES.RECEPTIONIST:
-      return "Receptionist";
-    case USER_ROLES.ASSISTANT:
-      return "Assistant";
     default:
       return role;
   }

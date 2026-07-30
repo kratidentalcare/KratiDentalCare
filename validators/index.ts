@@ -40,6 +40,18 @@ export {
 } from "./user";
 
 export {
+  updateUserAccessStatusSchema,
+  updateUserRoleSchema,
+  userAccessStatusSchema,
+  userListQuerySchema,
+  userRoleFilterSchema,
+  userStatusFilterSchema,
+  type UpdateUserAccessStatusInput,
+  type UpdateUserRoleInput,
+  type UserListQuery,
+} from "./user-management";
+
+export {
   PROFILE_IMAGE_MAX_BYTES,
   PROFILE_IMAGE_MIME_TYPES,
   profileImageFileSchema,

@@ -11,10 +11,11 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "test": "tsx --test features/scheduling/**/*.test.ts features/appointments/**/*.test.ts features/patients/**/*.test.ts features/prescriptions/**/*.test.ts",
+    "test": "tsx --test features/scheduling/**/*.test.ts features/appointments/**/*.test.ts features/patients/**/*.test.ts features/prescriptions/**/*.test.ts features/users/**/*.test.ts",
     "test:scheduling": "tsx --test features/scheduling/engine/generate-slots.test.ts",
     "seed": "tsx --import ./scripts/seed/preload.ts ./scripts/seed/index.ts",
-    "seed:reset": "tsx --import ./scripts/seed/preload.ts ./scripts/seed/reset.ts"
+    "seed:reset": "tsx --import ./scripts/seed/preload.ts ./scripts/seed/reset.ts",
+    "migrate:staff-roles": "tsx --import ./scripts/seed/preload.ts ./scripts/migrations/consolidate-staff-roles.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.6.0",

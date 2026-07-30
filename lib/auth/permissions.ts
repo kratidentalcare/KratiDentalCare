@@ -31,6 +31,10 @@ export const PERMISSIONS = {
   DOCTORS_READ: "doctors:read",
   DOCTORS_MANAGE: "doctors:manage",
 
+  // User & role management
+  USERS_READ: "users:read",
+  USERS_MANAGE: "users:manage",
+
   // CMS / clinic ops
   WEBSITE_MANAGE: "website:manage",
   CLINIC_SETTINGS_MANAGE: "clinic_settings:manage",
@@ -41,7 +45,7 @@ export const PERMISSIONS = {
   DASHBOARD_ADMIN: "dashboard:admin",
   DASHBOARD_PATIENT: "dashboard:patient",
   DASHBOARD_DOCTOR: "dashboard:doctor",
-  DASHBOARD_RECEPTIONIST: "dashboard:receptionist",
+  DASHBOARD_STAFF: "dashboard:staff",
 } as const;
 
 export type Permission = (typeof PERMISSIONS)[keyof typeof PERMISSIONS];
@@ -61,6 +65,8 @@ const ADMIN_PERMISSIONS = [
   PERMISSIONS.PATIENTS_MANAGE,
   PERMISSIONS.DOCTORS_READ,
   PERMISSIONS.DOCTORS_MANAGE,
+  PERMISSIONS.USERS_READ,
+  PERMISSIONS.USERS_MANAGE,
   PERMISSIONS.WEBSITE_MANAGE,
   PERMISSIONS.CLINIC_SETTINGS_MANAGE,
   PERMISSIONS.CONTACT_INBOX_MANAGE,
@@ -86,8 +92,8 @@ const DOCTOR_PERMISSIONS = [
   PERMISSIONS.DASHBOARD_DOCTOR,
 ] as const satisfies readonly Permission[];
 
-/** Future front-desk portal — reserved grants. */
-const RECEPTIONIST_PERMISSIONS = [
+/** Front-desk / clinic staff portal — reserved grants. */
+const STAFF_PERMISSIONS = [
   PERMISSIONS.APPOINTMENTS_BOOK,
   PERMISSIONS.APPOINTMENTS_READ_ALL,
   PERMISSIONS.APPOINTMENTS_MANAGE,
@@ -95,14 +101,7 @@ const RECEPTIONIST_PERMISSIONS = [
   PERMISSIONS.PATIENTS_READ,
   PERMISSIONS.PATIENTS_MANAGE,
   PERMISSIONS.DOCTORS_READ,
-  PERMISSIONS.DASHBOARD_RECEPTIONIST,
-] as const satisfies readonly Permission[];
-
-/** Future limited assist role — deliberately narrow. */
-const ASSISTANT_PERMISSIONS = [
-  PERMISSIONS.APPOINTMENTS_READ_ALL,
-  PERMISSIONS.SLOTS_READ,
-  PERMISSIONS.PATIENTS_READ,
+  PERMISSIONS.DASHBOARD_STAFF,
 ] as const satisfies readonly Permission[];
 
 /**
@@ -113,8 +112,7 @@ export const ROLE_PERMISSIONS = {
   [USER_ROLES.ADMIN]: ADMIN_PERMISSIONS,
   [USER_ROLES.PATIENT]: PATIENT_PERMISSIONS,
   [USER_ROLES.DOCTOR]: DOCTOR_PERMISSIONS,
-  [USER_ROLES.RECEPTIONIST]: RECEPTIONIST_PERMISSIONS,
-  [USER_ROLES.ASSISTANT]: ASSISTANT_PERMISSIONS,
+  [USER_ROLES.STAFF]: STAFF_PERMISSIONS,
 } as const satisfies Record<UserRole, readonly Permission[]>;
 
 /**

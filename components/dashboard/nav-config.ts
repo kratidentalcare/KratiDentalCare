@@ -9,6 +9,7 @@ import {
   LayoutDashboardIcon,
   LogOutIcon,
   SettingsIcon,
+  ShieldIcon,
   ClockIcon,
   UserCircleIcon,
   UsersIcon,
@@ -65,6 +66,12 @@ export const DASHBOARD_NAV_ITEMS: readonly DashboardNavItem[] = [
     label: "Patients",
     href: ROUTES.DASHBOARD.PATIENTS,
     icon: UsersIcon,
+  },
+  {
+    id: "users",
+    label: "Users",
+    href: ROUTES.DASHBOARD.USERS,
+    icon: ShieldIcon,
   },
   {
     id: "prescriptions",
@@ -125,6 +132,12 @@ export const DASHBOARD_QUICK_ACTIONS = [
     label: "View Patients",
     href: ROUTES.DASHBOARD.PATIENTS,
     icon: UsersIcon,
+  },
+  {
+    id: "manage-users",
+    label: "Manage Users",
+    href: ROUTES.DASHBOARD.USERS,
+    icon: ShieldIcon,
   },
   {
     id: "create-prescription",

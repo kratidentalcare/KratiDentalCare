@@ -95,10 +95,19 @@ export async function requireDoctor(
 }
 
 /**
- * Receptionist portal gate (future).
+ * Staff portal gate (future).
+ */
+export async function requireStaff(
+  options: SyncUserOptions = {},
+): Promise<AppUser> {
+  return requireRole(USER_ROLES.STAFF, options);
+}
+
+/**
+ * @deprecated Prefer {@link requireStaff}. Kept as a temporary alias.
  */
 export async function requireReceptionist(
   options: SyncUserOptions = {},
 ): Promise<AppUser> {
-  return requireRole(USER_ROLES.RECEPTIONIST, options);
+  return requireStaff(options);
 }

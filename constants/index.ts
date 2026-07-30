@@ -1,6 +1,7 @@
 export * from "./app";
 export * from "./auth-status";
 export * from "./roles";
+export * from "./user-status";
 export * from "./statuses";
 export * from "./pagination";
 export * from "./error-codes";

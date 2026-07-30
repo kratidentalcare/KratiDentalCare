@@ -50,6 +50,7 @@ export {
   requireDoctor,
   requirePatient,
   requireReceptionist,
+  requireStaff,
   requireRole,
 } from "./require-role";
 
