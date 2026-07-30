@@ -366,7 +366,7 @@ export function PrescriptionPreview({
                 ) : null}
 
                 {sheet.followUpLabel ? (
-                  <div className="flex justify-end">
+                  <div className="flex justify-start">
                     <span
                       className="rounded-full border border-brand-navy/25 bg-brand-navy/[0.07] px-[4mm] py-[1.1mm] font-semibold text-brand-navy"
                       style={{
@@ -389,9 +389,10 @@ export function PrescriptionPreview({
                       {sheet.doctorName}
                     </p>
                     {sheet.doctorQualification ? (
-                      <p>{sheet.doctorQualification}</p>
+                      <p className="whitespace-pre-line">
+                        {sheet.doctorQualification}
+                      </p>
                     ) : null}
-                    <p className="italic">{sheet.signatureLabel}</p>
                   </div>
                 </OverlayText>
               ) : null}

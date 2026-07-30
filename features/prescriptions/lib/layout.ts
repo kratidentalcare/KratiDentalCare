@@ -75,24 +75,11 @@ export const PRESCRIPTION_LAYOUT = {
   charsPerLine: 74,
   /**
    * Medical History values sit in the right column of a label/value grid, so
-   * they wrap far earlier than full-width body copy.
+   * they wrap earlier than full-width body copy. The `max-content` label
+   * column is at its widest (~40mm) when "Current Medication" is present,
+   * leaving ~56 characters — kept a touch under that.
    */
-  medicalHistoryCharsPerLine: 48,
-  /**
-   * Safe capacity of the fixed writing area. Chromium fits 28.5 lines of
-   * 12pt/1.4 copy in 57% of 297mm; the 3mm section gaps, history callout
-   * padding and row gaps that the cost model does not charge add up to
-   * ~3.9 lines in the worst case, and the remainder absorbs wrapping
-   * surprises. Staying conservative matters — PDF generation rejects a
-   * sheet whose content overflows.
-   */
-  contentLineCapacity: 23,
-  continuationHeadingLineCost: 1,
-  /** Header row + cell padding charged once per page that carries medicines. */
-  medicineTableHeaderLineCost: 2,
-  /** Vertical cell padding amortised per medicine row. */
-  medicineRowPaddingLineCost: 1,
-  followUpLineCost: 2,
+  medicalHistoryCharsPerLine: 54,
   bodyLineHeight: 1.4,
   bodyFontSizePt: 12,
   /** Header overlay values (name / age / date / mobile / OPD). */
@@ -101,4 +88,49 @@ export const PRESCRIPTION_LAYOUT = {
   tableFontSizePt: 10.5,
   /** Uppercase micro-labels for section headings and table headers. */
   labelFontSizePt: 9,
+} as const;
+
+const MM_PER_PT = 25.4 / 72;
+/** A 1px CSS border at 96dpi. */
+const HAIRLINE_MM = 25.4 / 96;
+
+function lineBoxMm(fontSizePt: number): number {
+  return fontSizePt * PRESCRIPTION_LAYOUT.bodyLineHeight * MM_PER_PT;
+}
+
+/**
+ * Millimetre heights of every block the writing area can hold, mirroring the
+ * padding/border/line-height declared in `PrescriptionPreview`. Pagination
+ * budgets in millimetres rather than abstract "lines" so a sheet is only split
+ * once it genuinely runs out of room — PDF generation re-measures the rendered
+ * DOM and rejects any sheet that overflows, so these must stay in sync with
+ * the component.
+ */
+export const PRESCRIPTION_METRICS = {
+  contentHeightMm: (A4_HEIGHT_MM * prescriptionPositions.content.height) / 100,
+  /** Absorbs font-metric and text-wrapping differences against Chromium. */
+  safetyMarginMm: 6,
+  /** `gap-[3mm]` between top-level sections of the writing area. */
+  sectionGapMm: 3,
+  bodyLineMm: lineBoxMm(PRESCRIPTION_LAYOUT.bodyFontSizePt),
+  tableLineMm: lineBoxMm(PRESCRIPTION_LAYOUT.tableFontSizePt),
+  continuationHeadingMm: lineBoxMm(PRESCRIPTION_LAYOUT.labelFontSizePt),
+  medicalHistory: {
+    /** `py-[2mm]` plus the `border-y` hairlines of the callout. */
+    framingMm: 4 + 2 * HAIRLINE_MM,
+    /** Callout heading plus its `mb-[1.2mm]`. */
+    headingMm: lineBoxMm(PRESCRIPTION_LAYOUT.labelFontSizePt) + 1.2,
+    /** `gap-y-[0.6mm]` between definition-list rows. */
+    rowGapMm: 0.6,
+  },
+  medicineTable: {
+    /** `py-[1.5mm]` header cells plus their `border-y` hairlines. */
+    headerMm:
+      3 + lineBoxMm(PRESCRIPTION_LAYOUT.labelFontSizePt) + 2 * HAIRLINE_MM,
+    /** `py-[1.4mm]` body cells plus the row `border-b`. */
+    rowFramingMm: 2.8 + HAIRLINE_MM,
+  },
+  /** Pill badge: `py-[1.1mm]` plus its border. */
+  followUpMm:
+    lineBoxMm(PRESCRIPTION_LAYOUT.tableFontSizePt) + 2.2 + 2 * HAIRLINE_MM,
 } as const;

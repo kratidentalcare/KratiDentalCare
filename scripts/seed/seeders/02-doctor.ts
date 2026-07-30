@@ -45,7 +45,7 @@ export async function seedDoctor(ctx: SeedContext): Promise<void> {
         "Cosmetic Dentistry",
         "Root Canal Treatment",
       ],
-      qualification: "BDS · Dental Surgeon",
+      qualification: "BDS MDS\nPeriodontist & Implantologist",
       registrationNumber: SEED_IDS.doctorRegistration,
       yearsOfExperience: 15,
       consultationFee: 500,

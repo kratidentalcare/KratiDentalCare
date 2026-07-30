@@ -1,5 +1,6 @@
 import { GENDERS, type Gender } from "@/constants/patient";
 import { formatCivilDateLabel } from "@/features/prescriptions/lib/format";
+import { PRESCRIPTION_METRICS } from "@/features/prescriptions/lib/layout";
 import type {
   PrescriptionMedicalHistoryDto,
   PrescriptionMedicalHistoryLine,
@@ -133,8 +134,8 @@ export function buildMedicalHistoryLines(
   });
 }
 
-/** Approximate line cost for pagination budgeting. */
-export function medicalHistoryLineCost(
+/** Rendered height of the Medical History callout, for pagination budgeting. */
+export function medicalHistoryHeightMm(
   lines: PrescriptionMedicalHistoryLine[],
   charsPerLine: number,
 ): number {
@@ -142,10 +143,15 @@ export function medicalHistoryLineCost(
     return 0;
   }
 
-  return lines.reduce((total, line) => {
+  const { framingMm, headingMm, rowGapMm } = PRESCRIPTION_METRICS.medicalHistory;
+
+  const rowsMm = lines.reduce((total, line) => {
     const text = `${line.label}: ${line.value}`;
-    return total + Math.max(1, Math.ceil(text.length / charsPerLine));
-  }, 1); // seed of 1 covers the "Medical History" heading
+    const wrapped = Math.max(1, Math.ceil(text.length / charsPerLine));
+    return total + wrapped * PRESCRIPTION_METRICS.bodyLineMm;
+  }, 0);
+
+  return framingMm + headingMm + rowsMm + (lines.length - 1) * rowGapMm;
 }
 
 export function mapStoredMedicalHistory(

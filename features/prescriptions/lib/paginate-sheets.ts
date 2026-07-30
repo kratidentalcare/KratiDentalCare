@@ -1,10 +1,11 @@
 import {
   PRESCRIPTION_LAYOUT,
   PRESCRIPTION_MEDICINE_COLUMNS,
+  PRESCRIPTION_METRICS,
 } from "@/features/prescriptions/lib/layout";
 import {
   buildMedicalHistoryLines,
-  medicalHistoryLineCost,
+  medicalHistoryHeightMm,
 } from "@/features/prescriptions/lib/medical-history";
 import type {
   PrescriptionMedicalHistoryDto,
@@ -94,7 +95,7 @@ function buildTextBuckets(data: PrescriptionPreviewData): TextBucket[] {
 }
 
 /** A table row is as tall as its tallest wrapped cell. */
-function medicineLineCost(medicine: PrescriptionMedicineDto): number {
+function medicineRowHeightMm(medicine: PrescriptionMedicineDto): number {
   const cellValues: Record<string, string> = {
     serial: "00",
     medicineName: medicine.medicineName,
@@ -104,16 +105,27 @@ function medicineLineCost(medicine: PrescriptionMedicineDto): number {
     instructions: medicine.instructions ?? "",
   };
 
-  const tallestCell = PRESCRIPTION_MEDICINE_COLUMNS.reduce((tallest, column) => {
-    const columnChars = Math.max(
-      1,
-      Math.floor((PRESCRIPTION_LAYOUT.charsPerLine * column.widthPercent) / 100),
-    );
-    const cellLines = wrapText(cellValues[column.key] ?? "", columnChars).length;
-    return Math.max(tallest, cellLines);
-  }, 1);
+  const tallestCell = PRESCRIPTION_MEDICINE_COLUMNS.reduce(
+    (tallest, column) => {
+      const columnChars = Math.max(
+        1,
+        Math.floor(
+          (PRESCRIPTION_LAYOUT.charsPerLine * column.widthPercent) / 100,
+        ),
+      );
+      const cellLines = wrapText(
+        cellValues[column.key] ?? "",
+        columnChars,
+      ).length;
+      return Math.max(tallest, cellLines);
+    },
+    1,
+  );
 
-  return tallestCell + PRESCRIPTION_LAYOUT.medicineRowPaddingLineCost;
+  return (
+    tallestCell * PRESCRIPTION_METRICS.tableLineMm +
+    PRESCRIPTION_METRICS.medicineTable.rowFramingMm
+  );
 }
 
 function emptySheetBody(): Pick<
@@ -145,7 +157,7 @@ export function paginatePrescriptionSheets(
   data: PrescriptionPreviewData,
 ): PrescriptionPreviewSheet[] {
   const historyLines = buildMedicalHistoryLines(data.medicalHistory);
-  const historyCost = medicalHistoryLineCost(
+  const historyHeightMm = medicalHistoryHeightMm(
     historyLines,
     PRESCRIPTION_LAYOUT.medicalHistoryCharsPerLine,
   );
@@ -153,8 +165,14 @@ export function paginatePrescriptionSheets(
   const medicines = data.medications;
   const followUp = data.followUpLabel.trim();
 
+  const { bodyLineMm, sectionGapMm } = PRESCRIPTION_METRICS;
+  const pageBudgetMm =
+    PRESCRIPTION_METRICS.contentHeightMm - PRESCRIPTION_METRICS.safetyMarginMm;
+
   type PageDraft = {
-    lineBudget: number;
+    remainingMm: number;
+    /** A further section on this page would be preceded by a `gap-[3mm]`. */
+    hasSection: boolean;
     isContinuation: boolean;
     body: ReturnType<typeof emptySheetBody>;
   };
@@ -164,9 +182,10 @@ export function paginatePrescriptionSheets(
   function startPage(isContinuation: boolean): PageDraft {
     const page: PageDraft = {
       isContinuation,
-      lineBudget:
-        PRESCRIPTION_LAYOUT.contentLineCapacity -
-        (isContinuation ? PRESCRIPTION_LAYOUT.continuationHeadingLineCost : 0),
+      remainingMm:
+        pageBudgetMm -
+        (isContinuation ? PRESCRIPTION_METRICS.continuationHeadingMm : 0),
+      hasSection: isContinuation,
       body: emptySheetBody(),
     };
     pages.push(page);
@@ -175,17 +194,20 @@ export function paginatePrescriptionSheets(
 
   let page = startPage(false);
 
-  function ensureCapacity(neededLines: number) {
-    if (page.lineBudget >= neededLines) {
-      return;
-    }
-    page = startPage(true);
+  /** Height a new section costs on the current page, gap included. */
+  function sectionCostMm(heightMm: number): number {
+    return heightMm + (page.hasSection ? sectionGapMm : 0);
+  }
+
+  function claimSection(heightMm: number) {
+    page.remainingMm -= sectionCostMm(heightMm);
+    page.hasSection = true;
   }
 
   // Medical History always leads content on the first sheet when present.
   if (historyLines.length > 0) {
     page.body.medicalHistory = historyLines;
-    page.lineBudget -= historyCost;
+    claimSection(historyHeightMm);
   }
 
   function appendLabeledLines(
@@ -195,8 +217,13 @@ export function paginatePrescriptionSheets(
   ) {
     let index = 0;
     while (index < lines.length) {
-      ensureCapacity(1);
-      const room = page.lineBudget;
+      const gapMm = page.hasSection ? sectionGapMm : 0;
+      const room = Math.floor((page.remainingMm - gapMm) / bodyLineMm);
+      if (room < 1) {
+        page = startPage(true);
+        continue;
+      }
+
       const slice = lines.slice(index, index + room);
       const firstLine = slice[0] ?? "";
       const prefixed = [`${label}: ${firstLine}`, ...slice.slice(1)];
@@ -211,7 +238,7 @@ export function paginatePrescriptionSheets(
               : "adviceLines";
 
       page.body[field].push(...prefixed);
-      page.lineBudget -= prefixed.length;
+      claimSection(prefixed.length * bodyLineMm);
       index += slice.length;
     }
   }
@@ -227,35 +254,29 @@ export function paginatePrescriptionSheets(
       break;
     }
     // The table header reprints on every page that carries medicines.
-    const headerCost =
-      page.body.medications.length === 0
-        ? PRESCRIPTION_LAYOUT.medicineTableHeaderLineCost
-        : 0;
-    const itemCost = medicineLineCost(medicine) + headerCost;
-    const pageHasContent =
-      page.body.medicalHistory.length > 0 ||
-      page.body.diagnosisLines.length > 0 ||
-      page.body.chiefComplaintLines.length > 0 ||
-      page.body.clinicalNotesLines.length > 0 ||
-      page.body.adviceLines.length > 0 ||
-      page.body.medications.length > 0;
+    const isFirstRow = page.body.medications.length === 0;
+    const rowMm = medicineRowHeightMm(medicine);
+    const costMm = isFirstRow
+      ? sectionCostMm(PRESCRIPTION_METRICS.medicineTable.headerMm + rowMm)
+      : rowMm;
 
-    if (page.lineBudget < itemCost && pageHasContent) {
+    if (page.remainingMm < costMm && (page.hasSection || !isFirstRow)) {
       page = startPage(true);
       continue;
     }
 
     page.body.medications.push(medicine);
-    page.lineBudget -= itemCost;
+    page.remainingMm -= costMm;
+    page.hasSection = true;
     medIndex += 1;
   }
 
   if (followUp) {
-    if (page.lineBudget < PRESCRIPTION_LAYOUT.followUpLineCost) {
+    if (page.remainingMm < sectionCostMm(PRESCRIPTION_METRICS.followUpMm)) {
       page = startPage(true);
     }
     page.body.followUpLabel = followUp;
-    page.lineBudget -= PRESCRIPTION_LAYOUT.followUpLineCost;
+    claimSection(PRESCRIPTION_METRICS.followUpMm);
   }
 
   // Ensure at least one sheet even for empty draft preview.
