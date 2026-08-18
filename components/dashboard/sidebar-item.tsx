@@ -2,10 +2,11 @@
 
 import Link from "next/link";
 import { SignOutButton } from "@clerk/nextjs";
-import { usePathname } from "next/navigation";
 
+import { ROUTES } from "@/constants/routes";
 import { cn } from "@/lib/utils";
 
+import { useDashboardChrome } from "./dashboard-chrome-context";
 import {
   isDashboardNavActive,
   type DashboardNavItem,
@@ -90,8 +91,8 @@ export function SidebarItem({
   onNavigate,
   className,
 }: SidebarItemProps) {
-  const pathname = usePathname();
-  const active = isDashboardNavActive(pathname, item);
+  const { displayPath, markNavigating } = useDashboardChrome();
+  const active = isDashboardNavActive(displayPath, item);
   const Icon = item.icon;
 
   const content = (
@@ -149,7 +150,12 @@ export function SidebarItem({
       title={collapsed ? ariaLabel : undefined}
       aria-label={ariaLabel}
       aria-current={active ? "page" : undefined}
-      onClick={onNavigate}
+      onClick={() => {
+        if (item.href !== ROUTES.PUBLIC.HOME) {
+          markNavigating(item.href);
+        }
+        onNavigate?.();
+      }}
       className={cn(
         baseItemClassName,
         itemStateClassName(active, item.variant, collapsed),

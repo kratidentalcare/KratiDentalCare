@@ -2,28 +2,22 @@
 
 import type { ReactNode } from "react";
 
-import type { NotificationCenterData } from "@/features/notifications/types";
 import { cn } from "@/lib/utils";
 
 import { DashboardChromeProvider } from "./dashboard-chrome-context";
 import { Header } from "./header";
-import { MobileSidebar } from "./mobile-sidebar";
-import { Sidebar } from "./sidebar";
 import type { DashboardUser } from "./user-menu";
 
 export type DashboardShellProps = {
   children: ReactNode;
   user: DashboardUser;
-  /** Unread contact inquiries for sidebar Inbox badge. */
-  inboxUnreadCount?: number;
-  /** Notification Center seed (bell badge + panel). */
-  notifications?: NotificationCenterData;
+  /** Desktop sidebar slot (Suspense-wrapped server child). */
+  sidebar: ReactNode;
+  /** Mobile drawer slot (Suspense-wrapped server child). */
+  mobileSidebar: ReactNode;
+  /** Notification bell slot (Suspense-wrapped server child). */
+  notifications: ReactNode;
   className?: string;
-};
-
-const EMPTY_NOTIFICATIONS: NotificationCenterData = {
-  items: [],
-  unreadCount: 0,
 };
 
 const MAIN_CONTENT_ID = "dashboard-main";
@@ -35,8 +29,9 @@ const MAIN_CONTENT_ID = "dashboard-main";
 export function DashboardShell({
   children,
   user,
-  inboxUnreadCount = 0,
-  notifications = EMPTY_NOTIFICATIONS,
+  sidebar,
+  mobileSidebar,
+  notifications,
   className,
 }: DashboardShellProps) {
   return (
@@ -54,8 +49,8 @@ export function DashboardShell({
           Skip to main content
         </a>
 
-        <Sidebar inboxUnreadCount={inboxUnreadCount} />
-        <MobileSidebar inboxUnreadCount={inboxUnreadCount} />
+        {sidebar}
+        {mobileSidebar}
 
         <div className="flex min-w-0 flex-1 flex-col">
           <Header user={user} notifications={notifications} />

@@ -1,5 +1,7 @@
 import "server-only";
 
+import { cache } from "react";
+
 import { currentUser as getClerkCurrentUser } from "@clerk/nextjs/server";
 
 import { ERROR_CODES } from "@/constants/error-codes";
@@ -65,6 +67,40 @@ export function assertActiveAppUser(user: AppUser): AppUser {
 }
 
 /**
+ * Per-request memoized Clerk → Mongo sync.
+ * Keyed by a primitive so `cache()` can match across layout + page calls
+ * (`cache()` uses `Object.is`; a fresh `{}` options object never hits).
+ */
+const loadCurrentUser = cache(
+  async (touchLastLogin: boolean): Promise<AppUser | null> => {
+    const session = await getSession();
+
+    if (!session) {
+      return null;
+    }
+
+    const clerkUser = await getClerkCurrentUser();
+
+    if (!clerkUser) {
+      logger.warn("Clerk session present but currentUser() returned null", {
+        clerkId: session.userId,
+      });
+      throw new UnauthorizedError("Invalid session");
+    }
+
+    if (clerkUser.id !== session.userId) {
+      logger.error("Clerk session / currentUser identity mismatch", undefined, {
+        sessionUserId: session.userId,
+        clerkUserId: clerkUser.id,
+      });
+      throw new UnauthorizedError("Invalid session");
+    }
+
+    return syncClerkUser(clerkUser, { touchLastLogin });
+  },
+);
+
+/**
  * Soft read of the synchronized Mongo app user.
  *
  * - No Clerk session → `null`
@@ -76,30 +112,7 @@ export function assertActiveAppUser(user: AppUser): AppUser {
 export async function getCurrentUser(
   options: SyncUserOptions = {},
 ): Promise<AppUser | null> {
-  const session = await getSession();
-
-  if (!session) {
-    return null;
-  }
-
-  const clerkUser = await getClerkCurrentUser();
-
-  if (!clerkUser) {
-    logger.warn("Clerk session present but currentUser() returned null", {
-      clerkId: session.userId,
-    });
-    throw new UnauthorizedError("Invalid session");
-  }
-
-  if (clerkUser.id !== session.userId) {
-    logger.error("Clerk session / currentUser identity mismatch", undefined, {
-      sessionUserId: session.userId,
-      clerkUserId: clerkUser.id,
-    });
-    throw new UnauthorizedError("Invalid session");
-  }
-
-  return syncClerkUser(clerkUser, options);
+  return loadCurrentUser(options.touchLastLogin === true);
 }
 
 function isSoftAuthFailure(error: unknown): boolean {

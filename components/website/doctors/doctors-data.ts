@@ -39,7 +39,7 @@ export const DOCTORS: readonly Doctor[] = [
     slug: "dr-gaurav",
     name: "Dr. Gaurav Jaiswal",
     designation: "BDS MDS · Periodontist & Implantologist",
-    experienceYears: "15+",
+    experienceYears: "16+",
     experienceLabel: "Years of trusted care",
     blurb:
       "Precision dentistry with a gentle approach — focused on comfort, clarity, and lasting results for every patient.",

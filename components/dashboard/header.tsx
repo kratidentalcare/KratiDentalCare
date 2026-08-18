@@ -1,11 +1,9 @@
 "use client";
 
+import type { ReactNode } from "react";
 import { MenuIcon, PanelLeftCloseIcon, PanelLeftOpenIcon } from "lucide-react";
-import { usePathname } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
-import { NotificationBell } from "@/features/notifications/components/notification-bell";
-import type { NotificationCenterData } from "@/features/notifications/types";
 import { cn } from "@/lib/utils";
 
 import { DashboardBreadcrumb } from "./breadcrumb";
@@ -15,7 +13,8 @@ import { UserMenu, type DashboardUser } from "./user-menu";
 
 export type HeaderProps = {
   user: DashboardUser;
-  notifications: NotificationCenterData;
+  /** Notification bell slot (Suspense-wrapped server child). */
+  notifications: ReactNode;
   className?: string;
 };
 
@@ -23,9 +22,9 @@ export type HeaderProps = {
  * Top chrome: mobile menu, page title, breadcrumb, notifications, user menu.
  */
 export function Header({ user, notifications, className }: HeaderProps) {
-  const pathname = usePathname();
-  const title = getDashboardPageTitle(pathname);
-  const { openMobile, collapsed, toggleCollapsed } = useDashboardChrome();
+  const { openMobile, collapsed, toggleCollapsed, displayPath } =
+    useDashboardChrome();
+  const title = getDashboardPageTitle(displayPath);
 
   return (
     <header
@@ -73,7 +72,7 @@ export function Header({ user, notifications, className }: HeaderProps) {
         </div>
 
         <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
-          <NotificationBell initialData={notifications} />
+          {notifications}
           <UserMenu user={user} />
         </div>
       </div>

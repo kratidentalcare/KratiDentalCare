@@ -1,4 +1,5 @@
 export { DashboardBreadcrumb } from "./breadcrumb";
+export { DashboardPageSkeleton } from "./dashboard-page-skeleton";
 export { DashboardShell } from "./dashboard-shell";
 export { Header } from "./header";
 export { MobileSidebar } from "./mobile-sidebar";

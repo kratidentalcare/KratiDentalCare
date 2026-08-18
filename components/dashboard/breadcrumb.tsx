@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { Fragment } from "react";
 
 import {
@@ -15,6 +14,7 @@ import {
 import { ROUTES } from "@/constants/routes";
 import { cn } from "@/lib/utils";
 
+import { useDashboardChrome } from "./dashboard-chrome-context";
 import {
   getDashboardNavItemByPath,
   getDashboardPageTitle,
@@ -53,8 +53,8 @@ function buildCrumbs(pathname: string): Crumb[] {
  * Future nested modules inherit this without shell changes.
  */
 export function DashboardBreadcrumb({ className }: DashboardBreadcrumbProps) {
-  const pathname = usePathname();
-  const crumbs = buildCrumbs(pathname);
+  const { displayPath } = useDashboardChrome();
+  const crumbs = buildCrumbs(displayPath);
 
   return (
     <UiBreadcrumb className={cn(className)}>

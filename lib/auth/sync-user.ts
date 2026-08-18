@@ -197,7 +197,7 @@ function buildMutableProfile(
 ): MutableProfileFields {
   const email = requireEmail(input.email);
   const phoneNumber = normalizePhone(input.phoneNumber);
-  const touchLastLogin = options.touchLastLogin !== false;
+  const touchLastLogin = options.touchLastLogin === true;
 
   const fields: MutableProfileFields = {
     email,

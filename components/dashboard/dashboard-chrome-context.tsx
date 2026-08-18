@@ -1,9 +1,11 @@
 "use client";
 
+import { usePathname } from "next/navigation";
 import {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
   useState,
   type ReactNode,
@@ -19,14 +21,23 @@ type DashboardChromeContextValue = {
   collapsed: boolean;
   setCollapsed: (collapsed: boolean) => void;
   toggleCollapsed: () => void;
+  /**
+   * Pathname used for nav highlight / header title while a dashboard
+   * navigation is in flight. Equals `pendingHref ?? pathname`.
+   */
+  displayPath: string;
+  /** Mark an in-dashboard route change so chrome updates immediately. */
+  markNavigating: (href: string) => void;
 };
 
 const DashboardChromeContext =
   createContext<DashboardChromeContextValue | null>(null);
 
 export function DashboardChromeProvider({ children }: { children: ReactNode }) {
+  const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
+  const [pendingHref, setPendingHref] = useState<string | null>(null);
 
   const openMobile = useCallback(() => setMobileOpen(true), []);
   const closeMobile = useCallback(() => setMobileOpen(false), []);
@@ -34,6 +45,22 @@ export function DashboardChromeProvider({ children }: { children: ReactNode }) {
     () => setCollapsed((prev) => !prev),
     [],
   );
+
+  useEffect(() => {
+    setPendingHref(null);
+  }, [pathname]);
+
+  const markNavigating = useCallback(
+    (href: string) => {
+      if (href === pathname) {
+        return;
+      }
+      setPendingHref(href);
+    },
+    [pathname],
+  );
+
+  const displayPath = pendingHref ?? pathname;
 
   const value = useMemo(
     () => ({
@@ -44,6 +71,8 @@ export function DashboardChromeProvider({ children }: { children: ReactNode }) {
       collapsed,
       setCollapsed,
       toggleCollapsed,
+      displayPath,
+      markNavigating,
     }),
     [
       mobileOpen,
@@ -51,6 +80,8 @@ export function DashboardChromeProvider({ children }: { children: ReactNode }) {
       closeMobile,
       collapsed,
       toggleCollapsed,
+      displayPath,
+      markNavigating,
     ],
   );
 

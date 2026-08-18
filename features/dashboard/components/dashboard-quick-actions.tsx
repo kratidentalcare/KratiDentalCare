@@ -1,7 +1,10 @@
+"use client";
+
 import Link from "next/link";
 import { CalendarPlusIcon } from "lucide-react";
 
-import { DASHBOARD_QUICK_ACTIONS } from "@/components/dashboard";
+import { useDashboardChrome } from "@/components/dashboard/dashboard-chrome-context";
+import { DASHBOARD_QUICK_ACTIONS } from "@/components/dashboard/nav-config";
 import { buttonVariants } from "@/components/ui/button";
 import {
   Card,
@@ -13,6 +16,8 @@ import {
 import { cn } from "@/lib/utils";
 
 export function DashboardQuickActionsCard() {
+  const { markNavigating } = useDashboardChrome();
+
   return (
     <Card className="border-0 bg-white shadow-none ring-1 ring-[#E5E7EB]">
       <CardHeader className="border-b border-[#E5E7EB]">
@@ -28,6 +33,7 @@ export function DashboardQuickActionsCard() {
             <Link
               key={action.id}
               href={action.href}
+              onClick={() => markNavigating(action.href)}
               className={cn(
                 buttonVariants({ variant: "outline" }),
                 "h-11 w-full justify-start gap-3 rounded-xl border-[#E5E7EB] bg-brand-surface/60",

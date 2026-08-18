@@ -26,8 +26,8 @@ export type ClerkUserSyncInput = {
 
 export type SyncUserOptions = {
   /**
-   * When true (default), bump `lastLoginAt` after a successful sync.
-   * Webhook-only profile updates may pass `false` later.
+   * When true, bump `lastLoginAt` after a successful sync.
+   * Defaults to false — pass true only on an intentional login bump.
    */
   touchLastLogin?: boolean;
 };

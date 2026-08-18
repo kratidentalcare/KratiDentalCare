@@ -1,10 +1,20 @@
+import { Suspense } from "react";
+
 import type { Metadata } from "next";
 
 import { DashboardShell, type DashboardUser } from "@/components/dashboard";
+import {
+  DashboardInboxSidebar,
+  DashboardMobileInboxSidebar,
+} from "@/components/dashboard/dashboard-inbox-sidebar";
+import {
+  DashboardNotificationBell,
+  EMPTY_NOTIFICATION_CENTER,
+} from "@/components/dashboard/dashboard-notifications";
+import { MobileSidebar } from "@/components/dashboard/mobile-sidebar";
+import { Sidebar } from "@/components/dashboard/sidebar";
 import { ROUTES } from "@/constants/routes";
-import { countUnreadContactMessages } from "@/features/contact/services/list-contact-messages";
-import { getNotificationCenterData } from "@/features/notifications/services/get-notification-center-data";
-import type { NotificationCenterData } from "@/features/notifications/types";
+import { NotificationBell } from "@/features/notifications/components/notification-bell";
 import { requireAdminPage } from "@/lib/auth";
 
 export const metadata: Metadata = {
@@ -14,6 +24,9 @@ export const metadata: Metadata = {
 /**
  * Admin dashboard layout — auth gate + reusable shell.
  * Nested module pages under `/dashboard/*` inherit sidebar, header, and chrome.
+ *
+ * Inbox + notifications stream behind Suspense so they do not block
+ * `loading.tsx` for the page segment.
  */
 export default async function DashboardLayout({
   children,
@@ -22,7 +35,7 @@ export default async function DashboardLayout({
 }>) {
   const appUser = await requireAdminPage({
     returnPath: ROUTES.DASHBOARD.ROOT,
-    touchLastLogin: true,
+    touchLastLogin: false,
   });
 
   const user: DashboardUser = {
@@ -32,25 +45,28 @@ export default async function DashboardLayout({
     profileImage: appUser.profileImage,
   };
 
-  let inboxUnreadCount = 0;
-  try {
-    inboxUnreadCount = await countUnreadContactMessages();
-  } catch {
-    inboxUnreadCount = 0;
-  }
-
-  let notifications: NotificationCenterData = { items: [], unreadCount: 0 };
-  try {
-    notifications = await getNotificationCenterData();
-  } catch {
-    notifications = { items: [], unreadCount: 0 };
-  }
-
   return (
     <DashboardShell
       user={user}
-      inboxUnreadCount={inboxUnreadCount}
-      notifications={notifications}
+      sidebar={
+        <Suspense fallback={<Sidebar inboxUnreadCount={0} />}>
+          <DashboardInboxSidebar />
+        </Suspense>
+      }
+      mobileSidebar={
+        <Suspense fallback={<MobileSidebar inboxUnreadCount={0} />}>
+          <DashboardMobileInboxSidebar />
+        </Suspense>
+      }
+      notifications={
+        <Suspense
+          fallback={
+            <NotificationBell initialData={EMPTY_NOTIFICATION_CENTER} />
+          }
+        >
+          <DashboardNotificationBell />
+        </Suspense>
+      }
     >
       {children}
     </DashboardShell>
