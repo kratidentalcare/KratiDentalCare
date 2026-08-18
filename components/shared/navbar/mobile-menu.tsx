@@ -18,27 +18,20 @@ import { APP_NAME } from "@/constants";
 import { ROUTES } from "@/constants/routes";
 import { cn } from "@/lib/utils";
 
-import { AuthControls } from "./auth-controls";
 import { Logo } from "./logo";
 import { NavLinks } from "./nav-links";
 
 export type MobileMenuProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  /** When true, expose the admin Dashboard link in the user menu. */
-  isAdmin?: boolean;
 };
 
 /**
  * Mobile navigation drawer (right slide-in via shadcn Sheet).
- * Links + auth (Login / Sign up or profile) + Book CTA.
+ * Links + Book CTA. Auth lives in the header user icon.
  * Closes on link click, overlay click, ESC (Sheet/Dialog defaults), and close button.
  */
-export function MobileMenu({
-  open,
-  onOpenChange,
-  isAdmin = false,
-}: MobileMenuProps) {
+export function MobileMenu({ open, onOpenChange }: MobileMenuProps) {
   const pathname = usePathname();
   const close = () => onOpenChange(false);
   const bookActive =
@@ -82,12 +75,6 @@ export function MobileMenu({
         </nav>
 
         <SheetFooter className="gap-3 border-t border-border p-5">
-          <AuthControls
-            isAdmin={isAdmin}
-            orientation="vertical"
-            onNavigate={close}
-          />
-
           <Link
             href={ROUTES.PUBLIC.BOOK}
             onClick={close}

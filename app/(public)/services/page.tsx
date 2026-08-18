@@ -17,6 +17,9 @@ import { APP_NAME } from "@/constants";
 import { ROUTES } from "@/constants/routes";
 import { createPublicPageMetadata } from "@/lib/seo/public-metadata";
 
+export const dynamic = "force-static";
+export const revalidate = 300;
+
 export const metadata: Metadata = createPublicPageMetadata({
   title: "Services",
   description: `Explore premium dental services at ${APP_NAME} — general care, cosmetics, implants, orthodontics, and emergency treatment.`,

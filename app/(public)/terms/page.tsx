@@ -8,6 +8,9 @@ import { APP_NAME } from "@/constants";
 import { ROUTES } from "@/constants/routes";
 import { createPublicPageMetadata } from "@/lib/seo/public-metadata";
 
+export const dynamic = "force-static";
+export const revalidate = 300;
+
 export const metadata: Metadata = createPublicPageMetadata({
   title: "Terms & Conditions",
   description: `Terms & Conditions for using the ${APP_NAME} website and online booking services.`,

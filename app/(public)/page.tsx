@@ -15,6 +15,9 @@ import { WhyChooseUs } from "@/components/website/why-choose-us";
 import { APP_DESCRIPTION, APP_NAME } from "@/constants";
 import { ROUTES } from "@/constants/routes";
 
+export const dynamic = "force-static";
+export const revalidate = 300;
+
 export const metadata: Metadata = {
   title: {
     absolute: APP_NAME,

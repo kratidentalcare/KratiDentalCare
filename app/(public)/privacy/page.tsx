@@ -8,6 +8,9 @@ import { APP_NAME } from "@/constants";
 import { ROUTES } from "@/constants/routes";
 import { createPublicPageMetadata } from "@/lib/seo/public-metadata";
 
+export const dynamic = "force-static";
+export const revalidate = 300;
+
 export const metadata: Metadata = createPublicPageMetadata({
   title: "Privacy Policy",
   description: `Privacy Policy for ${APP_NAME} — how we collect, use, and protect your personal information.`,

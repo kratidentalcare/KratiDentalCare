@@ -14,19 +14,24 @@ import type { PublicFaqItem } from "@/features/faqs/types";
  * Soft-deleted rows are excluded by the model plugin.
  * Seeds former hardcoded FAQs once if the collection is empty.
  * Cached per request so FAQ + sibling streams share one read.
+ * Returns [] when the DB is unavailable so static/ISR builds still succeed.
  */
 export const listActiveFaqs = cache(
   async (): Promise<PublicFaqItem[]> => {
-    await connect();
-    await ensureDefaultFaqs();
+    try {
+      await connect();
+      await ensureDefaultFaqs();
 
-    const rows = await Faq.find({
-      isActive: true,
-      status: CONTENT_STATUSES.PUBLISHED,
-    })
-      .sort({ displayOrder: 1, createdAt: 1 })
-      .select({ question: 1, answer: 1 })
-      .lean<LeanFaq[]>();
-    return rows.map(toPublicFaqItem);
+      const rows = await Faq.find({
+        isActive: true,
+        status: CONTENT_STATUSES.PUBLISHED,
+      })
+        .sort({ displayOrder: 1, createdAt: 1 })
+        .select({ question: 1, answer: 1 })
+        .lean<LeanFaq[]>();
+      return rows.map(toPublicFaqItem);
+    } catch {
+      return [];
+    }
   },
 );

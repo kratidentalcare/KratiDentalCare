@@ -75,7 +75,7 @@ export function Navbar({ className, isAdmin = false }: NavbarProps) {
               <NavLinks />
             </nav>
 
-            <AuthControls isAdmin={isAdmin} className="hidden lg:flex" />
+            <AuthControls isAdmin={isAdmin} />
 
             <Link
               href={ROUTES.PUBLIC.BOOK}
@@ -92,7 +92,6 @@ export function Navbar({ className, isAdmin = false }: NavbarProps) {
             <MobileMenu
               open={mobileOpen}
               onOpenChange={setMobileOpen}
-              isAdmin={isAdmin}
             />
           </div>
         </div>
