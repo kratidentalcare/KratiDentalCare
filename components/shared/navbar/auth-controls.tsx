@@ -1,12 +1,14 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { Show, SignInButton, useAuth, useClerk } from "@clerk/nextjs";
 import { LayoutDashboardIcon, LogOutIcon, UserIcon } from "lucide-react";
 
 import { AUTH_CONFIG } from "@/config/auth";
 import { clerkAppearance } from "@/config/clerk-appearance";
 import { ROUTES } from "@/constants/routes";
+import { resolveNavbarIsAdmin } from "@/lib/auth/resolve-navbar-is-admin";
 import { cn } from "@/lib/utils";
 import {
   DropdownMenu,
@@ -68,13 +70,32 @@ function GuestLoginTrigger({
  * Signed-in account control — user icon + menu (no avatar photo).
  */
 function SignedInAccountMenu({
-  isAdmin,
+  isAdmin: isAdminFromServer,
   onNavigate,
 }: {
   isAdmin: boolean;
   onNavigate?: () => void;
 }) {
   const { signOut, openUserProfile } = useClerk();
+  const [isAdmin, setIsAdmin] = useState(isAdminFromServer);
+
+  useEffect(() => {
+    setIsAdmin(isAdminFromServer);
+  }, [isAdminFromServer]);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    void resolveNavbarIsAdmin().then((admin) => {
+      if (!cancelled) {
+        setIsAdmin(admin);
+      }
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   return (
     <DropdownMenu>

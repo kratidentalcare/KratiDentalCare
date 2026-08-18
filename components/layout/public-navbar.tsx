@@ -1,22 +1,5 @@
 import { Navbar } from "@/components/shared/navbar";
-import { getEnv } from "@/config/env";
-import { isAdmin } from "@/lib/auth";
-
-/**
- * Soft admin check for navbar chrome only.
- * Never throws — missing Clerk / sync failures hide the Dashboard link.
- */
-async function resolveNavbarIsAdmin(): Promise<boolean> {
-  if (!getEnv().hasClerkKeys) {
-    return false;
-  }
-
-  try {
-    return await isAdmin({ touchLastLogin: false });
-  } catch {
-    return false;
-  }
-}
+import { resolveNavbarIsAdmin } from "@/lib/auth/resolve-navbar-is-admin";
 
 /**
  * Auth-aware public navbar streamed behind Suspense.
