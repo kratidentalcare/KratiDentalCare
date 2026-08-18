@@ -1,22 +1,13 @@
 "use client";
 
-import Link from "next/link";
-import { useEffect, useState } from "react";
-import { Show, SignInButton, useAuth, useClerk } from "@clerk/nextjs";
-import { LayoutDashboardIcon, LogOutIcon, UserIcon } from "lucide-react";
+import { Show, SignInButton, useAuth } from "@clerk/nextjs";
+import { UserIcon } from "lucide-react";
 
 import { AUTH_CONFIG } from "@/config/auth";
 import { clerkAppearance } from "@/config/clerk-appearance";
-import { ROUTES } from "@/constants/routes";
-import { resolveNavbarIsAdmin } from "@/lib/auth/resolve-navbar-is-admin";
 import { cn } from "@/lib/utils";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+
+import { AccountMenu } from "./account-menu";
 
 export type AuthControlsProps = {
   /** When true, expose the admin Dashboard link (from `isAdmin()`). */
@@ -67,92 +58,9 @@ function GuestLoginTrigger({
 }
 
 /**
- * Signed-in account control — user icon + menu (no avatar photo).
- */
-function SignedInAccountMenu({
-  isAdmin: isAdminFromServer,
-  onNavigate,
-}: {
-  isAdmin: boolean;
-  onNavigate?: () => void;
-}) {
-  const { signOut, openUserProfile } = useClerk();
-  const [isAdmin, setIsAdmin] = useState(isAdminFromServer);
-
-  useEffect(() => {
-    setIsAdmin(isAdminFromServer);
-  }, [isAdminFromServer]);
-
-  useEffect(() => {
-    let cancelled = false;
-
-    void resolveNavbarIsAdmin().then((admin) => {
-      if (!cancelled) {
-        setIsAdmin(admin);
-      }
-    });
-
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-
-  return (
-    <DropdownMenu>
-      <DropdownMenuTrigger
-        className={authIconClassName}
-        aria-label="Account menu"
-      >
-        <UserIcon className="size-5" strokeWidth={1.75} aria-hidden />
-      </DropdownMenuTrigger>
-
-      <DropdownMenuContent
-        align="end"
-        sideOffset={8}
-        className="min-w-48 font-montserrat"
-      >
-        {isAdmin ? (
-          <DropdownMenuItem
-            render={
-              <Link href={ROUTES.DASHBOARD.ROOT} onClick={onNavigate} />
-            }
-          >
-            <LayoutDashboardIcon className="size-4" aria-hidden />
-            Dashboard
-          </DropdownMenuItem>
-        ) : null}
-
-        <DropdownMenuItem
-          onClick={() => {
-            onNavigate?.();
-            openUserProfile();
-          }}
-        >
-          <UserIcon className="size-4" aria-hidden />
-          Manage account
-        </DropdownMenuItem>
-
-        <DropdownMenuSeparator />
-
-        <DropdownMenuItem
-          variant="destructive"
-          onClick={() => {
-            onNavigate?.();
-            void signOut({ redirectUrl: ROUTES.PUBLIC.HOME });
-          }}
-        >
-          <LogOutIcon className="size-4" aria-hidden />
-          Sign out
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
-  );
-}
-
-/**
  * Navbar auth chrome:
  * - Guests → user icon (opens sign-in)
- * - Sessions → user icon dropdown
+ * - Sessions → user icon account modal (bottom sheet on mobile)
  */
 export function AuthControls({
   isAdmin,
@@ -185,7 +93,11 @@ export function AuthControls({
       </Show>
 
       <Show when="signed-in">
-        <SignedInAccountMenu isAdmin={isAdmin} onNavigate={onNavigate} />
+        <AccountMenu
+          isAdmin={isAdmin}
+          triggerClassName={authIconClassName}
+          onNavigate={onNavigate}
+        />
       </Show>
     </div>
   );
