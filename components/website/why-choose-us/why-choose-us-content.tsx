@@ -1,7 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-
+import { useInViewReveal } from "@/hooks/use-in-view-reveal";
 import { cn } from "@/lib/utils";
 
 import { FeatureItem } from "./feature-item";
@@ -15,26 +14,10 @@ export type WhyChooseUsContentProps = {
  * Right-column copy: eyebrow, serif headline, description, feature list.
  */
 export function WhyChooseUsContent({ className }: WhyChooseUsContentProps) {
-  const ref = useRef<HTMLDivElement>(null);
-  const [visible, setVisible] = useState(false);
-
-  useEffect(() => {
-    const node = ref.current;
-    if (!node) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry?.isIntersecting) {
-          setVisible(true);
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.18, rootMargin: "0px 0px -32px 0px" }
-    );
-
-    observer.observe(node);
-    return () => observer.disconnect();
-  }, []);
+  const { ref, visible } = useInViewReveal<HTMLDivElement>({
+    threshold: 0.18,
+    rootMargin: "0px 0px -32px 0px",
+  });
 
   return (
     <div

@@ -1,12 +1,12 @@
+import { Suspense } from "react";
 import type { Metadata } from "next";
 
 import { PublicShell } from "@/components/layout";
+import { PublicFooter } from "@/components/layout/public-footer";
+import { PublicNavbar } from "@/components/layout/public-navbar";
 import { Footer } from "@/components/shared/footer";
 import { Navbar } from "@/components/shared/navbar";
-import { getEnv } from "@/config/env";
 import { APP_DESCRIPTION, APP_NAME } from "@/constants";
-import { getPublicFooterData } from "@/features/clinic-settings";
-import { isAdmin } from "@/lib/auth";
 
 /**
  * Public marketing site metadata defaults.
@@ -37,50 +37,32 @@ export const metadata: Metadata = {
 };
 
 /**
- * Soft admin check for navbar chrome only.
- * Never throws — missing Clerk / sync failures hide the Dashboard link.
- */
-async function resolveNavbarIsAdmin(): Promise<boolean> {
-  if (!getEnv().hasClerkKeys) {
-    return false;
-  }
-
-  try {
-    return await isAdmin({ touchLastLogin: false });
-  } catch {
-    return false;
-  }
-}
-
-/**
  * Root layout for `app/(public)/*`.
  *
+ * Sync shell so `loading.tsx` can paint immediately. Navbar admin check and
+ * footer clinic data stream behind Suspense (same pattern as dashboard chrome).
+ *
  * Slot contract:
- * - header → Navbar (auth-aware)
+ * - header → Navbar (auth-aware, streamed)
  * - children → Hero, About, Services, Doctors, Testimonials, FAQ, Contact, …
- * - footer → Footer (clinic data from ClinicSettings, fetched once here)
+ * - footer → Footer (clinic data from ClinicSettings, streamed)
  */
-export default async function PublicLayout({
+export default function PublicLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const [admin, footerData] = await Promise.all([
-    resolveNavbarIsAdmin(),
-    getPublicFooterData(),
-  ]);
-
   return (
     <PublicShell
-      header={<Navbar isAdmin={admin} />}
+      header={
+        <Suspense fallback={<Navbar />}>
+          <PublicNavbar />
+        </Suspense>
+      }
       footer={
-        <Footer
-          contact={footerData?.contact}
-          social={footerData?.social}
-          quickLinks={footerData?.quickLinks}
-          serviceLinks={footerData?.serviceLinks}
-          copyrightOwner={footerData?.copyrightOwner}
-        />
+        <Suspense fallback={<Footer />}>
+          <PublicFooter />
+        </Suspense>
       }
     >
       {children}

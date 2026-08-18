@@ -1,17 +1,20 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 
-import { Faq } from "@/components/website/faq";
+import { StreamedFaq } from "@/components/website/faq/streamed-faq";
 import {
-  ServicesFinalCta,
+  FaqSectionSkeleton,
+  FinalCtaSkeleton,
+} from "@/components/website/public-section-skeletons";
+import {
   ServicesPageGrid,
   ServicesPageHero,
   TreatmentProcess,
 } from "@/components/website/services-page";
+import { StreamedFinalCta } from "@/components/website/services-page/streamed-final-cta";
 import { WhyChooseUs } from "@/components/website/why-choose-us";
 import { APP_NAME } from "@/constants";
 import { ROUTES } from "@/constants/routes";
-import { getPublicFooterData } from "@/features/clinic-settings";
-import { listActiveFaqs } from "@/features/faqs/services/list-active-faqs";
 import { createPublicPageMetadata } from "@/lib/seo/public-metadata";
 
 export const metadata: Metadata = createPublicPageMetadata({
@@ -22,25 +25,21 @@ export const metadata: Metadata = createPublicPageMetadata({
 
 /**
  * Dedicated public Services page.
- * Reuses homepage Why Choose Us + FAQ; clinic phone powers the final CTA.
+ * Hero and catalog are static; FAQ + CTA stream clinic data.
  */
-export default async function ServicesPage() {
-  const [faqs, footerData] = await Promise.all([
-    listActiveFaqs(),
-    getPublicFooterData(),
-  ]);
-
+export default function ServicesPage() {
   return (
     <div className="flex flex-1 flex-col">
       <ServicesPageHero />
       <ServicesPageGrid />
       <TreatmentProcess />
       <WhyChooseUs />
-      <Faq items={faqs ?? []} />
-      <ServicesFinalCta
-        phone={footerData?.contact.phone}
-        phoneHref={footerData?.contact.phoneHref}
-      />
+      <Suspense fallback={<FaqSectionSkeleton />}>
+        <StreamedFaq />
+      </Suspense>
+      <Suspense fallback={<FinalCtaSkeleton />}>
+        <StreamedFinalCta />
+      </Suspense>
     </div>
   );
 }

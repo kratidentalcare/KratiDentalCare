@@ -2,7 +2,6 @@
 
 import {
   useCallback,
-  useEffect,
   useRef,
   useState,
   type KeyboardEvent,
@@ -10,6 +9,7 @@ import {
 } from "react";
 
 import { PageContainer } from "@/components/layout";
+import { useInViewReveal } from "@/hooks/use-in-view-reveal";
 import { cn } from "@/lib/utils";
 
 import { TestimonialCard } from "./testimonial-card";
@@ -66,34 +66,18 @@ function TestimonialsWave({
  * Supports unlimited testimonials via TESTIMONIALS data; no auto-slide.
  */
 export function Testimonials({ className }: TestimonialsProps) {
-  const sectionRef = useRef<HTMLElement>(null);
+  const { ref: sectionRef, visible } = useInViewReveal<HTMLElement>({
+    threshold: 0.12,
+    rootMargin: "0px 0px -32px 0px",
+  });
   const swipeStartX = useRef<number | null>(null);
   const swipeOnSlider = useRef(false);
 
   const [index, setIndex] = useState(0);
-  const [visible, setVisible] = useState(false);
   const [animating, setAnimating] = useState(false);
 
   const total = TESTIMONIALS.length;
   const active = TESTIMONIALS[index] ?? TESTIMONIALS[0];
-
-  useEffect(() => {
-    const node = sectionRef.current;
-    if (!node) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry?.isIntersecting) {
-          setVisible(true);
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.12, rootMargin: "0px 0px -32px 0px" }
-    );
-
-    observer.observe(node);
-    return () => observer.disconnect();
-  }, []);
 
   const goTo = useCallback(
     (nextIndex: number) => {

@@ -32,6 +32,7 @@ export function Logo({ className, onClick }: LogoProps) {
         width={1600}
         height={551}
         priority
+        sizes="(max-width: 640px) 160px, 192px"
         className="h-10 w-auto object-contain sm:h-11 lg:h-12"
       />
     </Link>

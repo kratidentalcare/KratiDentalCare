@@ -1,10 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
 import { ArrowRight } from "lucide-react";
 
 import { ROUTES } from "@/constants/routes";
+import { useInViewReveal } from "@/hooks/use-in-view-reveal";
 import { cn } from "@/lib/utils";
 
 import { SERVICES_PREVIEW } from "./services-data";
@@ -21,27 +21,11 @@ export type ServiceCardProps = {
  * Styled for the brand-blue services canvas.
  */
 export function ServiceCard({ serviceId, index, className }: ServiceCardProps) {
-  const ref = useRef<HTMLElement>(null);
-  const [visible, setVisible] = useState(false);
+  const { ref, visible } = useInViewReveal<HTMLElement>({
+    threshold: 0.18,
+    rootMargin: "0px 0px -32px 0px",
+  });
   const service = SERVICES_PREVIEW.find((item) => item.id === serviceId);
-
-  useEffect(() => {
-    const node = ref.current;
-    if (!node) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry?.isIntersecting) {
-          setVisible(true);
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.18, rootMargin: "0px 0px -32px 0px" }
-    );
-
-    observer.observe(node);
-    return () => observer.disconnect();
-  }, []);
 
   if (!service) return null;
 

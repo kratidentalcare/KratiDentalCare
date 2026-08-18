@@ -1,8 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
 
+import { useInViewReveal } from "@/hooks/use-in-view-reveal";
 import { cn } from "@/lib/utils";
 
 const WHY_CHOOSE_US_IMAGE = {
@@ -18,26 +18,10 @@ export type WhyChooseUsImageProps = {
  * Image column with decorative blob and floating years-of-care stat card.
  */
 export function WhyChooseUsImage({ className }: WhyChooseUsImageProps) {
-  const ref = useRef<HTMLDivElement>(null);
-  const [visible, setVisible] = useState(false);
-
-  useEffect(() => {
-    const node = ref.current;
-    if (!node) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry?.isIntersecting) {
-          setVisible(true);
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.2, rootMargin: "0px 0px -40px 0px" }
-    );
-
-    observer.observe(node);
-    return () => observer.disconnect();
-  }, []);
+  const { ref, visible } = useInViewReveal<HTMLDivElement>({
+    threshold: 0.2,
+    rootMargin: "0px 0px -40px 0px",
+  });
 
   return (
     <div
@@ -67,7 +51,7 @@ export function WhyChooseUsImage({ className }: WhyChooseUsImageProps) {
 
       <div
         className={cn(
-          "relative overflow-hidden rounded-2xl border border-brand-blue/10 shadow-xl",
+          "relative overflow-hidden rounded-2xl border border-brand-blue/10 bg-slate-100 shadow-xl",
           "aspect-[4/3]",
           "motion-safe:transition-[opacity,transform] motion-safe:duration-500 motion-safe:ease-out",
           visible
@@ -85,7 +69,6 @@ export function WhyChooseUsImage({ className }: WhyChooseUsImageProps) {
       </div>
 
       <div
-        role="status"
         aria-label="15+ years of trusted care"
         className={cn(
           "absolute -bottom-4 -left-2 z-10 sm:-left-4",

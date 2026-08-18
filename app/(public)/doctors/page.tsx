@@ -1,16 +1,15 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 
+import { DoctorsPageHero } from "@/components/website/doctors-page";
+import { StreamedDoctorsDirectory } from "@/components/website/doctors-page/streamed-doctors";
 import {
-  DoctorsDirectory,
-  DoctorsPageHero,
-} from "@/components/website/doctors-page";
-import { ServicesFinalCta } from "@/components/website/services-page";
+  DoctorsDirectorySkeleton,
+  FinalCtaSkeleton,
+} from "@/components/website/public-section-skeletons";
+import { StreamedFinalCta } from "@/components/website/services-page/streamed-final-cta";
 import { APP_NAME } from "@/constants";
 import { ROUTES } from "@/constants/routes";
-import { getPublicFooterData } from "@/features/clinic-settings";
-import { formatClinicWorkingHours } from "@/features/clinic-settings/lib/format-clinic";
-import { listPublicDoctors } from "@/features/doctors";
-import { getOrCreateClinicSettings } from "@/features/scheduling/services/clinic-settings";
 import { createPublicPageMetadata } from "@/lib/seo/public-metadata";
 
 export const metadata: Metadata = createPublicPageMetadata({
@@ -21,32 +20,18 @@ export const metadata: Metadata = createPublicPageMetadata({
 
 /**
  * Dedicated public Doctors page.
- * Profiles come from the Doctor model; CTA reuses the Services closing band.
+ * Hero is static; profiles and CTA stream from Mongo.
  */
-export default async function DoctorsPage() {
-  const [doctors, footerData, clinicSettings] = await Promise.all([
-    listPublicDoctors().catch(() => [] as Awaited<
-      ReturnType<typeof listPublicDoctors>
-    >),
-    getPublicFooterData(),
-    getOrCreateClinicSettings().catch(() => null),
-  ]);
-
-  const clinicHoursLabel = clinicSettings
-    ? formatClinicWorkingHours(clinicSettings)
-    : null;
-
+export default function DoctorsPage() {
   return (
     <div className="flex flex-1 flex-col">
       <DoctorsPageHero />
-      <DoctorsDirectory
-        doctors={doctors}
-        clinicHoursLabel={clinicHoursLabel}
-      />
-      <ServicesFinalCta
-        phone={footerData?.contact.phone}
-        phoneHref={footerData?.contact.phoneHref}
-      />
+      <Suspense fallback={<DoctorsDirectorySkeleton />}>
+        <StreamedDoctorsDirectory />
+      </Suspense>
+      <Suspense fallback={<FinalCtaSkeleton />}>
+        <StreamedFinalCta />
+      </Suspense>
     </div>
   );
 }

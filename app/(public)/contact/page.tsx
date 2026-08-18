@@ -1,18 +1,24 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 
 import {
   ContactFormSection,
-  ContactInfoCards,
-  ContactMapSection,
   ContactPageHero,
-  ContactWorkingHours,
 } from "@/components/website/contact-page";
-import { Faq } from "@/components/website/faq";
-import { ServicesFinalCta } from "@/components/website/services-page";
+import {
+  StreamedContactDetails,
+  StreamedContactMap,
+} from "@/components/website/contact-page/streamed-contact";
+import { StreamedFaq } from "@/components/website/faq/streamed-faq";
+import {
+  ContactDetailsSkeleton,
+  ContactMapSkeleton,
+  FaqSectionSkeleton,
+  FinalCtaSkeleton,
+} from "@/components/website/public-section-skeletons";
+import { StreamedFinalCta } from "@/components/website/services-page/streamed-final-cta";
 import { APP_NAME } from "@/constants";
 import { ROUTES } from "@/constants/routes";
-import { getPublicContactPageData } from "@/features/contact";
-import { listActiveFaqs } from "@/features/faqs/services/list-active-faqs";
 import { createPublicPageMetadata } from "@/lib/seo/public-metadata";
 
 export const metadata: Metadata = createPublicPageMetadata({
@@ -23,26 +29,25 @@ export const metadata: Metadata = createPublicPageMetadata({
 
 /**
  * Dedicated public Contact page.
- * Identity + hours from ClinicSettings; messages persist as ContactMessage docs.
+ * Hero + form are static; identity, map, FAQ, and CTA stream.
  */
-export default async function ContactPage() {
-  const [pageData, faqs] = await Promise.all([
-    getPublicContactPageData(),
-    listActiveFaqs(),
-  ]);
-
+export default function ContactPage() {
   return (
     <div className="flex flex-1 flex-col">
       <ContactPageHero />
-      <ContactInfoCards contact={pageData?.contact ?? null} />
-      <ContactWorkingHours schedule={pageData?.schedule ?? null} />
+      <Suspense fallback={<ContactDetailsSkeleton />}>
+        <StreamedContactDetails />
+      </Suspense>
       <ContactFormSection />
-      <ContactMapSection contact={pageData?.contact ?? null} />
-      <Faq items={faqs ?? []} />
-      <ServicesFinalCta
-        phone={pageData?.contact.phone}
-        phoneHref={pageData?.contact.phoneHref}
-      />
+      <Suspense fallback={<ContactMapSkeleton />}>
+        <StreamedContactMap />
+      </Suspense>
+      <Suspense fallback={<FaqSectionSkeleton />}>
+        <StreamedFaq />
+      </Suspense>
+      <Suspense fallback={<FinalCtaSkeleton />}>
+        <StreamedFinalCta />
+      </Suspense>
     </div>
   );
 }

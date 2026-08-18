@@ -5,3 +5,4 @@ export {
   FaqSectionHeader,
   type FaqSectionHeaderProps,
 } from "./section-header";
+export { StreamedFaq } from "./streamed-faq";

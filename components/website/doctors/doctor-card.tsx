@@ -2,10 +2,10 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
 import { ArrowRight, Calendar } from "lucide-react";
 
 import { ROUTES } from "@/constants/routes";
+import { useInViewReveal } from "@/hooks/use-in-view-reveal";
 import { cn } from "@/lib/utils";
 
 import {
@@ -28,26 +28,10 @@ export function DoctorCard({
   index = 0,
   className,
 }: DoctorCardProps) {
-  const ref = useRef<HTMLElement>(null);
-  const [visible, setVisible] = useState(false);
-
-  useEffect(() => {
-    const node = ref.current;
-    if (!node) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry?.isIntersecting) {
-          setVisible(true);
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.12, rootMargin: "0px 0px -24px 0px" },
-    );
-
-    observer.observe(node);
-    return () => observer.disconnect();
-  }, []);
+  const { ref, visible } = useInViewReveal<HTMLElement>({
+    threshold: 0.12,
+    rootMargin: "0px 0px -24px 0px",
+  });
 
   return (
     <article
@@ -91,7 +75,7 @@ export function DoctorCard({
 
           <div
             className={cn(
-              "relative overflow-hidden rounded-3xl border border-brand-blue/10 bg-white",
+              "relative overflow-hidden rounded-3xl border border-brand-blue/10 bg-slate-100",
               "aspect-[4/5] shadow-[0_16px_48px_color-mix(in_srgb,var(--brand-blue)_10%,transparent)]",
             )}
           >
@@ -113,7 +97,6 @@ export function DoctorCard({
           </div>
 
           <div
-            role="status"
             aria-label={`${doctor.experienceYears} ${doctor.experienceLabel}`}
             className={cn(
               "absolute -bottom-4 left-4 z-10 sm:left-5",

@@ -5,6 +5,7 @@ import type { PublicContactInfo } from "@/features/contact/types";
 import { cn } from "@/lib/utils";
 
 import { CONTACT_PAGE } from "./contact-page-data";
+import { ContactMapEmbed } from "./contact-map-embed";
 
 export type ContactMapSectionProps = {
   contact: PublicContactInfo | null;
@@ -66,16 +67,10 @@ export function ContactMapSection({
           )}
         >
           {embedUrl ? (
-            <div className="relative aspect-[16/10] w-full sm:aspect-[21/9]">
-              <iframe
-                title={`Map showing ${contact?.clinicName ?? "clinic"} location`}
-                src={embedUrl}
-                className="absolute inset-0 size-full border-0"
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                allowFullScreen
-              />
-            </div>
+            <ContactMapEmbed
+              embedUrl={embedUrl}
+              title={`Map showing ${contact?.clinicName ?? "clinic"} location`}
+            />
           ) : (
             <div
               className={cn(

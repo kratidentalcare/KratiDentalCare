@@ -32,3 +32,4 @@ export {
   TREATMENT_STEPS,
   type TreatmentStep,
 } from "./treatment-process-data";
+export { StreamedFinalCta } from "./streamed-final-cta";

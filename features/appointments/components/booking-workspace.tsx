@@ -143,6 +143,7 @@ export function BookingWorkspace({ initialDate }: BookingWorkspaceProps) {
     useState<PublicBookingConfirmation | null>(null);
   const [isLoadingSlots, startLoadSlots] = useTransition();
   const [isSubmitting, startSubmit] = useTransition();
+  const [hasFetchedSlots, setHasFetchedSlots] = useState(false);
 
   const form = useForm<BookingFormValues>({
     resolver: zodResolver(bookingFormSchema),
@@ -173,6 +174,8 @@ export function BookingWorkspace({ initialDate }: BookingWorkspaceProps) {
         toast.error(
           error instanceof Error ? error.message : "Failed to load availability",
         );
+      } finally {
+        setHasFetchedSlots(true);
       }
     });
   }, []);
@@ -336,7 +339,20 @@ export function BookingWorkspace({ initialDate }: BookingWorkspaceProps) {
               </h3>
             </div>
 
-            {!availability || availability.slots.length === 0 ? (
+            {!hasFetchedSlots || isLoadingSlots ? (
+              <div
+                className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-2"
+                aria-busy="true"
+                aria-label="Loading available times"
+              >
+                {Array.from({ length: 6 }).map((_, index) => (
+                  <div
+                    key={index}
+                    className="h-10 animate-pulse rounded-xl bg-brand-surface"
+                  />
+                ))}
+              </div>
+            ) : !availability || availability.slots.length === 0 ? (
               <p className="rounded-2xl bg-brand-surface px-4 py-5 text-sm leading-relaxed text-brand-muted">
                 {availability?.reason ??
                   "No available slots for this date. Try another day."}

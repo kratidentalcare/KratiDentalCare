@@ -1,10 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
 import { ArrowRight, Check } from "lucide-react";
 
 import { ROUTES } from "@/constants/routes";
+import { useInViewReveal } from "@/hooks/use-in-view-reveal";
 import { cn } from "@/lib/utils";
 
 import { SERVICES_CATALOG } from "./services-catalog-data";
@@ -24,27 +24,11 @@ export function ServiceDetailCard({
   index,
   className,
 }: ServiceDetailCardProps) {
-  const ref = useRef<HTMLElement>(null);
-  const [visible, setVisible] = useState(false);
+  const { ref, visible } = useInViewReveal<HTMLElement>({
+    threshold: 0.14,
+    rootMargin: "0px 0px -28px 0px",
+  });
   const service = SERVICES_CATALOG.find((item) => item.id === serviceId);
-
-  useEffect(() => {
-    const node = ref.current;
-    if (!node) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry?.isIntersecting) {
-          setVisible(true);
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.14, rootMargin: "0px 0px -28px 0px" }
-    );
-
-    observer.observe(node);
-    return () => observer.disconnect();
-  }, []);
 
   if (!service) return null;
 

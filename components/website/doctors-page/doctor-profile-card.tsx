@@ -69,7 +69,6 @@ export function DoctorProfileCard({
           </div>
 
           <div
-            role="status"
             aria-label={experienceLabel}
             className={cn(
               "absolute bottom-0 left-1/2 z-10 flex -translate-x-1/2 translate-y-1/2",

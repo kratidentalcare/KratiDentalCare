@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 
 import { PageContainer } from "@/components/layout";
-import { BookingWorkspace } from "@/features/appointments/components/booking-workspace";
-import { getOrCreateClinicSettings } from "@/features/scheduling/services/clinic-settings";
-import { utcToCivilDate } from "@/features/scheduling/lib/timezone";
+import { BookingWorkspaceSkeleton } from "@/components/website/public-section-skeletons";
+import { StreamedBookingWorkspace } from "@/features/appointments/components/streamed-booking-workspace";
 import { cn } from "@/lib/utils";
 
 import "@/components/website/hero/hero.css";
@@ -16,11 +16,9 @@ export const metadata: Metadata = {
 
 /**
  * Public guest booking page.
+ * Heading paints immediately; timezone + workspace stream behind Suspense.
  */
-export default async function BookAppointmentPage() {
-  const settings = await getOrCreateClinicSettings();
-  const initialDate = utcToCivilDate(new Date(), settings.timezone);
-
+export default function BookAppointmentPage() {
   return (
     <section
       aria-labelledby="book-appointment-heading"
@@ -80,7 +78,9 @@ export default async function BookAppointmentPage() {
         </header>
 
         <div className="hero-animate-fade-up hero-delay-4">
-          <BookingWorkspace initialDate={initialDate} />
+          <Suspense fallback={<BookingWorkspaceSkeleton />}>
+            <StreamedBookingWorkspace />
+          </Suspense>
         </div>
       </PageContainer>
     </section>

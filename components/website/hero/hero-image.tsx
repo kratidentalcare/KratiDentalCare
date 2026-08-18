@@ -31,7 +31,7 @@ export function HeroImage({
     return (
       <div
         className={cn(
-          "relative w-full overflow-hidden",
+          "relative w-full overflow-hidden bg-brand-dark",
           "h-[calc(100svh-4.75rem)] min-h-[28rem]",
           className
         )}
@@ -53,7 +53,7 @@ export function HeroImage({
     <div
       aria-hidden
       className={cn(
-        "pointer-events-none absolute inset-0 size-full select-none",
+        "pointer-events-none absolute inset-0 size-full select-none bg-[#eaf2f7]",
         className
       )}
     >
@@ -61,7 +61,6 @@ export function HeroImage({
         src={HERO_BANNER_DESKTOP.src}
         alt=""
         fill
-        priority
         sizes="(max-width: 767px) 1px, 100vw"
         className="object-cover object-center"
       />

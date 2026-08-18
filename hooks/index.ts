@@ -3,4 +3,4 @@
  * Prefer Server Components; use client hooks only when needed.
  */
 
-export {};
+export { useInViewReveal, type InViewRevealOptions } from "./use-in-view-reveal";

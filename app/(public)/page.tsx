@@ -1,16 +1,19 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 
 import { Doctors } from "@/components/website/doctors";
-import { Faq } from "@/components/website/faq";
+import { StreamedFaq } from "@/components/website/faq/streamed-faq";
 import { Hero } from "@/components/website/hero";
+import {
+  FaqSectionSkeleton,
+  FinalCtaSkeleton,
+} from "@/components/website/public-section-skeletons";
 import { Services } from "@/components/website/services";
-import { ServicesFinalCta } from "@/components/website/services-page";
+import { StreamedFinalCta } from "@/components/website/services-page/streamed-final-cta";
 import { Testimonials } from "@/components/website/testimonials";
 import { WhyChooseUs } from "@/components/website/why-choose-us";
 import { APP_DESCRIPTION, APP_NAME } from "@/constants";
 import { ROUTES } from "@/constants/routes";
-import { getPublicFooterData } from "@/features/clinic-settings";
-import { listActiveFaqs } from "@/features/faqs/services/list-active-faqs";
 
 export const metadata: Metadata = {
   title: {
@@ -35,15 +38,10 @@ export const metadata: Metadata = {
 };
 
 /**
- * Public homepage shell. Section components plug in below Hero —
- * keep this file free of business logic beyond data wiring.
+ * Public homepage shell. Static sections paint immediately; FAQ and CTA
+ * stream behind Suspense so Mongo does not block Hero.
  */
-export default async function HomePage() {
-  const [faqs, footerData] = await Promise.all([
-    listActiveFaqs(),
-    getPublicFooterData(),
-  ]);
-
+export default function HomePage() {
   return (
     <div className="flex flex-1 flex-col">
       {/*
@@ -56,11 +54,12 @@ export default async function HomePage() {
       <Services />
       <Doctors />
       <Testimonials />
-      <Faq items={faqs ?? []} />
-      <ServicesFinalCta
-        phone={footerData?.contact.phone}
-        phoneHref={footerData?.contact.phoneHref}
-      />
+      <Suspense fallback={<FaqSectionSkeleton />}>
+        <StreamedFaq />
+      </Suspense>
+      <Suspense fallback={<FinalCtaSkeleton />}>
+        <StreamedFinalCta />
+      </Suspense>
     </div>
   );
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Show, SignInButton, useClerk } from "@clerk/nextjs";
+import { Show, SignInButton, useAuth, useClerk } from "@clerk/nextjs";
 import {
   ChevronDownIcon,
   LayoutDashboardIcon,
@@ -46,6 +46,18 @@ const authTriggerClassName = (
       : "h-10 px-4 text-sm sm:h-11 sm:px-5 sm:text-base",
     className
   );
+
+function AuthControlsSkeleton({ fullWidth }: { fullWidth: boolean }) {
+  return (
+    <div
+      aria-hidden
+      className={cn(
+        "animate-pulse rounded-full bg-brand-navy/10",
+        fullWidth ? "h-12 w-full" : "h-10 w-28 sm:h-11 sm:w-32",
+      )}
+    />
+  );
+}
 
 /**
  * Text trigger for guests — opens Clerk sign-in / sign-up modal.
@@ -153,17 +165,25 @@ export function AuthControls({
   orientation = "horizontal",
   onNavigate,
 }: AuthControlsProps) {
+  const { isLoaded } = useAuth();
   const isVertical = orientation === "vertical";
+  const wrapClassName = cn(
+    isVertical
+      ? "flex w-full flex-col items-stretch gap-3"
+      : "flex items-center gap-1 sm:gap-2",
+    className,
+  );
+
+  if (!isLoaded) {
+    return (
+      <div className={wrapClassName}>
+        <AuthControlsSkeleton fullWidth={isVertical} />
+      </div>
+    );
+  }
 
   return (
-    <div
-      className={cn(
-        isVertical
-          ? "flex w-full flex-col items-stretch gap-3"
-          : "flex items-center gap-1 sm:gap-2",
-        className
-      )}
-    >
+    <div className={wrapClassName}>
       <Show when="signed-out">
         <SignInButton
           mode="modal"

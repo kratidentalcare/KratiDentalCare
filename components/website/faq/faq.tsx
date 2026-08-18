@@ -1,12 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
 import { ArrowRight, MessageCircle } from "lucide-react";
 
 import { PageContainer } from "@/components/layout";
 import { Accordion } from "@/components/ui/accordion";
 import { ROUTES } from "@/constants/routes";
+import { useInViewReveal } from "@/hooks/use-in-view-reveal";
 import { cn } from "@/lib/utils";
 
 import { FAQ_SECTION, type FaqItem as FaqItemData } from "./faq-data";
@@ -38,26 +38,10 @@ type FaqSectionProps = {
 };
 
 function FaqSection({ items, className }: FaqSectionProps) {
-  const sectionRef = useRef<HTMLElement>(null);
-  const [visible, setVisible] = useState(false);
-
-  useEffect(() => {
-    const node = sectionRef.current;
-    if (!node) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry?.isIntersecting) {
-          setVisible(true);
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.12, rootMargin: "0px 0px -32px 0px" }
-    );
-
-    observer.observe(node);
-    return () => observer.disconnect();
-  }, []);
+  const { ref: sectionRef, visible } = useInViewReveal<HTMLElement>({
+    threshold: 0.12,
+    rootMargin: "0px 0px -32px 0px",
+  });
 
   return (
     <section

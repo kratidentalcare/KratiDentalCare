@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
 import { ArrowDown } from "lucide-react";
 
 import { PageContainer } from "@/components/layout";
+import { useInViewReveal } from "@/hooks/use-in-view-reveal";
 import { cn } from "@/lib/utils";
 
 import {
@@ -19,26 +19,10 @@ export type TreatmentProcessProps = {
  * Vertical (mobile) / horizontal (desktop) treatment journey timeline.
  */
 export function TreatmentProcess({ className }: TreatmentProcessProps) {
-  const sectionRef = useRef<HTMLElement>(null);
-  const [visible, setVisible] = useState(false);
-
-  useEffect(() => {
-    const node = sectionRef.current;
-    if (!node) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry?.isIntersecting) {
-          setVisible(true);
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.12, rootMargin: "0px 0px -32px 0px" }
-    );
-
-    observer.observe(node);
-    return () => observer.disconnect();
-  }, []);
+  const { ref: sectionRef, visible } = useInViewReveal<HTMLElement>({
+    threshold: 0.12,
+    rootMargin: "0px 0px -32px 0px",
+  });
 
   return (
     <section
