@@ -264,8 +264,7 @@ export function FooterLinksManager({
           </div>
           <Button
             type="button"
-            size="sm"
-            className="shrink-0"
+            className="h-11 w-full shrink-0 sm:h-8 sm:w-auto"
             onClick={openCreate}
             disabled={pending}
           >
@@ -274,7 +273,66 @@ export function FooterLinksManager({
           </Button>
         </CardHeader>
         <CardContent>
-          <div className="overflow-x-auto rounded-xl ring-1 ring-[#E5E7EB]">
+          <div className="flex flex-col gap-3 sm:hidden">
+            {sorted.length === 0 ? (
+              <p className="rounded-xl px-3 py-8 text-center text-sm text-brand-muted ring-1 ring-[#E5E7EB]">
+                No footer links yet. Add Quick Links or Services links.
+              </p>
+            ) : (
+              sorted.map((link) => (
+                <div
+                  key={link.key}
+                  className="flex flex-col gap-3 rounded-xl p-3 ring-1 ring-[#E5E7EB]"
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <p className="truncate font-medium text-brand-dark">
+                        {link.label}
+                      </p>
+                      <p className="mt-0.5 truncate text-xs text-brand-muted">
+                        {link.url}
+                      </p>
+                      <Badge variant="secondary" className="mt-2">
+                        {FOOTER_LINK_GROUP_LABELS[link.group]}
+                      </Badge>
+                    </div>
+                    <Switch
+                      checked={link.isActive}
+                      disabled={pending}
+                      onCheckedChange={(checked) =>
+                        handleToggle(link, checked)
+                      }
+                      aria-label={`Toggle ${link.label}`}
+                    />
+                  </div>
+                  <div className="flex gap-2">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="h-10 flex-1"
+                      disabled={pending}
+                      onClick={() => openEdit(link)}
+                    >
+                      <PencilIcon className="size-4" />
+                      Edit
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="h-10 flex-1 text-destructive"
+                      disabled={pending}
+                      onClick={() => setDeleteTarget(link)}
+                    >
+                      <Trash2Icon className="size-4" />
+                      Delete
+                    </Button>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+
+          <div className="hidden overflow-x-auto rounded-xl ring-1 ring-[#E5E7EB] sm:block">
             <Table>
               <TableHeader>
                 <TableRow>

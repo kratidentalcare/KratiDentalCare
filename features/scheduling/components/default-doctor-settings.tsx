@@ -57,7 +57,7 @@ export function DefaultDoctorSettings({
       <CardContent className="flex flex-col gap-3 sm:flex-row sm:items-end">
         <div className="min-w-0 flex-1">
           <Select value={selectedId || "none"} onValueChange={(value) => setSelectedId(value === "none" ? "" : value)}>
-            <SelectTrigger className="w-full">
+            <SelectTrigger className="h-11 w-full sm:h-9">
               <SelectValue placeholder="Select default doctor" />
             </SelectTrigger>
             <SelectContent>
@@ -73,6 +73,7 @@ export function DefaultDoctorSettings({
         </div>
         <Button
           type="button"
+          className="h-11 w-full sm:h-8 sm:w-auto"
           disabled={isPending || selectedId === (currentDoctorId ?? "")}
           onClick={onSave}
         >

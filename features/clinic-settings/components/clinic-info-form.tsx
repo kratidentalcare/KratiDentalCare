@@ -148,9 +148,10 @@ export function ClinicInfoForm({ settings, onSaved }: ClinicInfoFormProps) {
             />
           </FormField>
 
-          <div className="flex justify-end pt-2">
+          <div className="flex pt-2 sm:justify-end">
             <Button
               type="submit"
+              className="h-11 w-full sm:h-8 sm:w-auto"
               disabled={
                 form.formState.isSubmitting || !form.formState.isDirty
               }

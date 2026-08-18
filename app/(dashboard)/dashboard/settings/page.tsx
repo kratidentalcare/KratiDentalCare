@@ -24,10 +24,11 @@ export default async function ClinicSettingsPage() {
   ]);
 
   return (
-    <div className="flex flex-col gap-6 sm:gap-8">
+    <div className="flex flex-col gap-4 sm:gap-8">
       <PageHeader
         title="Clinic Settings"
         description="Manage clinic identity, contact details, Footer content, and the default booking doctor. Working hours and holidays are configured under Scheduling."
+        className="max-sm:[&_h1]:hidden"
       />
       <ClinicSettingsWorkspace
         initialSettings={toClinicSettingsView(settings)}

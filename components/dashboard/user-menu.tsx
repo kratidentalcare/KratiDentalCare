@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { useState } from "react";
 import { usePathname } from "next/navigation";
 import { useClerk } from "@clerk/nextjs";
 import {
@@ -13,20 +13,20 @@ import {
 } from "lucide-react";
 
 import {
+  AccountMenuDivider,
+  AccountMenuHeader,
+  AccountMenuItem,
+  AccountMenuPanel,
+  getAccountDisplayName,
+  getAccountInitials,
+} from "@/components/shared/account-menu-panel";
+import {
   Avatar,
   AvatarFallback,
   AvatarImage,
 } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { ROUTES } from "@/constants/routes";
 import { cn } from "@/lib/utils";
 
@@ -42,23 +42,6 @@ export type UserMenuProps = {
   className?: string;
 };
 
-function getDisplayName(user: DashboardUser): string {
-  const name = [user.firstName, user.lastName].filter(Boolean).join(" ");
-  return name || user.email;
-}
-
-function getInitials(user: DashboardUser): string {
-  const first = user.firstName?.trim().charAt(0);
-  const last = user.lastName?.trim().charAt(0);
-  if (first && last) {
-    return `${first}${last}`.toUpperCase();
-  }
-  if (first) {
-    return first.toUpperCase();
-  }
-  return user.email.charAt(0).toUpperCase() || "A";
-}
-
 function isActivePath(pathname: string, href: string, exact = false): boolean {
   if (exact) {
     return pathname === href;
@@ -67,20 +50,30 @@ function isActivePath(pathname: string, href: string, exact = false): boolean {
 }
 
 /**
- * Account menu — dashboard, profile, Clerk account management, sign-out.
+ * Account menu — bottom sheet on mobile, centered modal on desktop.
  */
 export function UserMenu({ user, className }: UserMenuProps) {
   const pathname = usePathname();
   const { signOut, openUserProfile } = useClerk();
-  const displayName = getDisplayName(user);
-  const initials = getInitials(user);
+  const [open, setOpen] = useState(false);
+  const displayName = getAccountDisplayName(
+    user.firstName,
+    user.lastName,
+    user.email,
+  );
+  const initials = getAccountInitials(
+    user.firstName,
+    user.lastName,
+    user.email,
+  );
 
   const dashboardActive = isActivePath(pathname, ROUTES.DASHBOARD.ROOT, true);
   const profileActive = isActivePath(pathname, ROUTES.DASHBOARD.PROFILE);
+  const close = () => setOpen(false);
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger
         render={
           <Button
             type="button"
@@ -110,95 +103,75 @@ export function UserMenu({ user, className }: UserMenuProps) {
           aria-hidden
         />
         <span className="sr-only">Open user menu</span>
-      </DropdownMenuTrigger>
+      </DialogTrigger>
 
-      <DropdownMenuContent
-        align="end"
-        sideOffset={8}
-        className="w-56 font-montserrat"
-      >
-        <DropdownMenuGroup>
-          <DropdownMenuLabel className="font-normal">
-            <span className="block truncate text-sm font-medium text-brand-dark">
-              {displayName}
-            </span>
-            <span className="mt-0.5 block truncate text-xs text-brand-muted">
-              {user.email}
-            </span>
-          </DropdownMenuLabel>
-        </DropdownMenuGroup>
+      <AccountMenuPanel>
+        <AccountMenuHeader
+          displayName={displayName}
+          email={user.email}
+          imageUrl={user.profileImage}
+          initials={initials}
+        />
 
-        <DropdownMenuSeparator />
+        <AccountMenuDivider />
 
-        <DropdownMenuItem
-          render={<Link href={ROUTES.DASHBOARD.ROOT} />}
-          className={cn(
-            "cursor-pointer gap-2",
-            dashboardActive && "bg-brand-blue/10 text-brand-blue",
-          )}
-          data-active={dashboardActive || undefined}
+        <AccountMenuItem
+          icon={LayoutDashboardIcon}
+          href={ROUTES.DASHBOARD.ROOT}
+          active={dashboardActive}
+          onClick={close}
         >
-          <LayoutDashboardIcon
-            className={cn(
-              "size-4",
-              dashboardActive ? "text-brand-blue" : "text-brand-muted",
-            )}
-            aria-hidden
-          />
           Dashboard
-        </DropdownMenuItem>
+        </AccountMenuItem>
 
-        <DropdownMenuItem
-          render={<Link href={ROUTES.DASHBOARD.PROFILE} />}
-          className={cn(
-            "cursor-pointer gap-2",
-            profileActive && "bg-brand-blue/10 text-brand-blue",
-          )}
-          data-active={profileActive || undefined}
+        <AccountMenuDivider />
+
+        <AccountMenuItem
+          icon={UserIcon}
+          href={ROUTES.DASHBOARD.PROFILE}
+          active={profileActive}
+          onClick={close}
         >
-          <UserIcon
-            className={cn(
-              "size-4",
-              profileActive ? "text-brand-blue" : "text-brand-muted",
-            )}
-            aria-hidden
-          />
           My Profile
-        </DropdownMenuItem>
+        </AccountMenuItem>
 
-        <DropdownMenuItem
-          className="cursor-pointer gap-2"
+        <AccountMenuDivider />
+
+        <AccountMenuItem
+          icon={SettingsIcon}
           onClick={() => {
-            openUserProfile();
+            close();
+            window.setTimeout(() => {
+              openUserProfile();
+            }, 160);
           }}
         >
-          <SettingsIcon className="size-4 text-brand-muted" aria-hidden />
           Manage Account
-        </DropdownMenuItem>
+        </AccountMenuItem>
 
-        <DropdownMenuSeparator />
+        <AccountMenuDivider />
 
-        <DropdownMenuItem
-          render={<Link href={ROUTES.PUBLIC.HOME} />}
-          className="cursor-pointer gap-2"
+        <AccountMenuItem
+          icon={ExternalLinkIcon}
+          href={ROUTES.PUBLIC.HOME}
+          onClick={close}
         >
-          <ExternalLinkIcon className="size-4 text-brand-muted" aria-hidden />
           View Website
-        </DropdownMenuItem>
+        </AccountMenuItem>
 
-        <DropdownMenuSeparator />
+        <AccountMenuDivider />
 
-        <DropdownMenuItem
-          variant="destructive"
-          className="cursor-pointer gap-2"
+        <AccountMenuItem
+          icon={LogOutIcon}
+          destructive
           onClick={() => {
+            close();
             void signOut({ redirectUrl: ROUTES.HOME });
           }}
         >
-          <LogOutIcon className="size-4" aria-hidden />
           Sign Out
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+        </AccountMenuItem>
+      </AccountMenuPanel>
+    </Dialog>
   );
 }
