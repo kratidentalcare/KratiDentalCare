@@ -21,10 +21,10 @@ export default function AuthLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <main className="relative flex flex-1 flex-col items-center justify-center overflow-hidden bg-[linear-gradient(180deg,#F7FAFC_0%,#FFFFFF_50%,#EEF5F9_100%)] px-4 py-10 font-montserrat sm:py-14">
+    <main className="relative flex flex-1 flex-col items-center justify-center overflow-hidden bg-[linear-gradient(180deg,#F6F8FC_0%,#FFFFFF_52%,#EEF2F9_100%)] px-4 py-10 font-montserrat sm:py-14">
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-x-0 top-0 h-48 bg-[radial-gradient(ellipse_at_top,rgba(11,142,200,0.12),transparent_65%)]"
+        className="pointer-events-none absolute inset-x-0 top-0 h-48 bg-[radial-gradient(ellipse_at_top,rgba(41,87,164,0.12),transparent_65%)]"
       />
       <div className="relative z-10 mb-8 flex flex-col items-center gap-3 text-center">
         <Logo />

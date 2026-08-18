@@ -210,63 +210,109 @@
 }
 
 /*
- * Clerk's default modal is vertically centered. On compact screens auth and
- * account flows behave as an anchored bottom sheet instead: the action area
- * stays reachable above the safe area and long forms scroll inside the sheet.
- * Desktop keeps Clerk's regular centered modal treatment.
+ * Clerk Sign in / Sign up / UserProfile modals.
+ * Visual language matches the site account menu: light navy backdrop, blur,
+ * generous radius, and a bottom sheet on compact screens.
  */
+.clerk-modal-backdrop {
+  background: rgb(26 50 102 / 18%) !important;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.clerk-modal-content {
+  width: min(26.5rem, calc(100vw - 2rem)) !important;
+}
+
+.clerk-modal-content .clerk-card-box {
+  width: 100% !important;
+  max-width: none !important;
+}
+
+.clerk-modal-content .clerk-card {
+  border: 0 !important;
+  border-radius: 1.75rem !important;
+  box-shadow: 0 28px 64px rgb(26 50 102 / 20%) !important;
+  padding: 1.5rem 1.25rem 1.25rem !important;
+}
+
+.clerk-modal-close-button {
+  top: 0.85rem !important;
+  right: 0.85rem !important;
+  z-index: 2;
+  min-width: 2.25rem !important;
+  min-height: 2.25rem !important;
+  border-radius: 9999px !important;
+  background: rgb(246 248 252 / 92%) !important;
+  color: #1a3266 !important;
+  box-shadow: 0 0 0 1px rgb(26 50 102 / 8%);
+}
+
+.clerk-auth-footer {
+  background: transparent !important;
+  box-shadow: none !important;
+  margin-top: 0.25rem !important;
+}
+
+.clerk-auth-footer-action {
+  display: flex !important;
+  min-height: 2.5rem;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem 0.35rem;
+  text-align: center;
+}
+
 @media (max-width: 39.999rem) {
   .clerk-modal-backdrop {
     align-items: flex-end !important;
     overflow: hidden !important;
-    padding-top: 0.75rem !important;
+    padding: 0.75rem 0 0 !important;
   }
 
   .clerk-modal-content {
     width: 100% !important;
     max-width: none !important;
     margin: 0 !important;
-    animation: clerk-sheet-enter 200ms ease-out !important;
-  }
-
-  .clerk-modal-content .clerk-card-box {
-    width: 100% !important;
-    max-width: none !important;
+    animation: clerk-sheet-enter 220ms ease-out !important;
   }
 
   .clerk-modal-content .clerk-card {
-    max-height: calc(100dvh - 0.75rem) !important;
+    position: relative;
+    max-height: min(92dvh, calc(100dvh - 0.75rem)) !important;
     overflow-x: hidden !important;
     overflow-y: auto !important;
     overscroll-behavior: contain;
     border-right: 0 !important;
     border-bottom: 0 !important;
     border-left: 0 !important;
-    border-radius: 1.25rem 1.25rem 0 0 !important;
-    padding-bottom: max(1rem, env(safe-area-inset-bottom)) !important;
-    box-shadow: 0 -12px 36px rgb(26 50 102 / 16%) !important;
+    border-radius: 1.75rem 1.75rem 0 0 !important;
+    padding: 1.75rem 1.25rem max(1.25rem, env(safe-area-inset-bottom)) !important;
+    box-shadow: 0 -16px 40px rgb(26 50 102 / 16%) !important;
+  }
+
+  .clerk-modal-content .clerk-card::before {
+    content: "";
+    position: absolute;
+    top: 0.55rem;
+    left: 50%;
+    width: 3rem;
+    height: 0.28rem;
+    border-radius: 9999px;
+    background: rgb(26 50 102 / 16%);
+    transform: translateX(-50%);
   }
 
   .clerk-modal-close-button {
-    top: 0.75rem !important;
-    right: 0.75rem !important;
+    top: 0.7rem !important;
+    right: 0.7rem !important;
     min-width: 2.75rem !important;
     min-height: 2.75rem !important;
-    border-radius: 9999px !important;
-    background: rgb(247 250 252 / 92%) !important;
   }
 
   .clerk-auth-footer {
-    padding-bottom: max(0.25rem, env(safe-area-inset-bottom)) !important;
-  }
-
-  .clerk-auth-footer-action {
-    display: flex !important;
-    min-height: 2.75rem;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: center;
-    gap: 0.125rem;
+    padding-bottom: max(0.15rem, env(safe-area-inset-bottom)) !important;
   }
 }
 

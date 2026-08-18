@@ -29,27 +29,22 @@ export function GuestAccountMenu({
   const { openSignIn, openSignUp } = useClerk();
   const [open, setOpen] = useState(false);
 
-  const close = () => {
-    setOpen(false);
-    onNavigate?.();
-  };
-
   function openClerk(mode: "sign-in" | "sign-up") {
-    close();
-    window.setTimeout(() => {
-      if (mode === "sign-in") {
-        openSignIn({
-          appearance: clerkAppearance,
-          fallbackRedirectUrl: AUTH_CONFIG.afterSignInUrl,
-        });
-        return;
-      }
+    onNavigate?.();
 
+    if (mode === "sign-in") {
+      openSignIn({
+        appearance: clerkAppearance,
+        fallbackRedirectUrl: AUTH_CONFIG.afterSignInUrl,
+      });
+    } else {
       openSignUp({
         appearance: clerkAppearance,
         fallbackRedirectUrl: AUTH_CONFIG.afterSignUpUrl,
       });
-    }, 160);
+    }
+
+    setOpen(false);
   }
 
   return (
