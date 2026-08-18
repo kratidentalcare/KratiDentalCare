@@ -1,5 +1,4 @@
 import {
-  Award,
   BookOpen,
   Calendar,
   Clock3,
@@ -91,13 +90,6 @@ export function DoctorProfile({
             <DoctorDetailList
               items={doctor.education}
               emptyMessage={DOCTOR_PROFILE_PLACEHOLDERS.education}
-            />
-          </DoctorDetailSection>
-
-          <DoctorDetailSection title="Certifications" icon={Award}>
-            <DoctorDetailList
-              items={doctor.certifications}
-              emptyMessage={DOCTOR_PROFILE_PLACEHOLDERS.certifications}
             />
           </DoctorDetailSection>
 

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import type { ReactNode } from "react";
-import type { LucideIcon } from "lucide-react";
+import { UserIcon, type LucideIcon } from "lucide-react";
 
 import {
   Avatar,
@@ -66,7 +66,13 @@ export function getAccountInitials(
   return email.charAt(0).toUpperCase() || "A";
 }
 
-export function AccountMenuPanel({ children }: { children: ReactNode }) {
+export function AccountMenuPanel({
+  children,
+  description = "View your profile, manage your account, or sign out.",
+}: {
+  children: ReactNode;
+  description?: string;
+}) {
   return (
     <DialogContent
       showCloseButton={false}
@@ -79,7 +85,7 @@ export function AccountMenuPanel({ children }: { children: ReactNode }) {
       />
       <DialogTitle className="sr-only">Account menu</DialogTitle>
       <DialogDescription className="sr-only">
-        View your profile, manage your account, or sign out.
+        {description}
       </DialogDescription>
       {children}
     </DialogContent>
@@ -102,7 +108,9 @@ export function AccountMenuHeader({
       <Avatar className="size-12">
         {imageUrl ? <AvatarImage src={imageUrl} alt="" /> : null}
         <AvatarFallback className="bg-brand-blue/12 font-semibold text-brand-blue">
-          {initials}
+          {initials || (
+            <UserIcon className="size-6" strokeWidth={1.5} aria-hidden />
+          )}
         </AvatarFallback>
       </Avatar>
       <div className="min-w-0 flex-1">

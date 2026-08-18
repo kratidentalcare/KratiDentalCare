@@ -18,7 +18,6 @@ export const DOCTOR_PROFILE_PLACEHOLDERS = {
   experience: "Experience details coming soon",
   bio: "A detailed biography will be available soon. Our clinicians are dedicated to compassionate, evidence-based dental care for every patient.",
   education: "Education details will be updated soon.",
-  certifications: "Certification details will be updated soon.",
   expertise: "Areas of expertise will be listed soon.",
   timings: "Clinic timings will be confirmed soon.",
   specialization: "General Dentistry",

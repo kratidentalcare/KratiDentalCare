@@ -2,7 +2,7 @@ import type { Weekday } from "@/constants/doctor";
 
 /**
  * Public-facing doctor profile for the /doctors marketing page.
- * Sourced from the Doctor model; education/certifications may be enriched
+ * Sourced from the Doctor model; education may be enriched
  * until those fields land on the schema.
  */
 export type PublicDoctorProfile = {
@@ -22,8 +22,6 @@ export type PublicDoctorProfile = {
   endTime: string;
   /** Optional enrichment until schema supports education[]. */
   education: string[];
-  /** Optional enrichment until schema supports certifications[]. */
-  certifications: string[];
   /** Clinical focus areas — defaults to specialties when enrichment is absent. */
   expertise: string[];
 };

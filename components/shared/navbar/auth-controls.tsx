@@ -1,13 +1,11 @@
 "use client";
 
-import { Show, SignInButton, useAuth } from "@clerk/nextjs";
-import { UserIcon } from "lucide-react";
+import { Show, useAuth } from "@clerk/nextjs";
 
-import { AUTH_CONFIG } from "@/config/auth";
-import { clerkAppearance } from "@/config/clerk-appearance";
 import { cn } from "@/lib/utils";
 
 import { AccountMenu } from "./account-menu";
+import { GuestAccountMenu } from "./guest-account-menu";
 
 export type AuthControlsProps = {
   /** When true, expose the admin Dashboard link (from `isAdmin()`). */
@@ -36,31 +34,9 @@ function AuthControlsSkeleton() {
 }
 
 /**
- * Icon trigger for guests — opens Clerk sign-in / sign-up modal.
- */
-function GuestLoginTrigger({
-  className,
-  onClick,
-}: {
-  className?: string;
-  onClick?: () => void;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      aria-label="Login or Sign up"
-      className={cn(authIconClassName, className)}
-    >
-      <UserIcon className="size-5" strokeWidth={1.75} aria-hidden />
-    </button>
-  );
-}
-
-/**
  * Navbar auth chrome:
- * - Guests → user icon (opens sign-in)
- * - Sessions → user icon account modal (bottom sheet on mobile)
+ * - Guests → account modal with Sign in / Sign up
+ * - Sessions → account modal (bottom sheet on mobile)
  */
 export function AuthControls({
   isAdmin,
@@ -80,16 +56,10 @@ export function AuthControls({
   return (
     <div className={cn("flex items-center", className)}>
       <Show when="signed-out">
-        <SignInButton
-          mode="modal"
-          withSignUp
-          oauthFlow="popup"
-          appearance={clerkAppearance}
-          fallbackRedirectUrl={AUTH_CONFIG.afterSignInUrl}
-          signUpFallbackRedirectUrl={AUTH_CONFIG.afterSignUpUrl}
-        >
-          <GuestLoginTrigger onClick={onNavigate} />
-        </SignInButton>
+        <GuestAccountMenu
+          triggerClassName={authIconClassName}
+          onNavigate={onNavigate}
+        />
       </Show>
 
       <Show when="signed-in">

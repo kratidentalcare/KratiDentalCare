@@ -11,7 +11,7 @@ export type DoctorDetailSectionProps = {
 };
 
 /**
- * Shared section chrome for biography, education, certifications, etc.
+ * Shared section chrome for biography, education, expertise, etc.
  */
 export function DoctorDetailSection({
   title,

@@ -1,11 +1,10 @@
 /**
  * Optional public-profile enrichment keyed by doctor slug.
- * Use until education / certifications exist on the Doctor schema.
+ * Use until education / expertise exist on the Doctor schema.
  * Safe to leave empty for future doctors — UI shows graceful placeholders.
  */
 export type DoctorProfileEnrichment = {
   education?: readonly string[];
-  certifications?: readonly string[];
   /** Overrides specialties for the Expertise section when provided. */
   expertise?: readonly string[];
 };
@@ -13,11 +12,7 @@ export type DoctorProfileEnrichment = {
 const DR_GAURAV_ENRICHMENT: DoctorProfileEnrichment = {
   education: [
     "Bachelor of Dental Surgery (BDS)",
-    "Clinical training in restorative and preventive dentistry",
-  ],
-  certifications: [
-    "Registered Dental Practitioner",
-    "Continuing education in cosmetic and endodontic care",
+    "MDS (Periodontics and Oral Implantology)",
   ],
   expertise: [
     "General Dentistry",
@@ -25,6 +20,8 @@ const DR_GAURAV_ENRICHMENT: DoctorProfileEnrichment = {
     "Root Canal Treatment",
     "Preventive Oral Care",
     "Family Dental Care",
+    "Perio Plastic Surgeries",
+    "Certified Invisalign Provider",
   ],
 };
 

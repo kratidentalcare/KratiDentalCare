@@ -16,13 +16,6 @@ export function mapLeanDoctorToPublicProfile(
   const enrichment = DOCTOR_PROFILE_ENRICHMENT[doctor.slug] ?? {};
   const specialties = doctor.specialties.map((item) => item.trim()).filter(Boolean);
 
-  const certifications = [
-    ...(enrichment.certifications ?? []),
-    ...(doctor.registrationNumber
-      ? [`Registration No. ${doctor.registrationNumber}`]
-      : []),
-  ];
-
   return {
     id: String(doctor._id),
     slug: doctor.slug,
@@ -39,7 +32,6 @@ export function mapLeanDoctorToPublicProfile(
     startTime: doctor.startTime,
     endTime: doctor.endTime,
     education: [...(enrichment.education ?? [])],
-    certifications,
     expertise:
       enrichment.expertise && enrichment.expertise.length > 0
         ? [...enrichment.expertise]

@@ -69,7 +69,7 @@ export function WhyChooseUsImage({ className }: WhyChooseUsImageProps) {
       </div>
 
       <div
-        aria-label="15+ years of trusted care"
+        aria-label="16+ years of trusted care"
         className={cn(
           "absolute -bottom-4 -left-2 z-10 sm:-left-4",
           "rounded-xl border border-white/60 bg-white/90 px-4 py-3",
@@ -84,7 +84,7 @@ export function WhyChooseUsImage({ className }: WhyChooseUsImageProps) {
         style={visible ? { transitionDelay: "220ms" } : undefined}
       >
         <p className="font-serif text-2xl font-medium leading-none tracking-tight text-brand-blue sm:text-3xl">
-          15+
+          16+
         </p>
         <p className="mt-1.5 text-[0.6875rem] leading-snug text-brand-muted sm:text-xs">
           Years of Trusted Care
