@@ -72,12 +72,12 @@ export const clerkAppearance = {
     formFieldInputShowPasswordButton: "text-[#5a6a7c] hover:text-[#1a3266]",
     formButtonPrimary:
       "mt-1 min-h-11 rounded-xl bg-[#2957a4] font-montserrat font-semibold text-white shadow-none hover:bg-[#214890]",
-    footer: "clerk-auth-footer bg-transparent shadow-none",
+    footer: "clerk-auth-footer bg-white",
     footerAction: "clerk-auth-footer-action",
     footerActionText: "font-montserrat text-sm text-[#5a6a7c]",
     footerActionLink:
       "rounded-md px-1 py-1 font-semibold text-[#2957a4] hover:text-[#214890] focus-visible:ring-2 focus-visible:ring-[#2957a4]/40",
-    footerPages: "hidden",
+    footerPages: "clerk-auth-footer-pages hidden",
     identityPreview:
       "rounded-xl border border-[#E2E8F0] bg-[#F6F8FC] font-montserrat",
     identityPreviewText: "font-montserrat text-sm text-[#1a3266]",
