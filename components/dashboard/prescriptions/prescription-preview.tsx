@@ -28,7 +28,7 @@ type PrescriptionPreviewProps = {
 };
 
 /** Uppercase micro-label shared by section headings and table headers. */
-const LABEL_CLASS = "font-bold tracking-[0.07em] text-brand-navy uppercase";
+const LABEL_CLASS = "font-bold tracking-[0.07em] text-brand-blue uppercase";
 
 /** History rows a prescriber must not miss get the red brand accent. */
 const CRITICAL_HISTORY_LABELS = new Set(["Allergy", "Pregnant"]);
@@ -115,7 +115,7 @@ function MedicalHistorySection({
   lines: PrescriptionMedicalHistoryLine[];
 }) {
   return (
-    <section className="rounded-r-[1.2mm] border-y border-y-brand-navy/15 border-r border-r-brand-navy/15 border-l-[1mm] border-l-brand-navy bg-brand-surface px-[3.2mm] py-[2mm]">
+    <section className="rounded-r-[1.2mm] border-y border-y-brand-blue/15 border-r border-r-brand-blue/15 border-l-[1mm] border-l-brand-blue bg-brand-surface px-[3.2mm] py-[2mm]">
       <p
         className={cn(LABEL_CLASS, "mb-[1.2mm]")}
         style={{ fontSize: `${PRESCRIPTION_LAYOUT.labelFontSizePt}pt` }}
@@ -186,13 +186,13 @@ function MedicineTableSection({
       style={{ fontSize: `${PRESCRIPTION_LAYOUT.tableFontSizePt}pt` }}
     >
       <thead>
-        <tr className="bg-brand-navy/[0.07]">
+        <tr className="bg-brand-blue/[0.07]">
           {PRESCRIPTION_MEDICINE_COLUMNS.map((column) => (
             <th
               key={column.key}
               className={cn(
                 LABEL_CLASS,
-                "border-y border-brand-navy/30 px-[1.9mm] py-[1.5mm]",
+                "border-y border-brand-blue/30 px-[1.9mm] py-[1.5mm]",
                 column.align === "center" ? "text-center" : "text-left",
               )}
               style={{
@@ -220,7 +220,7 @@ function MedicineTableSection({
                     ? "text-center tabular-nums"
                     : "text-left",
                   column.key === "medicineName"
-                    ? "font-semibold text-brand-navy"
+                    ? "font-semibold text-brand-blue"
                     : "text-slate-800",
                 )}
               >
@@ -295,7 +295,7 @@ export function PrescriptionPreview({
               <OverlayText
                 box={prescriptionPositions.patientName}
                 fontSizePt={PRESCRIPTION_LAYOUT.headerFontSizePt}
-                className="font-semibold text-brand-navy text-ellipsis whitespace-nowrap"
+                className="font-semibold text-brand-blue text-ellipsis whitespace-nowrap"
               >
                 {sheet.header.patientName || "—"}
               </OverlayText>
@@ -368,7 +368,7 @@ export function PrescriptionPreview({
                 {sheet.followUpLabel ? (
                   <div className="flex justify-start">
                     <span
-                      className="rounded-full border border-brand-navy/25 bg-brand-navy/[0.07] px-[4mm] py-[1.1mm] font-semibold text-brand-navy"
+                      className="rounded-full border border-brand-blue/25 bg-brand-blue/[0.07] px-[4mm] py-[1.1mm] font-semibold text-brand-blue"
                       style={{
                         fontSize: `${PRESCRIPTION_LAYOUT.tableFontSizePt}pt`,
                       }}
@@ -384,8 +384,8 @@ export function PrescriptionPreview({
                   box={prescriptionPositions.signature}
                   className="text-right text-[9.5pt] leading-tight text-brand-muted"
                 >
-                  <div className="border-t border-brand-navy/40 pt-[1.6mm]">
-                    <p className="font-semibold text-brand-navy">
+                  <div className="border-t border-brand-blue/40 pt-[1.6mm]">
+                    <p className="font-semibold text-brand-blue">
                       {sheet.doctorName}
                     </p>
                     {sheet.doctorQualification ? (
