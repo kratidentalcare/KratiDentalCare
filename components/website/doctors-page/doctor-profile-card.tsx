@@ -33,7 +33,7 @@ export function DoctorProfileCard({
     doctor.specialties.length > 0
       ? doctor.specialties
       : [DOCTOR_PROFILE_PLACEHOLDERS.specialization];
-  const photoSrc = doctor.profilePhoto ?? "/images/hero/drgaurav.png";
+  const photoSrc = doctor.profilePhoto ?? "/images/hero/drgaurav.jpeg";
 
   return (
     <div
