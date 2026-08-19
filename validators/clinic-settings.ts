@@ -10,8 +10,10 @@ import {
   DEFAULT_CLINIC_CLOSING_TIME,
   DEFAULT_CLINIC_OPENING_TIME,
   DEFAULT_CLINIC_TIMEZONE,
+  DEFAULT_SUNDAY_CLOSING_TIME,
   DEFAULT_WORKING_DAYS,
   TIME_OF_DAY_PATTERN,
+  WEEKDAYS,
 } from "@/constants/scheduling";
 import {
   emailSchema,
@@ -256,6 +258,10 @@ export const createClinicSettingsSchema = z
     workingDays: workingDaysSchema.default([...DEFAULT_WORKING_DAYS]),
     openingTime: timeOfDaySchema.default(DEFAULT_CLINIC_OPENING_TIME),
     closingTime: timeOfDaySchema.default(DEFAULT_CLINIC_CLOSING_TIME),
+    sundayClosingTime: timeOfDaySchema
+      .nullable()
+      .optional()
+      .default(DEFAULT_SUNDAY_CLOSING_TIME),
     appointmentDurationMinutes: appointmentDurationMinutesSchema.default(
       DEFAULT_APPOINTMENT_DURATION_MINUTES,
     ),
@@ -270,7 +276,23 @@ export const createClinicSettingsSchema = z
     updatedByUserId: objectIdSchema.nullable().optional(),
     isActive: isActiveSchema.optional(),
   })
-  .superRefine(scheduleWindowRefine);
+  .superRefine((value, ctx) => {
+    scheduleWindowRefine(value, ctx);
+    if (
+      value.workingDays.includes(WEEKDAYS.SUNDAY) &&
+      value.sundayClosingTime
+    ) {
+      const openMins = timeToMinutes(value.openingTime);
+      const sundayCloseMins = timeToMinutes(value.sundayClosingTime);
+      if (sundayCloseMins <= openMins) {
+        ctx.addIssue({
+          code: "custom",
+          message: "sundayClosingTime must be after openingTime",
+          path: ["sundayClosingTime"],
+        });
+      }
+    }
+  });
 
 /**
  * Admin schedule form — scheduling fields only.
@@ -281,6 +303,7 @@ export const updateClinicAvailabilitySchema = z
     workingDays: workingDaysSchema.optional(),
     openingTime: timeOfDaySchema.optional(),
     closingTime: timeOfDaySchema.optional(),
+    sundayClosingTime: timeOfDaySchema.nullable().optional(),
     appointmentDurationMinutes: appointmentDurationMinutesSchema.optional(),
     breaks: z.array(clinicBreakWindowSchema).max(12).optional(),
     bookingRules: clinicBookingRulesSchema.partial().optional(),
@@ -304,6 +327,22 @@ export const updateClinicAvailabilitySchema = z
     ) {
       // Partial updates that change hours/breaks must send both bounds when validating breaks.
       // Service layer merges with existing settings before final validation.
+    }
+
+    if (
+      value.workingDays?.includes(WEEKDAYS.SUNDAY) &&
+      value.openingTime &&
+      value.sundayClosingTime
+    ) {
+      const openMins = timeToMinutes(value.openingTime);
+      const sundayCloseMins = timeToMinutes(value.sundayClosingTime);
+      if (sundayCloseMins <= openMins) {
+        ctx.addIssue({
+          code: "custom",
+          message: "sundayClosingTime must be after openingTime",
+          path: ["sundayClosingTime"],
+        });
+      }
     }
   });
 

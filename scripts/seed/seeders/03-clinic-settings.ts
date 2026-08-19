@@ -9,6 +9,7 @@ import {
   DEFAULT_CLINIC_CLOSING_TIME,
   DEFAULT_CLINIC_OPENING_TIME,
   DEFAULT_CLINIC_TIMEZONE,
+  DEFAULT_SUNDAY_CLOSING_TIME,
   DEFAULT_WORKING_DAYS,
 } from "@/constants/scheduling";
 import { ClinicSettings } from "@/models/clinic-settings";
@@ -129,6 +130,7 @@ export async function seedClinicSettings(ctx: SeedContext): Promise<void> {
       workingDays: [...DEFAULT_WORKING_DAYS],
       openingTime: DEFAULT_CLINIC_OPENING_TIME,
       closingTime: DEFAULT_CLINIC_CLOSING_TIME,
+      sundayClosingTime: DEFAULT_SUNDAY_CLOSING_TIME,
       appointmentDurationMinutes: DEFAULT_APPOINTMENT_DURATION_MINUTES,
       breaks: [
         {

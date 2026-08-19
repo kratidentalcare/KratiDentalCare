@@ -40,6 +40,8 @@ export function ContactWorkingHours({
   className,
 }: ContactWorkingHoursProps) {
   const openDays = new Set(schedule?.workingDays ?? []);
+  const scheduleGroups = schedule?.scheduleGroups ?? [];
+  const hasSplitSchedule = scheduleGroups.length > 1;
 
   return (
     <section
@@ -99,24 +101,42 @@ export function ContactWorkingHours({
               "sm:p-8"
             )}
           >
-            <dl className="grid grid-cols-1 gap-5 sm:grid-cols-2 sm:gap-6">
-              <div>
-                <dt className="text-[0.6875rem] font-bold tracking-[0.14em] text-brand-muted uppercase">
-                  Opening Time
-                </dt>
-                <dd className="mt-2 font-serif text-2xl font-medium text-brand-dark sm:text-3xl">
-                  {schedule?.openingTimeLabel ?? "—"}
-                </dd>
-              </div>
-              <div>
-                <dt className="text-[0.6875rem] font-bold tracking-[0.14em] text-brand-muted uppercase">
-                  Closing Time
-                </dt>
-                <dd className="mt-2 font-serif text-2xl font-medium text-brand-dark sm:text-3xl">
-                  {schedule?.closingTimeLabel ?? "—"}
-                </dd>
-              </div>
-            </dl>
+            {hasSplitSchedule ? (
+              <dl className="grid grid-cols-1 gap-5">
+                {scheduleGroups.map((group) => (
+                  <div
+                    key={group.daysLabel}
+                    className="rounded-2xl border border-brand-blue/10 bg-brand-surface/30 p-4 sm:p-5"
+                  >
+                    <dt className="text-[0.6875rem] font-bold tracking-[0.14em] text-brand-muted uppercase">
+                      {group.daysLabel}
+                    </dt>
+                    <dd className="mt-2 font-serif text-2xl font-medium text-brand-dark sm:text-3xl">
+                      {group.hoursLabel}
+                    </dd>
+                  </div>
+                ))}
+              </dl>
+            ) : (
+              <dl className="grid grid-cols-1 gap-5 sm:grid-cols-2 sm:gap-6">
+                <div>
+                  <dt className="text-[0.6875rem] font-bold tracking-[0.14em] text-brand-muted uppercase">
+                    Opening Time
+                  </dt>
+                  <dd className="mt-2 font-serif text-2xl font-medium text-brand-dark sm:text-3xl">
+                    {schedule?.openingTimeLabel ?? "—"}
+                  </dd>
+                </div>
+                <div>
+                  <dt className="text-[0.6875rem] font-bold tracking-[0.14em] text-brand-muted uppercase">
+                    Closing Time
+                  </dt>
+                  <dd className="mt-2 font-serif text-2xl font-medium text-brand-dark sm:text-3xl">
+                    {schedule?.closingTimeLabel ?? "—"}
+                  </dd>
+                </div>
+              </dl>
+            )}
 
             <div className="mt-8 border-t border-brand-blue/10 pt-6">
               <p className="text-[0.6875rem] font-bold tracking-[0.14em] text-brand-muted uppercase">

@@ -61,7 +61,7 @@ export async function seedDoctor(ctx: SeedContext): Promise<void> {
       ],
       consultationDuration: 30,
       startTime: "10:00",
-      endTime: "19:00",
+      endTime: "20:00",
       profilePhoto: "/images/hero/drgaurav.jpeg",
       isAvailable: true,
       status: DOCTOR_STATUSES.ACTIVE,

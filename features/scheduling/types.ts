@@ -50,6 +50,7 @@ export type SchedulingSettingsInput = {
   workingDays: readonly Weekday[];
   openingTime: string;
   closingTime: string;
+  sundayClosingTime?: string | null;
   appointmentDurationMinutes: AppointmentDurationMinutes;
   breaks: readonly SchedulingBreak[];
 };
@@ -93,6 +94,7 @@ export type ClinicAvailabilityFormValues = {
   workingDays: Weekday[];
   openingTime: string;
   closingTime: string;
+  sundayClosingTime: string | null;
   appointmentDurationMinutes: AppointmentDurationMinutes;
   breaks: Array<{
     startTime: string;

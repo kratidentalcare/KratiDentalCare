@@ -3,6 +3,7 @@ import "server-only";
 import { cache } from "react";
 
 import {
+  buildClinicScheduleGroups,
   formatClinicAddress,
   formatClinicTime12h,
   formatClinicWorkingDaysLabel,
@@ -44,6 +45,14 @@ export const getPublicContactPageData = cache(
           closingTime: settings.closingTime,
           closingTimeLabel: formatClinicTime12h(settings.closingTime),
           summaryLabel: formatClinicWorkingHours(settings),
+          scheduleGroups: buildClinicScheduleGroups(settings).map((group) => ({
+            daysLabel: group.daysLabel,
+            openingTime: group.openingTime,
+            openingTimeLabel: group.openingTimeLabel,
+            closingTime: group.closingTime,
+            closingTimeLabel: group.closingTimeLabel,
+            hoursLabel: group.hoursLabel,
+          })),
         },
       };
     } catch {

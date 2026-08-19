@@ -15,6 +15,15 @@ export type PublicContactInfo = {
   mapsEmbedUrl: string | null;
 };
 
+export type PublicClinicScheduleGroup = {
+  daysLabel: string;
+  openingTime: string;
+  openingTimeLabel: string;
+  closingTime: string;
+  closingTimeLabel: string;
+  hoursLabel: string;
+};
+
 export type PublicClinicSchedule = {
   workingDays: Weekday[];
   workingDaysLabel: string;
@@ -23,6 +32,8 @@ export type PublicClinicSchedule = {
   closingTime: string;
   closingTimeLabel: string;
   summaryLabel: string;
+  /** Per-day-group breakdown when Sunday hours differ from weekdays. */
+  scheduleGroups: PublicClinicScheduleGroup[];
 };
 
 export type PublicContactPageData = {

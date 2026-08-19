@@ -27,7 +27,9 @@ export const DEFAULT_CLINIC_TIMEZONE = "Asia/Kolkata";
 
 /** Default clinic opening / closing (24h HH:mm). */
 export const DEFAULT_CLINIC_OPENING_TIME = "10:00";
-export const DEFAULT_CLINIC_CLOSING_TIME = "19:00";
+export const DEFAULT_CLINIC_CLOSING_TIME = "20:00";
+/** Sunday closing when Sunday is a working day (24h HH:mm). */
+export const DEFAULT_SUNDAY_CLOSING_TIME = "14:00";
 
 /** Default working week for a typical dental clinic. */
 export const DEFAULT_WORKING_DAYS: readonly Weekday[] = [
@@ -37,6 +39,7 @@ export const DEFAULT_WORKING_DAYS: readonly Weekday[] = [
   WEEKDAYS.THURSDAY,
   WEEKDAYS.FRIDAY,
   WEEKDAYS.SATURDAY,
+  WEEKDAYS.SUNDAY,
 ];
 
 /** Appointment durations allowed in scheduling config. */

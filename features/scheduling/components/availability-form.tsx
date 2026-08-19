@@ -28,6 +28,7 @@ import {
 import {
   APPOINTMENT_DURATION_MINUTES,
   DEFAULT_CLINIC_TIMEZONE,
+  DEFAULT_SUNDAY_CLOSING_TIME,
   WEEKDAY_VALUES,
   WEEKDAYS,
   type AppointmentDurationMinutes,
@@ -59,6 +60,7 @@ const availabilityFormSchema = z
     workingDays: workingDaysSchema,
     openingTime: timeOfDaySchema,
     closingTime: timeOfDaySchema,
+    sundayClosingTime: timeOfDaySchema.nullable(),
     appointmentDurationMinutes: appointmentDurationMinutesSchema,
     breaks: z.array(clinicBreakWindowSchema).max(12),
   })
@@ -71,6 +73,20 @@ const availabilityFormSchema = z
         message: "Closing time must be after opening time",
         path: ["closingTime"],
       });
+    }
+
+    if (
+      value.workingDays.includes(WEEKDAYS.SUNDAY) &&
+      value.sundayClosingTime
+    ) {
+      const [sh, sm] = value.sundayClosingTime.split(":").map(Number);
+      if (sh * 60 + sm <= oh * 60 + om) {
+        ctx.addIssue({
+          code: "custom",
+          message: "Sunday closing time must be after opening time",
+          path: ["sundayClosingTime"],
+        });
+      }
     }
   });
 
@@ -98,6 +114,8 @@ export function AvailabilityForm({ initialValues }: AvailabilityFormProps) {
       name: "workingDays",
     }) ?? [];
 
+  const sundaySelected = workingDays.includes(WEEKDAYS.SUNDAY);
+
   const durationMinutes = useWatch({
     control: form.control,
     name: "appointmentDurationMinutes",
@@ -124,6 +142,16 @@ export function AvailabilityForm({ initialValues }: AvailabilityFormProps) {
       shouldValidate: true,
       shouldDirty: true,
     });
+
+    if (checked && day === WEEKDAYS.SUNDAY) {
+      const currentSundayClose = form.getValues("sundayClosingTime");
+      if (!currentSundayClose) {
+        form.setValue("sundayClosingTime", DEFAULT_SUNDAY_CLOSING_TIME, {
+          shouldValidate: true,
+          shouldDirty: true,
+        });
+      }
+    }
   }
 
   return (
@@ -198,6 +226,21 @@ export function AvailabilityForm({ initialValues }: AvailabilityFormProps) {
                 {...form.register("closingTime")}
               />
             </FormField>
+
+            {sundaySelected ? (
+              <FormField
+                id="sunday-closing-time"
+                label="Sunday Closing Time"
+                error={form.formState.errors.sundayClosingTime?.message}
+                required
+              >
+                <Input
+                  type="time"
+                  className="h-10 rounded-xl"
+                  {...form.register("sundayClosingTime")}
+                />
+              </FormField>
+            ) : null}
 
             <FormField
               id="duration"

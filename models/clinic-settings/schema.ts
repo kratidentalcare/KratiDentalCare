@@ -9,9 +9,11 @@ import {
   DEFAULT_CLINIC_CLOSING_TIME,
   DEFAULT_CLINIC_OPENING_TIME,
   DEFAULT_CLINIC_TIMEZONE,
+  DEFAULT_SUNDAY_CLOSING_TIME,
   DEFAULT_WORKING_DAYS,
   TIME_OF_DAY_PATTERN,
   WEEKDAY_VALUES,
+  WEEKDAYS,
 } from "@/constants/scheduling";
 import { CLINIC_SETTINGS_KEY } from "@/constants/app";
 import { createBaseSchema } from "@/models/base/create-schema";
@@ -458,6 +460,20 @@ export const clinicSettingsSchema = createBaseSchema(
         message: "closingTime must be HH:mm (24h)",
       },
     },
+    sundayClosingTime: {
+      type: String,
+      default: DEFAULT_SUNDAY_CLOSING_TIME,
+      trim: true,
+      validate: {
+        validator(value: string | null | undefined) {
+          if (value == null || value === "") {
+            return true;
+          }
+          return TIME_OF_DAY_PATTERN.test(value);
+        },
+        message: "sundayClosingTime must be HH:mm (24h)",
+      },
+    },
     appointmentDurationMinutes: {
       type: Number,
       required: true,
@@ -522,6 +538,11 @@ export const clinicSettingsSchema = createBaseSchema(
 clinicSettingsSchema.pre("validate", function validateScheduleWindows() {
   const openingTime = this.get("openingTime") as string | undefined;
   const closingTime = this.get("closingTime") as string | undefined;
+  const sundayClosingTime = this.get("sundayClosingTime") as
+    | string
+    | null
+    | undefined;
+  const workingDays = this.get("workingDays") as string[] | undefined;
   const timezone = this.get("timezone") as string | undefined;
   const breaks = this.get("breaks") as
     | Array<{ startTime: string; endTime: string }>
@@ -590,6 +611,23 @@ clinicSettingsSchema.pre("validate", function validateScheduleWindows() {
     }
   }
 
+  if (
+    openingTime &&
+    sundayClosingTime &&
+    TIME_OF_DAY_PATTERN.test(openingTime) &&
+    TIME_OF_DAY_PATTERN.test(sundayClosingTime) &&
+    Array.isArray(workingDays) &&
+    workingDays.includes(WEEKDAYS.SUNDAY)
+  ) {
+    const openMins = timeToMinutes(openingTime);
+    const sundayCloseMins = timeToMinutes(sundayClosingTime);
+    if (sundayCloseMins <= openMins) {
+      this.invalidate(
+        "sundayClosingTime",
+        "sundayClosingTime must be after openingTime",
+      );
+    }
+  }
 });
 
 clinicSettingsSchema.index(

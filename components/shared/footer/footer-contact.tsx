@@ -32,7 +32,7 @@ export const DEFAULT_FOOTER_CONTACT: FooterContactInfo = {
   phone: "+1 (555) 123-4567",
   phoneHref: "tel:+15551234567",
   email: "hello@kratidental.care",
-  hours: "Monday – Saturday · 9:00 AM – 7:00 PM",
+  hours: "Monday – Saturday · 10:00 AM – 8:00 PM; Sunday · 10:00 AM – 2:00 PM",
   emergencyLabel: "Emergency Contact",
   emergencyPhone: "+1 (555) 987-6543",
   emergencyPhoneHref: "tel:+15559876543",

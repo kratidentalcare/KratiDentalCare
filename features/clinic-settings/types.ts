@@ -27,6 +27,7 @@ export type ClinicSettingsView = {
   workingDays: Weekday[];
   openingTime: string;
   closingTime: string;
+  sundayClosingTime: string | null;
   appointmentDurationMinutes: number;
   defaultDoctorId: string | null;
 };
@@ -66,6 +67,7 @@ export function toClinicSettingsView(
     workingDays: [...settings.workingDays],
     openingTime: settings.openingTime,
     closingTime: settings.closingTime,
+    sundayClosingTime: settings.sundayClosingTime,
     appointmentDurationMinutes: settings.appointmentDurationMinutes,
     defaultDoctorId: settings.defaultDoctorId
       ? String(settings.defaultDoctorId)

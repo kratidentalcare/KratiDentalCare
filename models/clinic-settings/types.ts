@@ -86,6 +86,8 @@ export type ClinicSettingsFields = {
   openingTime: string;
   /** Clinic-local closing time `HH:mm` (24h). */
   closingTime: string;
+  /** Sunday closing override when Sunday is in workingDays (`HH:mm` 24h). */
+  sundayClosingTime: string | null;
   /** Default bookable appointment length in minutes. */
   appointmentDurationMinutes: AppointmentDurationMinutes;
   breaks: ClinicBreakWindow[];

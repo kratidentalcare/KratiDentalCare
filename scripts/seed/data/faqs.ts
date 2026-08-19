@@ -89,7 +89,7 @@ export const SEED_FAQS: readonly SeedFaq[] = [
     category: "hours",
     question: "What are the clinic working hours?",
     answer:
-      "We are typically open Monday to Saturday. Exact opening and closing times are shown on the homepage and booking page, and may vary on public holidays.",
+      "We are open Monday to Saturday, 10 AM to 8 PM, and Sunday, 10 AM to 2 PM. Hours may vary on public holidays.",
   },
   {
     displayOrder: 13,

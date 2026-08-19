@@ -97,6 +97,7 @@ export async function generateAvailableSlots(
       workingDays: settings.workingDays,
       openingTime: settings.openingTime,
       closingTime: settings.closingTime,
+      sundayClosingTime: settings.sundayClosingTime,
       appointmentDurationMinutes: settings.appointmentDurationMinutes,
       breaks: settings.breaks.map((item) => ({
         startTime: item.startTime,

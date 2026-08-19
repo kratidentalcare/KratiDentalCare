@@ -27,6 +27,7 @@ export function SchedulingSummary({ settings }: SchedulingSummaryProps) {
     workingDays: settings.workingDays,
     openingTime: settings.openingTime,
     closingTime: settings.closingTime,
+    sundayClosingTime: settings.sundayClosingTime,
   });
 
   return (

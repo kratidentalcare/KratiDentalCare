@@ -8,6 +8,7 @@ import {
   isBlockedByAny,
   toInterval,
 } from "@/features/scheduling/lib/intervals";
+import { resolveDayHours } from "@/features/scheduling/lib/resolve-day-hours";
 import {
   compareCivilDates,
   formatClinicTimeLabel,
@@ -96,15 +97,17 @@ export function generateSlotsForDate(
     );
   }
 
+  const dayHours = resolveDayHours(settings, weekday);
+
   const dayWindow: TimeInterval = {
     startMs: zonedDateTimeToUtc(
       input.date,
-      settings.openingTime,
+      dayHours.openingTime,
       timezone,
     ).getTime(),
     endMs: zonedDateTimeToUtc(
       input.date,
-      settings.closingTime,
+      dayHours.closingTime,
       timezone,
     ).getTime(),
   };

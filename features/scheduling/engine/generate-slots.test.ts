@@ -53,6 +53,50 @@ describe("generateSlotsForDate", () => {
     assert.equal(result.slots.length, 0);
   });
 
+  it("generates Sunday slots with sundayClosingTime", () => {
+    // 2026-07-19 is a Sunday
+    const result = generateSlotsForDate({
+      date: "2026-07-19",
+      settings: {
+        ...baseSettings,
+        workingDays: [...baseSettings.workingDays, WEEKDAYS.SUNDAY],
+        closingTime: "20:00",
+        sundayClosingTime: "14:00",
+        breaks: [{ startTime: "13:00", endTime: "14:00" }],
+      },
+      now: new Date("2026-07-01T00:00:00.000Z"),
+    });
+
+    assert.equal(result.status, AVAILABILITY_STATUSES.AVAILABLE);
+    assert.deepEqual(
+      result.slots.map((slot) => slot.label),
+      ["10:00 AM", "10:30 AM", "11:00 AM", "11:30 AM", "12:00 PM", "12:30 PM"],
+    );
+    assert.ok(
+      result.slots.every((slot) => slot.label !== "1:00 PM"),
+      "Sunday slots should end before lunch break",
+    );
+  });
+
+  it("uses weekday closingTime on Mon–Sat when sundayClosingTime is set", () => {
+    // 2026-07-20 is a Monday
+    const result = generateSlotsForDate({
+      date: "2026-07-20",
+      settings: {
+        ...baseSettings,
+        workingDays: [...baseSettings.workingDays, WEEKDAYS.SUNDAY],
+        closingTime: "20:00",
+        sundayClosingTime: "14:00",
+        breaks: [],
+      },
+      now: new Date("2026-07-01T00:00:00.000Z"),
+    });
+
+    assert.equal(result.status, AVAILABILITY_STATUSES.AVAILABLE);
+    assert.ok(result.slots.some((slot) => slot.label === "7:00 PM"));
+    assert.ok(result.slots.some((slot) => slot.label === "7:30 PM"));
+  });
+
   it("returns holiday closure", () => {
     const result = generateSlotsForDate({
       date: "2026-07-20",

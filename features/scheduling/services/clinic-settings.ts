@@ -12,6 +12,7 @@ import {
   DEFAULT_CLINIC_CLOSING_TIME,
   DEFAULT_CLINIC_OPENING_TIME,
   DEFAULT_CLINIC_TIMEZONE,
+  DEFAULT_SUNDAY_CLOSING_TIME,
   DEFAULT_WORKING_DAYS,
 } from "@/constants/scheduling";
 import { DOCTOR_STATUSES } from "@/constants/statuses";
@@ -138,6 +139,7 @@ const DEFAULT_SETTINGS_SEED = {
   workingDays: [...DEFAULT_WORKING_DAYS],
   openingTime: DEFAULT_CLINIC_OPENING_TIME,
   closingTime: DEFAULT_CLINIC_CLOSING_TIME,
+  sundayClosingTime: DEFAULT_SUNDAY_CLOSING_TIME,
   appointmentDurationMinutes: DEFAULT_APPOINTMENT_DURATION_MINUTES,
   breaks: [
     {
@@ -210,6 +212,7 @@ export function normalizeClinicSettings(
     footerLinks: Array.isArray(settings.footerLinks)
       ? settings.footerLinks
       : [],
+    sundayClosingTime: settings.sundayClosingTime ?? DEFAULT_SUNDAY_CLOSING_TIME,
   };
 }
 
@@ -316,6 +319,10 @@ export async function updateClinicAvailability(
     workingDays: input.workingDays ?? current.workingDays,
     openingTime: input.openingTime ?? current.openingTime,
     closingTime: input.closingTime ?? current.closingTime,
+    sundayClosingTime:
+      input.sundayClosingTime !== undefined
+        ? input.sundayClosingTime
+        : current.sundayClosingTime,
     appointmentDurationMinutes:
       input.appointmentDurationMinutes ?? current.appointmentDurationMinutes,
     breaks:
@@ -355,6 +362,7 @@ export async function updateClinicAvailability(
     workingDays: merged.workingDays,
     openingTime: merged.openingTime,
     closingTime: merged.closingTime,
+    sundayClosingTime: merged.sundayClosingTime,
     appointmentDurationMinutes: merged.appointmentDurationMinutes,
     breaks: merged.breaks,
     bookingRules: merged.bookingRules,
@@ -384,6 +392,7 @@ export async function updateClinicAvailability(
         workingDays: merged.workingDays,
         openingTime: merged.openingTime,
         closingTime: merged.closingTime,
+        sundayClosingTime: merged.sundayClosingTime,
         appointmentDurationMinutes: merged.appointmentDurationMinutes,
         breaks: merged.breaks,
         bookingRules: merged.bookingRules,
