@@ -1,20 +1,79 @@
 import "server-only";
 
-import puppeteer, { type Browser } from "puppeteer";
+import chromium from "@sparticuz/chromium-min";
+import type { Browser, LaunchOptions } from "puppeteer-core";
+import puppeteer from "puppeteer-core";
 
 let browserPromise: Promise<Browser> | null = null;
 
-async function launchBrowser(): Promise<Browser> {
+const SHARED_LAUNCH_ARGS = [
+  "--no-sandbox",
+  "--disable-setuid-sandbox",
+  "--font-render-hinting=none",
+  "--disable-dev-shm-usage",
+];
+
+/**
+ * Must match the installed `@sparticuz/chromium-min` version.
+ * Override with CHROMIUM_PACK_URL if you host the pack yourself.
+ */
+const CHROMIUM_PACK_VERSION = "147.0.0";
+const DEFAULT_CHROMIUM_PACK_URL = `https://github.com/Sparticuz/chromium/releases/download/v${CHROMIUM_PACK_VERSION}/chromium-v${CHROMIUM_PACK_VERSION}-pack.x64.tar`;
+
+function isServerlessRuntime(): boolean {
+  return Boolean(
+    process.env.VERCEL ||
+      process.env.AWS_LAMBDA_FUNCTION_NAME ||
+      process.env.AWS_EXECUTION_ENV,
+  );
+}
+
+async function launchServerlessBrowser(): Promise<Browser> {
+  chromium.setGraphicsMode = false;
+
+  const packUrl =
+    process.env.CHROMIUM_PACK_URL ?? DEFAULT_CHROMIUM_PACK_URL;
+
   return puppeteer.launch({
-    headless: true,
-    args: [
-      "--no-sandbox",
-      "--disable-setuid-sandbox",
-      "--font-render-hinting=none",
-      "--disable-dev-shm-usage",
-    ],
-    executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || undefined,
+    args: [...chromium.args, ...SHARED_LAUNCH_ARGS],
+    executablePath: await chromium.executablePath(packUrl),
+    headless: "shell",
   });
+}
+
+async function launchLocalBrowser(): Promise<Browser> {
+  const executablePath = process.env.PUPPETEER_EXECUTABLE_PATH;
+  const options: LaunchOptions = {
+    headless: true,
+    args: SHARED_LAUNCH_ARGS,
+  };
+
+  if (executablePath) {
+    options.executablePath = executablePath;
+  } else {
+    options.channel = "chrome";
+  }
+
+  try {
+    return await puppeteer.launch(options);
+  } catch (error) {
+    throw new Error(
+      "Could not find a local Chrome install. Install Google Chrome or set PUPPETEER_EXECUTABLE_PATH.",
+      { cause: error },
+    );
+  }
+}
+
+async function launchBrowser(): Promise<Browser> {
+  if (process.env.PUPPETEER_EXECUTABLE_PATH) {
+    return launchLocalBrowser();
+  }
+
+  if (isServerlessRuntime()) {
+    return launchServerlessBrowser();
+  }
+
+  return launchLocalBrowser();
 }
 
 async function getBrowser(): Promise<Browser> {

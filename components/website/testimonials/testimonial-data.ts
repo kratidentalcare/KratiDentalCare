@@ -51,7 +51,7 @@ export const TESTIMONIALS: readonly Testimonial[] = [
   {
     id: "ananya-verma",
     patientName: "Ananya Verma",
-    treatment: "Dental Implants",
+    treatment: "Veneers",
     rating: 5,
     review:
       "I can eat and laugh without worrying again. The process was clear, calm, and genuinely life-changing.",
