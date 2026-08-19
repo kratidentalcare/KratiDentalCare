@@ -68,6 +68,16 @@ export const TESTIMONIALS: readonly Testimonial[] = [
     beforeImage: "/images/testimonials/testimonial-5-a.png",
     afterImage: "/images/testimonials/testimonial-5-b.png",
   },
+  {
+    id: "vikram-singh",
+    patientName: "Vikram Singh",
+    treatment: "Dental Implants",
+    rating: 5,
+    review:
+      "Missing teeth had me hiding my smile for years. The implants look and feel natural — I eat comfortably and smile freely again.",
+    beforeImage: "/images/testimonials/testimonial-6-a.png",
+    afterImage: "/images/testimonials/testimonial-6-b.png",
+  },
 ] as const;
 
 /** Section copy — separate from records for CMS-friendly editing. */
