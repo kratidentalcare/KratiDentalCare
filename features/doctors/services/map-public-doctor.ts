@@ -5,7 +5,7 @@ import { DOCTOR_PROFILE_ENRICHMENT } from "@/features/doctors/data/profile-enric
 import type { PublicDoctorProfile } from "@/features/doctors/types";
 import type { LeanDoctor } from "@/models/doctor";
 
-const FALLBACK_PHOTO = "/images/hero/drgaurav.png";
+const FALLBACK_PHOTO = "/images/hero/drgaurav.jpeg";
 
 /**
  * Maps a lean Doctor document (+ optional slug enrichment) to the public DTO.

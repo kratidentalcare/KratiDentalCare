@@ -48,7 +48,7 @@ export const DOCTORS: readonly Doctor[] = [
       { id: "cosmetic", label: "Cosmetic Dentistry", icon: "sparkles" },
       { id: "rct", label: "Root Canal Treatment", icon: "activity" },
     ],
-    imageSrc: "/images/hero/drgaurav.png",
+    imageSrc: "/images/hero/drgaurav.jpeg",
     imageAlt:
       "Dr. Gaurav Jaiswal, Periodontist & Implantologist at Krati Dental Care",
   },
