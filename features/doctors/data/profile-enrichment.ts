@@ -7,9 +7,11 @@ export type DoctorProfileEnrichment = {
   education?: readonly string[];
   /** Overrides specialties for the Expertise section when provided. */
   expertise?: readonly string[];
+  yearsOfExperience?: number;
 };
 
 const DR_GAURAV_ENRICHMENT: DoctorProfileEnrichment = {
+  yearsOfExperience: 16,
   education: [
     "Bachelor of Dental Surgery (BDS)",
     "MDS (Periodontics and Oral Implantology)",

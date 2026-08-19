@@ -9,7 +9,6 @@ import {
 import Link from "next/link";
 
 import type { PublicDoctorProfile } from "@/features/doctors";
-import { formatClinicWorkingHours } from "@/features/clinic-settings/lib/format-clinic";
 import { ROUTES } from "@/constants/routes";
 import { cn } from "@/lib/utils";
 
@@ -38,14 +37,6 @@ export function DoctorProfile({
   priority = false,
   className,
 }: DoctorProfileProps) {
-  const timingsLabel = formatClinicWorkingHours({
-    workingDays: doctor.workingDays,
-    openingTime: doctor.startTime,
-    closingTime: doctor.endTime,
-  });
-  const showTimings =
-    timingsLabel !== "Closed" || Boolean(clinicHoursLabel);
-
   return (
     <article
       id={`doctor-${doctor.slug}`}
@@ -118,25 +109,11 @@ export function DoctorProfile({
         </div>
 
         <DoctorDetailSection title="Clinic Timings" icon={Clock3}>
-          {showTimings ? (
-            <div className="space-y-2 text-sm leading-relaxed text-brand-dark sm:text-[0.9375rem]">
-              {timingsLabel !== "Closed" ? (
-                <p>
-                  <span className="font-medium text-brand-dark">
-                    Consultation hours:{" "}
-                  </span>
-                  <span className="text-brand-muted">{timingsLabel}</span>
-                </p>
-              ) : null}
-              {clinicHoursLabel ? (
-                <p>
-                  <span className="font-medium text-brand-dark">
-                    Clinic hours:{" "}
-                  </span>
-                  <span className="text-brand-muted">{clinicHoursLabel}</span>
-                </p>
-              ) : null}
-            </div>
+          {clinicHoursLabel ? (
+            <p className="text-sm leading-relaxed text-brand-dark sm:text-[0.9375rem]">
+              <span className="font-medium text-brand-dark">Clinic hours: </span>
+              <span className="text-brand-muted">{clinicHoursLabel}</span>
+            </p>
           ) : (
             <p className="text-sm leading-relaxed text-brand-muted">
               {DOCTOR_PROFILE_PLACEHOLDERS.timings}

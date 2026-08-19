@@ -2,6 +2,7 @@ import Image from "next/image";
 import { User } from "lucide-react";
 
 import type { PublicDoctorProfile } from "@/features/doctors";
+import { resolveDoctorProfilePhoto } from "@/features/doctors/lib/resolve-profile-photo";
 import { cn } from "@/lib/utils";
 
 import { DOCTOR_PROFILE_PLACEHOLDERS } from "./doctors-page-data";
@@ -33,7 +34,7 @@ export function DoctorProfileCard({
     doctor.specialties.length > 0
       ? doctor.specialties
       : [DOCTOR_PROFILE_PLACEHOLDERS.specialization];
-  const photoSrc = doctor.profilePhoto ?? "/images/hero/drgaurav.jpeg";
+  const photoSrc = resolveDoctorProfilePhoto(doctor.profilePhoto);
 
   return (
     <div
