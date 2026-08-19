@@ -13,7 +13,13 @@ export function mapLeanDoctorToPublicProfile(
   doctor: LeanDoctor,
 ): PublicDoctorProfile {
   const enrichment = DOCTOR_PROFILE_ENRICHMENT[doctor.slug] ?? {};
-  const specialties = doctor.specialties.map((item) => item.trim()).filter(Boolean);
+  const dbSpecialties = doctor.specialties
+    .map((item) => item.trim())
+    .filter(Boolean);
+  const specialties =
+    enrichment.specialties && enrichment.specialties.length > 0
+      ? [...enrichment.specialties]
+      : dbSpecialties;
 
   return {
     id: String(doctor._id),

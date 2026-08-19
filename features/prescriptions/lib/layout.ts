@@ -3,7 +3,7 @@
  * Used by on-screen preview and PDF — keep as the single source of truth.
  */
 
-export const PRESCRIPTION_TEMPLATE_PATH = "/prescription-template.png" as const;
+export const PRESCRIPTION_TEMPLATE_PATH = "/prescription-template.jpeg" as const;
 
 /** CSS size matching A4 portrait. */
 export const A4_WIDTH_MM = 210;

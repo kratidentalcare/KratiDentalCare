@@ -44,9 +44,10 @@ export const DOCTORS: readonly Doctor[] = [
     blurb:
       "Precision dentistry with a gentle approach — focused on comfort, clarity, and lasting results for every patient.",
     specializations: [
-      { id: "general", label: "General Dentistry", icon: "tooth" },
-      { id: "cosmetic", label: "Cosmetic Dentistry", icon: "sparkles" },
-      { id: "rct", label: "Root Canal Treatment", icon: "activity" },
+      { id: "fmr", label: "Full Mouth Rehabilitation (FMR)", icon: "tooth" },
+      { id: "implants", label: "Dental Implants", icon: "sparkles" },
+      { id: "rct", label: "Single sitting Root Canal", icon: "activity" },
+      { id: "perio", label: "Perio Surgeries", icon: "tooth" },
     ],
     imageSrc: "/images/hero/drgaurav.jpeg",
     imageAlt:

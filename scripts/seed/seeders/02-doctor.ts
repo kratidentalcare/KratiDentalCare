@@ -41,9 +41,10 @@ export async function seedDoctor(ctx: SeedContext): Promise<void> {
       fullName: "Dr. Gaurav Jaiswal",
       slug: SEED_IDS.doctorSlug,
       specialties: [
-        "General Dentistry",
-        "Cosmetic Dentistry",
-        "Root Canal Treatment",
+        "Full Mouth Rehabilitation (FMR)",
+        "Dental Implants",
+        "Single sitting Root Canal",
+        "Perio Surgeries",
       ],
       qualification: "BDS MDS\nPeriodontist & Implantologist",
       registrationNumber: SEED_IDS.doctorRegistration,

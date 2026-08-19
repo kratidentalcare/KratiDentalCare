@@ -5,21 +5,29 @@
  */
 export type DoctorProfileEnrichment = {
   education?: readonly string[];
+  /** Overrides headline specialty badges when provided. */
+  specialties?: readonly string[];
   /** Overrides specialties for the Expertise section when provided. */
   expertise?: readonly string[];
   yearsOfExperience?: number;
 };
 
+const DR_GAURAV_SPECIALTIES = [
+  "Full Mouth Rehabilitation (FMR)",
+  "Dental Implants",
+  "Single sitting Root Canal",
+  "Perio Surgeries",
+] as const;
+
 const DR_GAURAV_ENRICHMENT: DoctorProfileEnrichment = {
   yearsOfExperience: 16,
+  specialties: DR_GAURAV_SPECIALTIES,
   education: [
     "Bachelor of Dental Surgery (BDS)",
     "MDS (Periodontics and Oral Implantology)",
   ],
   expertise: [
-    "General Dentistry",
-    "Cosmetic Dentistry",
-    "Root Canal Treatment",
+    ...DR_GAURAV_SPECIALTIES,
     "Preventive Oral Care",
     "Family Dental Care",
     "Perio Plastic Surgeries",
