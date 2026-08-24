@@ -41,7 +41,7 @@ describe("medicine Zod schemas", () => {
     const parsed = createMedicineActionSchema.safeParse({
       name: "Amoxicillin 500 mg",
       genericName: "Amoxicillin",
-      dosage: "1 Capsule",
+      dosage: "250 mg",
       frequency: "1-0-1",
       duration: "5 Days",
       instructions: "After food",

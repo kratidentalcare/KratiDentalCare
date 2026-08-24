@@ -121,7 +121,7 @@ export function MedicineFormDialog({
             >
               <Input
                 className="h-10 rounded-xl"
-                placeholder="1 Capsule"
+                placeholder="250 mg"
                 {...form.register("dosage")}
               />
             </FormField>

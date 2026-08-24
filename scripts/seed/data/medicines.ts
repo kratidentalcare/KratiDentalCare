@@ -11,7 +11,7 @@ export const SEED_MEDICINES: readonly SeedMedicine[] = [
   {
     name: "Amoxicillin 500 mg",
     genericName: "Amoxicillin",
-    dosage: "1 Capsule",
+    dosage: "250 mg",
     frequency: "1-0-1",
     duration: "5 Days",
     instructions: "After food",
@@ -19,7 +19,7 @@ export const SEED_MEDICINES: readonly SeedMedicine[] = [
   {
     name: "Amoxicillin 250 mg",
     genericName: "Amoxicillin",
-    dosage: "1 Capsule",
+    dosage: "250 mg",
     frequency: "1-0-1",
     duration: "5 Days",
     instructions: "After food",
@@ -51,7 +51,7 @@ export const SEED_MEDICINES: readonly SeedMedicine[] = [
   {
     name: "Doxycycline 100 mg",
     genericName: "Doxycycline",
-    dosage: "1 Capsule",
+    dosage: "250 mg",
     frequency: "1-0-1",
     duration: "5 Days",
     instructions: "After food. Avoid lying down for 30 minutes.",

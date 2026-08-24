@@ -7,7 +7,7 @@ const formRow = {
   medicineId: "507f1f77bcf86cd799439011",
   medicineName: "Amoxicillin 500 mg",
   genericName: "Amoxicillin",
-  dosage: "1 Capsule",
+  dosage: "250 mg",
   frequency: "1-1-1",
   duration: "7 Days",
   instructions: "Before food",
@@ -22,7 +22,7 @@ describe("mergeMedicineSnapshot", () => {
 
     assert.equal(String(snapshot.medicineId), "507f1f77bcf86cd799439011");
     assert.equal(snapshot.name, "Amoxicillin 500 mg");
-    assert.equal(snapshot.dosage, "1 Capsule");
+    assert.equal(snapshot.dosage, "250 mg");
     assert.equal(snapshot.frequency, "1-1-1");
     assert.equal(snapshot.duration, "7 Days");
     assert.equal(snapshot.instructions, "Before food");
@@ -50,6 +50,6 @@ describe("mergeMedicineSnapshot", () => {
 
     assert.equal(snapshot.medicineId, null);
     assert.equal(snapshot.name, "Amoxicillin 500 mg");
-    assert.equal(snapshot.dosage, "1 Capsule");
+    assert.equal(snapshot.dosage, "250 mg");
   });
 });
