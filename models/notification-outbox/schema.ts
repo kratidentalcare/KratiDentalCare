@@ -8,6 +8,7 @@ import {
   NOTIFICATION_STATUS_VALUES,
   NOTIFICATION_STATUSES,
 } from "@/constants/appointments";
+import { EMAIL_TYPE_VALUES } from "@/constants/email";
 import {
   createBaseSchema,
   OBJECT_ID_VALIDATOR_MESSAGE,
@@ -17,12 +18,16 @@ import { APPOINTMENT_MODEL_NAME } from "@/models/appointment/schema";
 
 const IDEMPOTENCY_KEY_MAX = 200;
 const PAYLOAD_MAX_BYTES = 16_384;
+const RECIPIENT_MAX = 320;
+const PROVIDER_MESSAGE_ID_MAX = 200;
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export const NOTIFICATION_OUTBOX_MODEL_NAME = "NotificationOutbox";
 
 /**
  * Provider-neutral notification intent queue.
  * Collection: `notification_outbox`
+ * EMAIL channel rows also act as the appointment EmailLog.
  */
 export const notificationOutboxSchema = createBaseSchema(
   {
@@ -84,6 +89,41 @@ export const notificationOutboxSchema = createBaseSchema(
         message: "payload is too large or not serializable",
       },
     },
+    recipient: {
+      type: String,
+      default: null,
+      trim: true,
+      lowercase: true,
+      maxlength: [RECIPIENT_MAX, "recipient is too long"],
+      validate: {
+        validator(value: unknown) {
+          if (value == null || value === "") {
+            return true;
+          }
+          return EMAIL_PATTERN.test(String(value));
+        },
+        message: "recipient must be a valid email address",
+      },
+    },
+    emailType: {
+      type: String,
+      default: null,
+      validate: {
+        validator(value: unknown) {
+          if (value == null) {
+            return true;
+          }
+          return (EMAIL_TYPE_VALUES as readonly string[]).includes(String(value));
+        },
+        message: "`{VALUE}` is not a supported email type",
+      },
+    },
+    providerMessageId: {
+      type: String,
+      default: null,
+      trim: true,
+      maxlength: [PROVIDER_MESSAGE_ID_MAX, "providerMessageId is too long"],
+    },
     lastError: {
       type: String,
       default: null,
@@ -105,3 +145,4 @@ export const notificationOutboxSchema = createBaseSchema(
 notificationOutboxSchema.index({ idempotencyKey: 1 }, { unique: true });
 notificationOutboxSchema.index({ status: 1, createdAt: 1 });
 notificationOutboxSchema.index({ appointmentId: 1, createdAt: -1 });
+notificationOutboxSchema.index({ emailType: 1, createdAt: -1 });

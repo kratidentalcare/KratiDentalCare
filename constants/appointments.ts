@@ -55,6 +55,7 @@ export const NOTIFICATION_CHANNEL_VALUES = [
 
 export const NOTIFICATION_STATUSES = {
   PENDING: "PENDING",
+  SENDING: "SENDING",
   SENT: "SENT",
   FAILED: "FAILED",
 } as const;

@@ -1,7 +1,5 @@
 import "server-only";
 
-import { Types } from "mongoose";
-
 import {
   APPOINTMENT_EVENT_TYPES,
   BOOKING_SOURCES,
@@ -12,10 +10,12 @@ import {
   notifyAppointmentCompleted,
   notifyNewAppointment,
 } from "@/features/notifications/services/emitters";
+import { bestEffortDispatchAppointmentEmail } from "@/features/email/services/dispatch-appointment-email";
 import { connect } from "@/lib/db";
 import { AppointmentEvent } from "@/models/appointment-event";
 import { NotificationOutbox } from "@/models/notification-outbox";
 import type { LeanAppointment } from "@/models/appointment";
+import { Types } from "mongoose";
 
 type NotificationPayload = {
   patientName: string;
@@ -62,7 +62,7 @@ export async function recordAppointmentEvent(input: {
 }
 
 /**
- * Enqueue provider-neutral notification intents for a future worker.
+ * Enqueue provider-neutral notification intents for outbound delivery.
  */
 export async function enqueueAppointmentNotifications(
   appointment: LeanAppointment,
@@ -102,6 +102,24 @@ export async function enqueueAppointmentNotifications(
   }
 }
 
+async function enqueueAndDispatch(
+  appointment: LeanAppointment,
+  eventType: (typeof APPOINTMENT_EVENT_TYPES)[keyof typeof APPOINTMENT_EVENT_TYPES],
+): Promise<void> {
+  try {
+    await enqueueAppointmentNotifications(appointment, eventType);
+  } catch (error) {
+    console.error("[notifications] enqueue failed", {
+      appointmentId: String(appointment._id),
+      eventType,
+      error: error instanceof Error ? error.message : String(error),
+    });
+  }
+
+  // Fire-and-forget so booking / lifecycle mutations are never blocked on SMTP/API latency.
+  void bestEffortDispatchAppointmentEmail(appointment, eventType);
+}
+
 export async function onAppointmentCreated(
   appointment: LeanAppointment,
 ): Promise<void> {
@@ -115,45 +133,43 @@ export async function onAppointmentCreated(
     },
   });
 
-  await enqueueAppointmentNotifications(
-    appointment,
-    APPOINTMENT_EVENT_TYPES.CREATED,
-  );
-
+  await enqueueAndDispatch(appointment, APPOINTMENT_EVENT_TYPES.CREATED);
   await notifyNewAppointment(appointment);
 }
 
 export async function onAppointmentConfirmed(
   appointment: LeanAppointment,
   actorUserId: string,
+  auditMeta?: Record<string, unknown> | null,
 ): Promise<void> {
   await recordAppointmentEvent({
     appointmentId: String(appointment._id),
     eventType: APPOINTMENT_EVENT_TYPES.CONFIRMED,
     actorUserId,
-    payload: { status: appointment.status },
+    payload: {
+      status: appointment.status,
+      ...(auditMeta ?? {}),
+    },
   });
-  await enqueueAppointmentNotifications(
-    appointment,
-    APPOINTMENT_EVENT_TYPES.CONFIRMED,
-  );
+  await enqueueAndDispatch(appointment, APPOINTMENT_EVENT_TYPES.CONFIRMED);
 }
 
 export async function onAppointmentCancelled(
   appointment: LeanAppointment,
   actorUserId: string,
   cancellationReason: string,
+  auditMeta?: Record<string, unknown> | null,
 ): Promise<void> {
   await recordAppointmentEvent({
     appointmentId: String(appointment._id),
     eventType: APPOINTMENT_EVENT_TYPES.CANCELLED,
     actorUserId,
-    payload: { cancellationReason },
+    payload: {
+      cancellationReason,
+      ...(auditMeta ?? {}),
+    },
   });
-  await enqueueAppointmentNotifications(
-    appointment,
-    APPOINTMENT_EVENT_TYPES.CANCELLED,
-  );
+  await enqueueAndDispatch(appointment, APPOINTMENT_EVENT_TYPES.CANCELLED);
 
   await notifyAppointmentCancelled(appointment, cancellationReason);
 }
@@ -168,10 +184,7 @@ export async function onAppointmentCompleted(
     actorUserId,
     payload: { status: appointment.status },
   });
-  await enqueueAppointmentNotifications(
-    appointment,
-    APPOINTMENT_EVENT_TYPES.COMPLETED,
-  );
+  await enqueueAndDispatch(appointment, APPOINTMENT_EVENT_TYPES.COMPLETED);
 
   await notifyAppointmentCompleted(appointment);
 }
@@ -180,6 +193,7 @@ export async function onAppointmentRescheduled(
   appointment: LeanAppointment,
   actorUserId: string,
   previous: { startsAt: Date; endsAt: Date },
+  auditMeta?: Record<string, unknown> | null,
 ): Promise<void> {
   await recordAppointmentEvent({
     appointmentId: String(appointment._id),
@@ -190,10 +204,8 @@ export async function onAppointmentRescheduled(
       previousEndsAt: previous.endsAt.toISOString(),
       startsAt: appointment.startsAt.toISOString(),
       endsAt: appointment.endsAt.toISOString(),
+      ...(auditMeta ?? {}),
     },
   });
-  await enqueueAppointmentNotifications(
-    appointment,
-    APPOINTMENT_EVENT_TYPES.RESCHEDULED,
-  );
+  await enqueueAndDispatch(appointment, APPOINTMENT_EVENT_TYPES.RESCHEDULED);
 }

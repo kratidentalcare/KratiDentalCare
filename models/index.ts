@@ -14,6 +14,7 @@ export * from "./schedule-override";
 export * from "./slot";
 export * from "./appointment";
 export * from "./appointment-event";
+export * from "./appointment-action-token";
 export * from "./notification-outbox";
 export * from "./notification";
 export * from "./prescription";

@@ -5,6 +5,7 @@ import type {
   NotificationChannel,
   NotificationStatus,
 } from "@/constants/appointments";
+import type { EmailType } from "@/constants/email";
 import type { BaseDocument, LeanBaseDocument } from "@/models/base";
 
 export type NotificationOutboxFields = {
@@ -14,6 +15,9 @@ export type NotificationOutboxFields = {
   status: NotificationStatus;
   idempotencyKey: string;
   payload: Record<string, unknown> | null;
+  recipient: string | null;
+  emailType: EmailType | null;
+  providerMessageId: string | null;
   lastError: string | null;
   sentAt: Date | null;
 };

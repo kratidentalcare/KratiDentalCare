@@ -62,6 +62,14 @@ export const ROUTES = {
     DASHBOARD_PRESCRIPTIONS: "/api/dashboard/prescriptions",
   },
   PUBLIC_BOOK: "/book-appointment",
+  /**
+   * Public token-gated appointment email actions (no Clerk session).
+   * Links are authenticated by single-use expiring tokens, not `/admin` auth.
+   */
+  APPOINTMENT_ACTIONS: {
+    ROOT: "/appointment-actions",
+    RESCHEDULE: "/appointment-actions/reschedule",
+  },
   /** Legacy admin scaffold (`/admin`) — prefer `DASHBOARD` for new work. */
   ADMIN: {
     ROOT: "/admin",

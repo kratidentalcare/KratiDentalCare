@@ -14,4 +14,5 @@ export * from "./scheduling";
 export * from "./clinic-settings";
 export * from "./appointments";
 export * from "./notifications";
+export * from "./email";
 export * from "./routes";

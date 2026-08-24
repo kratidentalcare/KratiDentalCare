@@ -26,6 +26,10 @@ import {
 import { Appointment, type LeanAppointment } from "@/models/appointment";
 import type { AppointmentActionInput } from "@/validators/appointment-booking";
 
+export type AppointmentActionOptions = {
+  auditMeta?: Record<string, unknown> | null;
+};
+
 function isDuplicateKeyError(error: unknown): boolean {
   return (
     error !== null &&
@@ -53,22 +57,30 @@ export async function performAppointmentAction(
   id: string,
   input: AppointmentActionInput,
   actorUserId: string,
+  options?: AppointmentActionOptions,
 ): Promise<AppointmentDetail> {
   const appointment = await loadAppointment(id);
+  const auditMeta = options?.auditMeta ?? null;
 
   switch (input.action) {
     case "approve":
-      return approveAppointment(appointment, actorUserId);
+      return approveAppointment(appointment, actorUserId, auditMeta);
     case "cancel":
       return cancelAppointment(
         appointment,
         actorUserId,
         input.cancellationReason,
+        auditMeta,
       );
     case "complete":
       return completeAppointment(appointment, actorUserId);
     case "reschedule":
-      return rescheduleAppointment(appointment, actorUserId, input);
+      return rescheduleAppointment(
+        appointment,
+        actorUserId,
+        input,
+        auditMeta,
+      );
     default: {
       const exhaustive: never = input;
       void exhaustive;
@@ -80,6 +92,7 @@ export async function performAppointmentAction(
 async function approveAppointment(
   appointment: LeanAppointment,
   actorUserId: string,
+  auditMeta: Record<string, unknown> | null,
 ): Promise<AppointmentDetail> {
   if (
     !canTransitionAppointmentStatus(
@@ -109,7 +122,7 @@ async function approveAppointment(
     throw new ConflictError("Appointment was modified by another user");
   }
 
-  await onAppointmentConfirmed(updated, actorUserId);
+  await onAppointmentConfirmed(updated, actorUserId, auditMeta);
   return getAppointmentDetail(String(updated._id));
 }
 
@@ -117,6 +130,7 @@ async function cancelAppointment(
   appointment: LeanAppointment,
   actorUserId: string,
   cancellationReason: string,
+  auditMeta: Record<string, unknown> | null,
 ): Promise<AppointmentDetail> {
   if (
     !canTransitionAppointmentStatus(
@@ -154,7 +168,12 @@ async function cancelAppointment(
     throw new ConflictError("Appointment was modified by another user");
   }
 
-  await onAppointmentCancelled(updated, actorUserId, cancellationReason);
+  await onAppointmentCancelled(
+    updated,
+    actorUserId,
+    cancellationReason,
+    auditMeta,
+  );
   return getAppointmentDetail(String(updated._id));
 }
 
@@ -204,6 +223,7 @@ async function rescheduleAppointment(
   appointment: LeanAppointment,
   actorUserId: string,
   input: Extract<AppointmentActionInput, { action: "reschedule" }>,
+  auditMeta: Record<string, unknown> | null,
 ): Promise<AppointmentDetail> {
   if (!canRescheduleAppointment(appointment.status, appointment.startsAt)) {
     throw new DomainError(
@@ -252,7 +272,12 @@ async function rescheduleAppointment(
       throw new ConflictError("Appointment was modified by another user");
     }
 
-    await onAppointmentRescheduled(updated, actorUserId, previous);
+    await onAppointmentRescheduled(
+      updated,
+      actorUserId,
+      previous,
+      auditMeta,
+    );
     return getAppointmentDetail(String(updated._id));
   } catch (error) {
     if (isDuplicateKeyError(error)) {
