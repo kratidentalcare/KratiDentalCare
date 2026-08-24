@@ -1,6 +1,14 @@
 "use client";
 
-import { useEffect, useId, useMemo, useRef, useState } from "react";
+import {
+  useEffect,
+  useId,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import { createPortal } from "react-dom";
 
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -20,6 +28,12 @@ type MedicineSearchComboboxProps = {
   onUseCustom: () => void;
 };
 
+type ListPosition = {
+  top: number;
+  left: number;
+  width: number;
+};
+
 export function MedicineSearchCombobox({
   id,
   value,
@@ -30,11 +44,18 @@ export function MedicineSearchCombobox({
 }: MedicineSearchComboboxProps) {
   const listId = useId();
   const rootRef = useRef<HTMLDivElement>(null);
+  const listRef = useRef<HTMLDivElement>(null);
   const [open, setOpen] = useState(false);
   const [hits, setHits] = useState<MedicineSearchHit[]>([]);
   const [loadedQuery, setLoadedQuery] = useState<string | null>(null);
   const [highlight, setHighlight] = useState(0);
   const [debouncedQuery, setDebouncedQuery] = useState(value);
+  const [position, setPosition] = useState<ListPosition | null>(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     const timeout = window.setTimeout(() => {
@@ -71,11 +92,45 @@ export function MedicineSearchCombobox({
     };
   }, [debouncedQuery, open]);
 
+  useLayoutEffect(() => {
+    if (!open) {
+      setPosition(null);
+      return;
+    }
+
+    function updatePosition() {
+      const root = rootRef.current;
+      if (!root) {
+        return;
+      }
+      const rect = root.getBoundingClientRect();
+      setPosition({
+        top: rect.bottom + 4,
+        left: rect.left,
+        width: rect.width,
+      });
+    }
+
+    updatePosition();
+    window.addEventListener("resize", updatePosition);
+    // Capture scroll from accordion / dashboard main, not only window.
+    document.addEventListener("scroll", updatePosition, true);
+    return () => {
+      window.removeEventListener("resize", updatePosition);
+      document.removeEventListener("scroll", updatePosition, true);
+    };
+  }, [open]);
+
   useEffect(() => {
     function handlePointerDown(event: MouseEvent) {
-      if (!rootRef.current?.contains(event.target as Node)) {
-        setOpen(false);
+      const target = event.target as Node;
+      if (
+        rootRef.current?.contains(target) ||
+        listRef.current?.contains(target)
+      ) {
+        return;
       }
+      setOpen(false);
     }
     document.addEventListener("mousedown", handlePointerDown);
     return () => document.removeEventListener("mousedown", handlePointerDown);
@@ -107,6 +162,89 @@ export function MedicineSearchCombobox({
       setOpen(false);
     }
   }
+
+  const listbox =
+    open && mounted && position
+      ? createPortal(
+          <div
+            ref={listRef}
+            id={listId}
+            role="listbox"
+            style={{
+              position: "fixed",
+              top: position.top,
+              left: position.left,
+              width: position.width,
+            }}
+            className="z-[200] overflow-hidden rounded-lg bg-popover text-sm shadow-lg ring-1 ring-foreground/10"
+          >
+            <p className="sr-only" aria-live="polite">
+              {statusLabel}
+            </p>
+            <ScrollArea className="max-h-56">
+              <div className="p-1">
+                {loading ? (
+                  <p className="px-2 py-2 text-muted-foreground">Searching…</p>
+                ) : hits.length === 0 ? (
+                  <p className="px-2 py-2 text-muted-foreground">
+                    {value.trim()
+                      ? "No medicine found."
+                      : "Type to search the medicine library."}
+                  </p>
+                ) : (
+                  hits.map((hit, index) => (
+                    <button
+                      key={hit.id}
+                      type="button"
+                      role="option"
+                      aria-selected={highlight === index}
+                      className={cn(
+                        "flex w-full flex-col items-start rounded-md px-2 py-1.5 text-left",
+                        highlight === index
+                          ? "bg-accent text-accent-foreground"
+                          : "hover:bg-accent/60",
+                      )}
+                      onMouseEnter={() => setHighlight(index)}
+                      onClick={() => {
+                        onSelectCatalog(hit);
+                        setOpen(false);
+                      }}
+                    >
+                      <span className="font-medium">{hit.name}</span>
+                      {hit.genericName ? (
+                        <span className="text-xs text-muted-foreground">
+                          {hit.genericName}
+                        </span>
+                      ) : null}
+                    </button>
+                  ))
+                )}
+                <button
+                  type="button"
+                  role="option"
+                  aria-selected={highlight === customIndex}
+                  className={cn(
+                    "mt-1 flex w-full rounded-md px-2 py-1.5 text-left font-medium text-brand-blue",
+                    highlight === customIndex
+                      ? "bg-accent"
+                      : "hover:bg-accent/60",
+                  )}
+                  onMouseEnter={() => setHighlight(customIndex)}
+                  onClick={() => {
+                    onUseCustom();
+                    setOpen(false);
+                  }}
+                >
+                  {hits.length === 0 && value.trim()
+                    ? "Add as Custom Medicine"
+                    : "+ Add Custom Medicine"}
+                </button>
+              </div>
+            </ScrollArea>
+          </div>,
+          document.body,
+        )
+      : null;
 
   return (
     <div ref={rootRef} className="relative">
@@ -144,77 +282,7 @@ export function MedicineSearchCombobox({
           }
         }}
       />
-      {open ? (
-        <div
-          id={listId}
-          role="listbox"
-          className="absolute z-50 mt-1 w-full overflow-hidden rounded-lg bg-popover text-sm shadow-md ring-1 ring-foreground/10"
-        >
-          <p className="sr-only" aria-live="polite">
-            {statusLabel}
-          </p>
-          <ScrollArea className="max-h-56">
-            <div className="p-1">
-              {loading ? (
-                <p className="px-2 py-2 text-muted-foreground">Searching…</p>
-              ) : hits.length === 0 ? (
-                <p className="px-2 py-2 text-muted-foreground">
-                  {value.trim()
-                    ? "No medicine found."
-                    : "Type to search the medicine library."}
-                </p>
-              ) : (
-                hits.map((hit, index) => (
-                  <button
-                    key={hit.id}
-                    type="button"
-                    role="option"
-                    aria-selected={highlight === index}
-                    className={cn(
-                      "flex w-full flex-col items-start rounded-md px-2 py-1.5 text-left",
-                      highlight === index
-                        ? "bg-accent text-accent-foreground"
-                        : "hover:bg-accent/60",
-                    )}
-                    onMouseEnter={() => setHighlight(index)}
-                    onClick={() => {
-                      onSelectCatalog(hit);
-                      setOpen(false);
-                    }}
-                  >
-                    <span className="font-medium">{hit.name}</span>
-                    {hit.genericName ? (
-                      <span className="text-xs text-muted-foreground">
-                        {hit.genericName}
-                      </span>
-                    ) : null}
-                  </button>
-                ))
-              )}
-              <button
-                type="button"
-                role="option"
-                aria-selected={highlight === customIndex}
-                className={cn(
-                  "mt-1 flex w-full rounded-md px-2 py-1.5 text-left font-medium text-brand-blue",
-                  highlight === customIndex
-                    ? "bg-accent"
-                    : "hover:bg-accent/60",
-                )}
-                onMouseEnter={() => setHighlight(customIndex)}
-                onClick={() => {
-                  onUseCustom();
-                  setOpen(false);
-                }}
-              >
-                {hits.length === 0 && value.trim()
-                  ? "Add as Custom Medicine"
-                  : "+ Add Custom Medicine"}
-              </button>
-            </div>
-          </ScrollArea>
-        </div>
-      ) : null}
+      {listbox}
     </div>
   );
 }
