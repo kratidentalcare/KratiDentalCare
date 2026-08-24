@@ -11,6 +11,9 @@ import {
   PillIcon,
 } from "lucide-react";
 import { AppointmentStatusBadge } from "@/features/appointments/components/appointment-status-badge";
+import { PatientDocumentsSection } from "@/features/patient-documents/components/patient-documents-section";
+import type { PatientDocumentListResult } from "@/features/patient-documents/types";
+import type { PatientDocumentType } from "@/constants/patient-documents";
 import { PatientEditContactDialog } from "@/features/patients/components/patient-edit-contact-dialog";
 import { PatientStatusDialog } from "@/features/patients/components/patient-status-dialog";
 import type { PatientProfile } from "@/features/patients/types";
@@ -41,9 +44,17 @@ import {
 
 type PatientProfileViewProps = {
   profile: PatientProfile;
+  documents: PatientDocumentListResult;
+  documentsSearch?: string;
+  documentsType?: PatientDocumentType | null;
 };
 
-export function PatientProfileView({ profile }: PatientProfileViewProps) {
+export function PatientProfileView({
+  profile,
+  documents,
+  documentsSearch = "",
+  documentsType = null,
+}: PatientProfileViewProps) {
   const router = useRouter();
   const [isRefreshing, startRefresh] = useTransition();
   const [editOpen, setEditOpen] = useState(false);
@@ -154,117 +165,122 @@ export function PatientProfileView({ profile }: PatientProfileViewProps) {
         />
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-2">
-        <Card className="border-0 shadow-none ring-1 ring-[#E5E7EB]">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-base">
-              <CalendarDaysIcon className="size-4 text-brand-blue" />
-              Upcoming appointment
-            </CardTitle>
-            <CardDescription>
-              Next scheduled visit for this patient.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            {profile.upcomingAppointment ? (
-              <div className="space-y-2 text-sm">
-                <p className="font-medium text-brand-dark">
-                  {profile.upcomingAppointment.date} ·{" "}
-                  {profile.upcomingAppointment.timeLabel}
-                </p>
-                <p className="text-muted-foreground">
-                  {profile.upcomingAppointment.doctorName}
-                </p>
-                <AppointmentStatusBadge
-                  status={profile.upcomingAppointment.status}
-                />
-                {profile.upcomingAppointment.reason ? (
-                  <p className="text-muted-foreground">
-                    {profile.upcomingAppointment.reason}
-                  </p>
-                ) : null}
-              </div>
-            ) : (
-              <p className="text-sm text-muted-foreground">
-                No upcoming appointments.
+      <Card className="border-0 shadow-none ring-1 ring-[#E5E7EB]">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-base">
+            <CalendarDaysIcon className="size-4 text-brand-blue" />
+            Upcoming appointment
+          </CardTitle>
+          <CardDescription>
+            Next scheduled visit for this patient.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          {profile.upcomingAppointment ? (
+            <div className="space-y-2 text-sm">
+              <p className="font-medium text-brand-dark">
+                {profile.upcomingAppointment.date} ·{" "}
+                {profile.upcomingAppointment.timeLabel}
               </p>
-            )}
-          </CardContent>
-        </Card>
+              <p className="text-muted-foreground">
+                {profile.upcomingAppointment.doctorName}
+              </p>
+              <AppointmentStatusBadge
+                status={profile.upcomingAppointment.status}
+              />
+              {profile.upcomingAppointment.reason ? (
+                <p className="text-muted-foreground">
+                  {profile.upcomingAppointment.reason}
+                </p>
+              ) : null}
+            </div>
+          ) : (
+            <p className="text-sm text-muted-foreground">
+              No upcoming appointments.
+            </p>
+          )}
+        </CardContent>
+      </Card>
 
-        <Card className="border-0 shadow-none ring-1 ring-[#E5E7EB]">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-base">
-              <PillIcon className="size-4 text-brand-blue" />
-              Prescription history
-            </CardTitle>
-            <CardDescription>
-              Issued e-prescriptions linked to this patient.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {profile.prescriptionHistory.length === 0 ? (
-              <div className="rounded-lg border border-dashed border-[#E5E7EB] px-4 py-8 text-center text-sm text-muted-foreground">
-                No prescriptions recorded yet.
-              </div>
-            ) : (
-              <>
-                <ul className="space-y-3">
-                  {profile.prescriptionHistory.map((rx) => (
-                    <li
-                      key={rx.id}
-                      className="rounded-xl p-3 text-sm ring-1 ring-foreground/10"
-                    >
-                      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-                        <div className="min-w-0 space-y-1">
-                          <p className="font-medium text-brand-dark">
-                            {rx.prescriptionNumber}
-                          </p>
-                          <p className="text-muted-foreground">
-                            {rx.issuedDateLabel} · {rx.doctorName}
-                          </p>
-                          <p className="truncate text-muted-foreground">
-                            {rx.diagnosis ?? "No diagnosis"}
-                          </p>
-                          <p className="text-xs text-muted-foreground">
-                            {rx.medicationCount} medicine
-                            {rx.medicationCount === 1 ? "" : "s"}
-                          </p>
-                        </div>
-                        <div className="flex flex-wrap gap-2">
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            nativeButton={false}
-                            render={
-                              <Link
-                                href={
-                                  rx.appointmentId
-                                    ? `${ROUTES.DASHBOARD.PRESCRIPTIONS}?appointmentId=${rx.appointmentId}`
-                                    : `${ROUTES.DASHBOARD.PRESCRIPTIONS}/${rx.id}`
-                                }
-                              />
-                            }
-                          >
-                            View
-                          </Button>
-                          <PrintButton prescriptionId={rx.id} />
-                        </div>
+      <PatientDocumentsSection
+        patientId={profile.id}
+        initialData={documents}
+        initialSearch={documentsSearch}
+        initialType={documentsType}
+      />
+
+      <Card className="border-0 shadow-none ring-1 ring-[#E5E7EB]">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-base">
+            <PillIcon className="size-4 text-brand-blue" />
+            Prescription history
+          </CardTitle>
+          <CardDescription>
+            Issued e-prescriptions linked to this patient.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {profile.prescriptionHistory.length === 0 ? (
+            <div className="rounded-lg border border-dashed border-[#E5E7EB] px-4 py-8 text-center text-sm text-muted-foreground">
+              No prescriptions recorded yet.
+            </div>
+          ) : (
+            <>
+              <ul className="space-y-3">
+                {profile.prescriptionHistory.map((rx) => (
+                  <li
+                    key={rx.id}
+                    className="rounded-xl p-3 text-sm ring-1 ring-foreground/10"
+                  >
+                    <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                      <div className="min-w-0 space-y-1">
+                        <p className="font-medium text-brand-dark">
+                          {rx.prescriptionNumber}
+                        </p>
+                        <p className="text-muted-foreground">
+                          {rx.issuedDateLabel} · {rx.doctorName}
+                        </p>
+                        <p className="truncate text-muted-foreground">
+                          {rx.diagnosis ?? "No diagnosis"}
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          {rx.medicationCount} medicine
+                          {rx.medicationCount === 1 ? "" : "s"}
+                        </p>
                       </div>
-                    </li>
-                  ))}
-                </ul>
-                <PaginationControls
-                  page={profile.prescriptionHistoryPagination.page}
-                  pageSize={profile.prescriptionHistoryPagination.limit}
-                  totalItems={profile.prescriptionHistoryPagination.total}
-                  onPageChange={updatePrescriptionPage}
-                />
-              </>
-            )}
-          </CardContent>
-        </Card>
-      </div>
+                      <div className="flex flex-wrap gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          nativeButton={false}
+                          render={
+                            <Link
+                              href={
+                                rx.appointmentId
+                                  ? `${ROUTES.DASHBOARD.PRESCRIPTIONS}?appointmentId=${rx.appointmentId}`
+                                  : `${ROUTES.DASHBOARD.PRESCRIPTIONS}/${rx.id}`
+                              }
+                            />
+                          }
+                        >
+                          View
+                        </Button>
+                        <PrintButton prescriptionId={rx.id} />
+                      </div>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+              <PaginationControls
+                page={profile.prescriptionHistoryPagination.page}
+                pageSize={profile.prescriptionHistoryPagination.limit}
+                totalItems={profile.prescriptionHistoryPagination.total}
+                onPageChange={updatePrescriptionPage}
+              />
+            </>
+          )}
+        </CardContent>
+      </Card>
 
       <Card className="border-0 shadow-none ring-1 ring-[#E5E7EB]">
         <CardHeader>

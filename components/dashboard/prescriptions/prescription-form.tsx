@@ -1,15 +1,16 @@
 "use client";
 
-import { useMemo, useTransition } from "react";
+import { useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2Icon, SaveIcon } from "lucide-react";
+import { FileUpIcon, Loader2Icon, SaveIcon } from "lucide-react";
 import { useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
 
 import { MedicineTable } from "@/components/dashboard/prescriptions/medicine-table";
 import { PrescriptionPreview } from "@/components/dashboard/prescriptions/prescription-preview";
 import { PrintButton } from "@/components/dashboard/prescriptions/print-button";
+import { PatientDocumentUploadDialog } from "@/features/patient-documents/components/patient-document-upload-dialog";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -133,6 +134,7 @@ function readOnlyMeta(context: PrescriptionWorkspaceContext) {
   if (context.mode === "edit") {
     const rx = context.prescription;
     return {
+      patientId: rx.patientId,
       patientName: rx.patientName,
       patientGender: rx.patientGender,
       mobileLabel: formatPhoneLabel(rx.patientPhone),
@@ -150,6 +152,7 @@ function readOnlyMeta(context: PrescriptionWorkspaceContext) {
   }
 
   return {
+    patientId: context.patientId,
     patientName: context.patientName,
     patientGender: context.patientGender,
     mobileLabel: formatPhoneLabel(context.patientPhone),
@@ -170,6 +173,7 @@ function readOnlyMeta(context: PrescriptionWorkspaceContext) {
 export function PrescriptionForm({ context }: PrescriptionFormProps) {
   const router = useRouter();
   const [isSaving, startSave] = useTransition();
+  const [documentUploadOpen, setDocumentUploadOpen] = useState(false);
   const meta = readOnlyMeta(context);
   const isFemale = meta.patientGender === GENDERS.FEMALE;
 
@@ -285,6 +289,7 @@ export function PrescriptionForm({ context }: PrescriptionFormProps) {
   const historyErrors = form.formState.errors.medicalHistory;
 
   return (
+    <>
     <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(320px,420px)]">
       <Card className="border-0 shadow-none ring-1 ring-[#E5E7EB]">
         <CardHeader className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
@@ -300,9 +305,20 @@ export function PrescriptionForm({ context }: PrescriptionFormProps) {
                 : "Complete clinical details and review the live preview before saving."}
             </CardDescription>
           </div>
-          {meta.prescriptionId ? (
-            <PrintButton prescriptionId={meta.prescriptionId} />
-          ) : null}
+          <div className="flex flex-wrap gap-2">
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => setDocumentUploadOpen(true)}
+            >
+              <FileUpIcon className="size-4" />
+              Add Patient Document
+            </Button>
+            {meta.prescriptionId ? (
+              <PrintButton prescriptionId={meta.prescriptionId} />
+            ) : null}
+          </div>
         </CardHeader>
         <CardContent>
           <form onSubmit={onSubmit} className="space-y-6">
@@ -569,6 +585,14 @@ export function PrescriptionForm({ context }: PrescriptionFormProps) {
         </CardContent>
       </Card>
     </div>
+
+      <PatientDocumentUploadDialog
+        patientId={meta.patientId}
+        open={documentUploadOpen}
+        onOpenChange={setDocumentUploadOpen}
+        successMessage="Document uploaded to patient's records."
+      />
+    </>
   );
 }
 

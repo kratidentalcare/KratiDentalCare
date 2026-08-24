@@ -17,6 +17,7 @@ export * from "./appointment-event";
 export * from "./notification-outbox";
 export * from "./notification";
 export * from "./prescription";
+export * from "./patient-document";
 export * from "./service";
 export * from "./testimonial";
 export * from "./faq";

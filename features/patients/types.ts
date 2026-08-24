@@ -73,7 +73,7 @@ export type PatientProfile = {
   primaryDoctorId: string | null;
   /** Reserved medical-history seams (not implemented). */
   medicalHistoryReady: false;
-  uploadedReportsReady: false;
+  uploadedReportsReady: boolean;
   allergiesCount: number;
   hasEmergencyContact: boolean;
   hasInsuranceDetails: false;

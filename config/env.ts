@@ -2,6 +2,7 @@ import "server-only";
 
 import { z } from "zod";
 
+import { PATIENT_DOCUMENT_DEFAULT_MAX_BYTES } from "@/constants/patient-documents";
 import { ConfigurationError } from "@/lib/errors";
 
 const optionalNonEmpty = z.string().trim().min(1).optional();
@@ -52,6 +53,18 @@ const envSchema = z.object({
   CLOUDINARY_CLOUD_NAME: z.string().optional(),
   CLOUDINARY_API_KEY: z.string().optional(),
   CLOUDINARY_API_SECRET: z.string().optional(),
+
+  /**
+   * Max patient document upload size in bytes.
+   * Defaults to 15 MB when unset or invalid.
+   */
+  PATIENT_DOCUMENT_MAX_BYTES: z.preprocess((value) => {
+    if (value === undefined || value === null || value === "") {
+      return undefined;
+    }
+    const parsed = Number(value);
+    return Number.isFinite(parsed) && parsed > 0 ? Math.floor(parsed) : undefined;
+  }, z.number().int().positive().optional()),
 });
 
 export type Env = z.infer<typeof envSchema>;
@@ -89,6 +102,7 @@ function readRawEnv(): Record<string, string | undefined> {
     CLOUDINARY_CLOUD_NAME: process.env.CLOUDINARY_CLOUD_NAME,
     CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY,
     CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET,
+    PATIENT_DOCUMENT_MAX_BYTES: process.env.PATIENT_DOCUMENT_MAX_BYTES,
   };
 }
 
@@ -171,4 +185,12 @@ export function requireClerkEnv(): ClerkEnv {
  */
 export function resetEnvCache(): void {
   cachedEnv = null;
+}
+
+/**
+ * Max patient medical document upload size in bytes.
+ */
+export function getPatientDocumentMaxBytes(): number {
+  const env = getEnv();
+  return env.PATIENT_DOCUMENT_MAX_BYTES ?? PATIENT_DOCUMENT_DEFAULT_MAX_BYTES;
 }
