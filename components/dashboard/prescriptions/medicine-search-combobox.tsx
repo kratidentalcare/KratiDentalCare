@@ -11,13 +11,14 @@ import {
 import { createPortal } from "react-dom";
 
 import { Input } from "@/components/ui/input";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { searchMedicinesAction } from "@/features/medicines/actions";
 import type { MedicineSearchHit } from "@/features/medicines/types";
 import { cn } from "@/lib/utils";
 
 const SEARCH_DEBOUNCE_MS = 300;
 const SEARCH_LIMIT = 10;
+const LIST_MAX_HEIGHT_PX = 224; // ~max-h-56
+const VIEWPORT_GAP_PX = 8;
 
 type MedicineSearchComboboxProps = {
   id: string;
@@ -32,6 +33,7 @@ type ListPosition = {
   top: number;
   left: number;
   width: number;
+  maxHeight: number;
 };
 
 export function MedicineSearchCombobox({
@@ -104,22 +106,34 @@ export function MedicineSearchCombobox({
         return;
       }
       const rect = root.getBoundingClientRect();
+      const spaceBelow = window.innerHeight - rect.bottom - VIEWPORT_GAP_PX;
+      const spaceAbove = rect.top - VIEWPORT_GAP_PX;
+      const openUpward =
+        spaceBelow < LIST_MAX_HEIGHT_PX / 2 && spaceAbove > spaceBelow;
+      const available = openUpward ? spaceAbove : spaceBelow;
+      const maxHeight = Math.max(
+        120,
+        Math.min(LIST_MAX_HEIGHT_PX, available),
+      );
+
       setPosition({
-        top: rect.bottom + 4,
+        top: openUpward
+          ? Math.max(VIEWPORT_GAP_PX, rect.top - 4 - maxHeight)
+          : rect.bottom + 4,
         left: rect.left,
         width: rect.width,
+        maxHeight,
       });
     }
 
     updatePosition();
     window.addEventListener("resize", updatePosition);
-    // Capture scroll from accordion / dashboard main, not only window.
     document.addEventListener("scroll", updatePosition, true);
     return () => {
       window.removeEventListener("resize", updatePosition);
       document.removeEventListener("scroll", updatePosition, true);
     };
-  }, [open]);
+  }, [open, hits.length]);
 
   useEffect(() => {
     function handlePointerDown(event: MouseEvent) {
@@ -175,72 +189,75 @@ export function MedicineSearchCombobox({
               top: position.top,
               left: position.left,
               width: position.width,
+              maxHeight: position.maxHeight,
             }}
-            className="z-[200] overflow-hidden rounded-lg bg-popover text-sm shadow-lg ring-1 ring-foreground/10"
+            className="z-[200] overflow-y-auto overscroll-contain rounded-lg bg-popover text-sm shadow-lg ring-1 ring-foreground/10"
+            onWheel={(event) => {
+              // Keep wheel scrolling inside the list (don't scroll the page).
+              event.stopPropagation();
+            }}
           >
             <p className="sr-only" aria-live="polite">
               {statusLabel}
             </p>
-            <ScrollArea className="max-h-56">
-              <div className="p-1">
-                {loading ? (
-                  <p className="px-2 py-2 text-muted-foreground">Searching…</p>
-                ) : hits.length === 0 ? (
-                  <p className="px-2 py-2 text-muted-foreground">
-                    {value.trim()
-                      ? "No medicine found."
-                      : "Type to search the medicine library."}
-                  </p>
-                ) : (
-                  hits.map((hit, index) => (
-                    <button
-                      key={hit.id}
-                      type="button"
-                      role="option"
-                      aria-selected={highlight === index}
-                      className={cn(
-                        "flex w-full flex-col items-start rounded-md px-2 py-1.5 text-left",
-                        highlight === index
-                          ? "bg-accent text-accent-foreground"
-                          : "hover:bg-accent/60",
-                      )}
-                      onMouseEnter={() => setHighlight(index)}
-                      onClick={() => {
-                        onSelectCatalog(hit);
-                        setOpen(false);
-                      }}
-                    >
-                      <span className="font-medium">{hit.name}</span>
-                      {hit.genericName ? (
-                        <span className="text-xs text-muted-foreground">
-                          {hit.genericName}
-                        </span>
-                      ) : null}
-                    </button>
-                  ))
+            <div className="p-1">
+              {loading ? (
+                <p className="px-2 py-2 text-muted-foreground">Searching…</p>
+              ) : hits.length === 0 ? (
+                <p className="px-2 py-2 text-muted-foreground">
+                  {value.trim()
+                    ? "No medicine found."
+                    : "Type to search the medicine library."}
+                </p>
+              ) : (
+                hits.map((hit, index) => (
+                  <button
+                    key={hit.id}
+                    type="button"
+                    role="option"
+                    aria-selected={highlight === index}
+                    className={cn(
+                      "flex w-full flex-col items-start rounded-md px-2 py-1.5 text-left",
+                      highlight === index
+                        ? "bg-accent text-accent-foreground"
+                        : "hover:bg-accent/60",
+                    )}
+                    onMouseEnter={() => setHighlight(index)}
+                    onClick={() => {
+                      onSelectCatalog(hit);
+                      setOpen(false);
+                    }}
+                  >
+                    <span className="font-medium">{hit.name}</span>
+                    {hit.genericName ? (
+                      <span className="text-xs text-muted-foreground">
+                        {hit.genericName}
+                      </span>
+                    ) : null}
+                  </button>
+                ))
+              )}
+              <button
+                type="button"
+                role="option"
+                aria-selected={highlight === customIndex}
+                className={cn(
+                  "mt-1 flex w-full rounded-md px-2 py-1.5 text-left font-medium text-brand-blue",
+                  highlight === customIndex
+                    ? "bg-accent"
+                    : "hover:bg-accent/60",
                 )}
-                <button
-                  type="button"
-                  role="option"
-                  aria-selected={highlight === customIndex}
-                  className={cn(
-                    "mt-1 flex w-full rounded-md px-2 py-1.5 text-left font-medium text-brand-blue",
-                    highlight === customIndex
-                      ? "bg-accent"
-                      : "hover:bg-accent/60",
-                  )}
-                  onMouseEnter={() => setHighlight(customIndex)}
-                  onClick={() => {
-                    onUseCustom();
-                    setOpen(false);
-                  }}
-                >
-                  {hits.length === 0 && value.trim()
-                    ? "Add as Custom Medicine"
-                    : "+ Add Custom Medicine"}
-                </button>
-              </div>
-            </ScrollArea>
+                onMouseEnter={() => setHighlight(customIndex)}
+                onClick={() => {
+                  onUseCustom();
+                  setOpen(false);
+                }}
+              >
+                {hits.length === 0 && value.trim()
+                  ? "Add as Custom Medicine"
+                  : "+ Add Custom Medicine"}
+              </button>
+            </div>
           </div>,
           document.body,
         )
