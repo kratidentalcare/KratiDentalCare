@@ -21,4 +21,5 @@ export * from "./patient-document";
 export * from "./service";
 export * from "./testimonial";
 export * from "./faq";
+export * from "./medicine";
 export * from "./contact-message";

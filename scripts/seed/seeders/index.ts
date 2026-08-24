@@ -11,3 +11,4 @@ export { seedFaqs } from "./06-faqs";
 export { seedPatients } from "./07-patients";
 export { seedAppointments } from "./08-appointments";
 export { seedPrescriptions } from "./09-prescriptions";
+export { seedMedicines } from "./10-medicines";

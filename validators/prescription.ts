@@ -4,6 +4,7 @@ import { GENDER_VALUES } from "@/constants/patient";
 import { PRESCRIPTION_STATUSES } from "@/constants/statuses";
 import {
   nonEmptyStringSchema,
+  nullableObjectIdSchema,
   objectIdSchema,
   phoneSchema,
   prescriptionStatusSchema,
@@ -16,6 +17,8 @@ import {
 
 export const prescriptionMedicationSchema = z.object({
   name: nonEmptyStringSchema.max(200),
+  medicineId: nullableObjectIdSchema.optional(),
+  genericName: z.string().trim().max(200).nullable().optional(),
   dosage: nonEmptyStringSchema.max(200),
   frequency: nonEmptyStringSchema.max(200),
   duration: nonEmptyStringSchema.max(200),
@@ -132,7 +135,15 @@ export const prescriptionMedicalHistoryFormSchema = z
 
 /** Medicine row as edited in the clinical form (maps to medications[].name). */
 export const prescriptionFormMedicineSchema = z.object({
+  medicineId: nullableObjectIdSchema.optional(),
   medicineName: nonEmptyStringSchema.max(200),
+  genericName: z
+    .string()
+    .trim()
+    .max(200)
+    .nullable()
+    .optional()
+    .transform((value) => (value == null || value === "" ? null : value)),
   dosage: nonEmptyStringSchema.max(200),
   frequency: nonEmptyStringSchema.max(200),
   duration: nonEmptyStringSchema.max(200),

@@ -4,7 +4,9 @@ import type { PaginationMeta } from "@/types/api";
 
 /** Medicine line as shown in forms / preview / PDF. */
 export type PrescriptionMedicineDto = {
+  medicineId?: string | null;
   medicineName: string;
+  genericName?: string | null;
   dosage: string;
   frequency: string;
   duration: string;

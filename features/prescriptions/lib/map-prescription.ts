@@ -22,7 +22,9 @@ export function mapMedications(
   medications: LeanPrescription["medications"],
 ): PrescriptionMedicineDto[] {
   return medications.map((med) => ({
+    medicineId: med.medicineId ? String(med.medicineId) : null,
     medicineName: med.name,
+    genericName: med.genericName ?? null,
     dosage: med.dosage,
     frequency: med.frequency,
     duration: med.duration,

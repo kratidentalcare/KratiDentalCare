@@ -106,6 +106,20 @@ export const CONTENT_STATUS_VALUES = [
   CONTENT_STATUSES.ARCHIVED,
 ] as const;
 
+/** Medicine library catalog lifecycle. */
+export const MEDICINE_STATUSES = {
+  ACTIVE: "ACTIVE",
+  ARCHIVED: "ARCHIVED",
+} as const;
+
+export type MedicineStatus =
+  (typeof MEDICINE_STATUSES)[keyof typeof MEDICINE_STATUSES];
+
+export const MEDICINE_STATUS_VALUES = [
+  MEDICINE_STATUSES.ACTIVE,
+  MEDICINE_STATUSES.ARCHIVED,
+] as const;
+
 /** Public contact form inbox lifecycle (admin review later). */
 export const CONTACT_MESSAGE_STATUSES = {
   NEW: "NEW",

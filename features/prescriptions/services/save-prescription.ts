@@ -9,7 +9,9 @@ import {
   formatDisplayDate,
   generatePrescriptionNumber,
 } from "@/features/prescriptions/lib/format";
+import { mergeMedicineSnapshot } from "@/features/prescriptions/lib/merge-medicine-snapshot";
 import { mapPrescriptionDetail } from "@/features/prescriptions/lib/map-prescription";
+import { findMedicinesByIds } from "@/features/medicines/repositories/medicine-repository";
 import { sanitizeMedicalHistoryForSave } from "@/features/prescriptions/lib/medical-history";
 import {
   findPrescriptionByAppointmentId,
@@ -82,16 +84,30 @@ function assertAppointmentCompleted(appointment: LeanAppointment): void {
   }
 }
 
-function mapFormMedications(input: PrescriptionFormInput["medications"]) {
-  return input.map((med) => ({
-    name: med.medicineName,
-    dosage: med.dosage,
-    frequency: med.frequency,
-    duration: med.duration,
-    route: null,
-    instructions: med.instructions ?? null,
-    quantity: null,
-  }));
+async function mapFormMedications(
+  input: PrescriptionFormInput["medications"],
+) {
+  const catalogIds = [
+    ...new Set(
+      input
+        .map((med) => med.medicineId)
+        .filter((id): id is string => Boolean(id)),
+    ),
+  ];
+  const catalogRows = await findMedicinesByIds(catalogIds);
+  const catalogById = new Map(
+    catalogRows.map((row) => [
+      String(row._id),
+      { id: String(row._id), genericName: row.genericName },
+    ]),
+  );
+
+  return input.map((med) =>
+    mergeMedicineSnapshot(
+      med,
+      med.medicineId ? (catalogById.get(med.medicineId) ?? null) : null,
+    ),
+  );
 }
 
 function parseFollowUpDate(
@@ -209,7 +225,7 @@ export async function savePrescriptionForAppointment(
   const now = new Date();
   const ageYears = calculateAgeYears(patient.dateOfBirth, now);
 
-  const medications = mapFormMedications(input.medications);
+  const medications = await mapFormMedications(input.medications);
   const followUpDate = parseFollowUpDate(input.followUpDate, settings.timezone);
   const medicalHistory = sanitizeMedicalHistoryForSave(
     input.medicalHistory,

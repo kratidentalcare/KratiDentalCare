@@ -6,6 +6,8 @@ import {
   type Control,
   type FieldErrors,
   type UseFormRegister,
+  type UseFormSetValue,
+  type UseFormWatch,
 } from "react-hook-form";
 
 import { MedicineRow } from "@/components/dashboard/prescriptions/medicine-row";
@@ -15,11 +17,15 @@ import type { PrescriptionFormInput } from "@/validators/prescription";
 type MedicineTableProps = {
   control: Control<PrescriptionFormInput>;
   register: UseFormRegister<PrescriptionFormInput>;
+  setValue: UseFormSetValue<PrescriptionFormInput>;
+  watch: UseFormWatch<PrescriptionFormInput>;
   errors?: FieldErrors<PrescriptionFormInput>["medications"];
 };
 
 const EMPTY_MEDICINE = {
+  medicineId: null,
   medicineName: "",
+  genericName: null,
   dosage: "",
   frequency: "",
   duration: "",
@@ -29,6 +35,8 @@ const EMPTY_MEDICINE = {
 export function MedicineTable({
   control,
   register,
+  setValue,
+  watch,
   errors,
 }: MedicineTableProps) {
   const { fields, append, remove } = useFieldArray({
@@ -75,6 +83,8 @@ export function MedicineTable({
             index={index}
             field={field}
             register={register}
+            setValue={setValue}
+            watch={watch}
             canRemove={fields.length > 1}
             onRemove={() => remove(index)}
             errors={Array.isArray(errors) ? errors[index] : undefined}

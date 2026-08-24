@@ -45,6 +45,7 @@ export const ROUTES = {
     PATIENTS: "/dashboard/patients",
     USERS: "/dashboard/users",
     PRESCRIPTIONS: "/dashboard/prescriptions",
+    MEDICINES: "/dashboard/medicines",
     FAQS: "/dashboard/faqs",
     INBOX: "/dashboard/inbox",
     SETTINGS: "/dashboard/settings",

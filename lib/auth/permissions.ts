@@ -43,6 +43,9 @@ export const PERMISSIONS = {
   /** Public contact-form Admin Inbox (view / read / archive / delete). */
   CONTACT_INBOX_MANAGE: "contact_inbox:manage",
 
+  /** Medicine library (admin catalog). Doctors search via PRESCRIPTIONS_ISSUE. */
+  MEDICINES_MANAGE: "medicines:manage",
+
   // Staff dashboards (route-shell access)
   DASHBOARD_ADMIN: "dashboard:admin",
   DASHBOARD_PATIENT: "dashboard:patient",
@@ -73,6 +76,7 @@ const ADMIN_PERMISSIONS = [
   PERMISSIONS.WEBSITE_MANAGE,
   PERMISSIONS.CLINIC_SETTINGS_MANAGE,
   PERMISSIONS.CONTACT_INBOX_MANAGE,
+  PERMISSIONS.MEDICINES_MANAGE,
   PERMISSIONS.DASHBOARD_ADMIN,
 ] as const satisfies readonly Permission[];
 

@@ -92,7 +92,9 @@ function contextDefaults(
       medications:
         rx.medications.length > 0
           ? rx.medications.map((med) => ({
+              medicineId: med.medicineId ?? null,
               medicineName: med.medicineName,
+              genericName: med.genericName ?? null,
               dosage: med.dosage,
               frequency: med.frequency,
               duration: med.duration,
@@ -100,7 +102,9 @@ function contextDefaults(
             }))
           : [
               {
+                medicineId: null,
                 medicineName: "",
+                genericName: null,
                 dosage: "",
                 frequency: "",
                 duration: "",
@@ -120,7 +124,9 @@ function contextDefaults(
     followUpDate: null,
     medications: [
       {
+        medicineId: null,
         medicineName: "",
+        genericName: null,
         dosage: "",
         frequency: "",
         duration: "",
@@ -551,6 +557,8 @@ export function PrescriptionForm({ context }: PrescriptionFormProps) {
                   <MedicineTable
                     control={form.control}
                     register={form.register}
+                    setValue={form.setValue}
+                    watch={form.watch}
                     errors={form.formState.errors.medications}
                   />
                 </AccordionContent>

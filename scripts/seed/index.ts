@@ -8,6 +8,7 @@ import {
   seedDoctor,
   seedFaqs,
   seedHolidays,
+  seedMedicines,
   seedPatients,
   seedPrescriptions,
   seedScheduleOverrides,
@@ -31,6 +32,7 @@ async function main(): Promise<void> {
   await seedHolidays(ctx);
   await seedScheduleOverrides(ctx);
   await seedFaqs(ctx);
+  await seedMedicines(ctx);
   await seedPatients(ctx);
   await seedAppointments(ctx);
   await seedPrescriptions(ctx);

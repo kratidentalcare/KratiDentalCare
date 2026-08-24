@@ -4,17 +4,23 @@ import { Trash2Icon } from "lucide-react";
 import type {
   FieldArrayWithId,
   UseFormRegister,
+  UseFormSetValue,
+  UseFormWatch,
 } from "react-hook-form";
 
+import { MedicineSearchCombobox } from "@/components/dashboard/prescriptions/medicine-search-combobox";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import type { MedicineSearchHit } from "@/features/medicines/types";
 import type { PrescriptionFormInput } from "@/validators/prescription";
 
 type MedicineRowProps = {
   index: number;
   field: FieldArrayWithId<PrescriptionFormInput, "medications", "id">;
   register: UseFormRegister<PrescriptionFormInput>;
+  setValue: UseFormSetValue<PrescriptionFormInput>;
+  watch: UseFormWatch<PrescriptionFormInput>;
   onRemove: () => void;
   canRemove: boolean;
   errors?: {
@@ -30,10 +36,49 @@ export function MedicineRow({
   index,
   field,
   register,
+  setValue,
+  watch,
   onRemove,
   canRemove,
   errors,
 }: MedicineRowProps) {
+  const medicineName =
+    watch(`medications.${index}.medicineName`) ?? "";
+
+  function applyCatalog(hit: MedicineSearchHit) {
+    setValue(`medications.${index}.medicineId`, hit.id, {
+      shouldDirty: true,
+      shouldValidate: true,
+    });
+    setValue(`medications.${index}.medicineName`, hit.name, {
+      shouldDirty: true,
+      shouldValidate: true,
+    });
+    setValue(`medications.${index}.genericName`, hit.genericName, {
+      shouldDirty: true,
+    });
+    setValue(`medications.${index}.dosage`, hit.dosage, {
+      shouldDirty: true,
+      shouldValidate: true,
+    });
+    setValue(`medications.${index}.frequency`, hit.frequency, {
+      shouldDirty: true,
+      shouldValidate: true,
+    });
+    setValue(`medications.${index}.duration`, hit.duration, {
+      shouldDirty: true,
+      shouldValidate: true,
+    });
+    setValue(`medications.${index}.instructions`, hit.instructions ?? "", {
+      shouldDirty: true,
+    });
+  }
+
+  function useCustom() {
+    setValue(`medications.${index}.medicineId`, null, { shouldDirty: true });
+    setValue(`medications.${index}.genericName`, null, { shouldDirty: true });
+  }
+
   return (
     <div
       key={field.id}
@@ -41,11 +86,24 @@ export function MedicineRow({
     >
       <div className="space-y-1.5 lg:col-span-2">
         <Label htmlFor={`med-name-${index}`}>Medicine</Label>
-        <Input
+        <MedicineSearchCombobox
           id={`med-name-${index}`}
-          placeholder="Amoxicillin"
-          aria-invalid={Boolean(errors?.medicineName)}
-          {...register(`medications.${index}.medicineName`)}
+          value={medicineName}
+          invalid={Boolean(errors?.medicineName)}
+          onNameChange={(name) => {
+            setValue(`medications.${index}.medicineName`, name, {
+              shouldDirty: true,
+              shouldValidate: true,
+            });
+            setValue(`medications.${index}.medicineId`, null, {
+              shouldDirty: true,
+            });
+            setValue(`medications.${index}.genericName`, null, {
+              shouldDirty: true,
+            });
+          }}
+          onSelectCatalog={applyCatalog}
+          onUseCustom={useCustom}
         />
         {errors?.medicineName?.message ? (
           <p className="text-xs text-destructive">{errors.medicineName.message}</p>

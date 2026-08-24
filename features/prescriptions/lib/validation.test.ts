@@ -42,6 +42,26 @@ describe("prescriptionFormSchema", () => {
     }
   });
 
+  it("accepts optional medicineId for catalog provenance", () => {
+    const parsed = prescriptionFormSchema.safeParse({
+      ...baseValidPayload,
+      medications: [
+        {
+          ...baseValidPayload.medications[0],
+          medicineId: "507f1f77bcf86cd799439011",
+          genericName: "Amoxicillin",
+        },
+      ],
+    });
+    assert.equal(parsed.success, true);
+    if (parsed.success) {
+      assert.equal(
+        parsed.data.medications[0]?.medicineId,
+        "507f1f77bcf86cd799439011",
+      );
+    }
+  });
+
   it("rejects incomplete medicine rows", () => {
     const parsed = prescriptionFormSchema.safeParse({
       appointmentId: "507f1f77bcf86cd799439011",

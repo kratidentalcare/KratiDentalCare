@@ -15,6 +15,7 @@ import {
 import { APPOINTMENT_MODEL_NAME } from "@/models/appointment";
 import { DOCTOR_MODEL_NAME } from "@/models/doctor";
 import { PATIENT_MODEL_NAME } from "@/models/patient";
+import { MEDICINE_MODEL_NAME } from "@/models/medicine/constants";
 import { USER_MODEL_NAME } from "@/models/user/constants";
 
 export const PRESCRIPTION_MODEL_NAME = "Prescription";
@@ -51,6 +52,27 @@ const medicationSchema = new Schema(
       required: [true, "medication.name is required"],
       trim: true,
       maxlength: [MED_NAME_MAX, "medication.name is too long"],
+    },
+    medicineId: {
+      type: Schema.Types.ObjectId,
+      ref: MEDICINE_MODEL_NAME,
+      default: null,
+      validate: {
+        validator(value: unknown) {
+          if (value == null) {
+            return true;
+          }
+          return objectIdPathValidator(value);
+        },
+        message: OBJECT_ID_VALIDATOR_MESSAGE,
+      },
+    },
+    genericName: {
+      type: String,
+      default: null,
+      trim: true,
+      maxlength: [MED_NAME_MAX, "medication.genericName is too long"],
+      set: emptyToNull,
     },
     dosage: {
       type: String,

@@ -14,6 +14,8 @@ import type {
  */
 export type PrescriptionMedication = {
   name: string;
+  medicineId?: Types.ObjectId | null;
+  genericName?: string | null;
   dosage: string;
   frequency: string;
   duration: string;

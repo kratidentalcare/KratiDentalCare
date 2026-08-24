@@ -5,6 +5,7 @@ import {
   CircleHelpIcon,
   ClipboardListIcon,
   ExternalLinkIcon,
+  PillIcon,
   InboxIcon,
   LayoutDashboardIcon,
   LogOutIcon,
@@ -78,6 +79,12 @@ export const DASHBOARD_NAV_ITEMS: readonly DashboardNavItem[] = [
     label: "E-Prescriptions",
     href: ROUTES.DASHBOARD.PRESCRIPTIONS,
     icon: ClipboardListIcon,
+  },
+  {
+    id: "medicines",
+    label: "Medicines",
+    href: ROUTES.DASHBOARD.MEDICINES,
+    icon: PillIcon,
   },
   {
     id: "inbox",

@@ -5,6 +5,7 @@ import {
   CONTACT_MESSAGE_STATUS_VALUES,
   CONTENT_STATUS_VALUES,
   DOCTOR_STATUS_VALUES,
+  MEDICINE_STATUS_VALUES,
   OBJECT_ID_HEX_PATTERN,
   PATIENT_STATUS_VALUES,
   PRESCRIPTION_STATUS_VALUES,
@@ -59,4 +60,5 @@ export const prescriptionStatusSchema = z.enum(PRESCRIPTION_STATUS_VALUES);
 export const doctorStatusSchema = z.enum(DOCTOR_STATUS_VALUES);
 export const patientStatusSchema = z.enum(PATIENT_STATUS_VALUES);
 export const contentStatusSchema = z.enum(CONTENT_STATUS_VALUES);
+export const medicineStatusSchema = z.enum(MEDICINE_STATUS_VALUES);
 export const contactMessageStatusSchema = z.enum(CONTACT_MESSAGE_STATUS_VALUES);
