@@ -3,9 +3,9 @@ import { resolveNavbarIsAdmin } from "@/lib/auth/resolve-navbar-is-admin";
 
 /**
  * Auth-aware public navbar streamed behind Suspense.
- * Fallback is `<Navbar />` (`isAdmin` defaults false).
+ * Fallback is `<Navbar />` (`showDashboard` defaults false).
  */
 export async function PublicNavbar() {
-  const admin = await resolveNavbarIsAdmin();
-  return <Navbar isAdmin={admin} />;
+  const access = await resolveNavbarIsAdmin();
+  return <Navbar showDashboard={access === true} />;
 }

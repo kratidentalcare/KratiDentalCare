@@ -9,14 +9,12 @@ import { ERROR_CODES } from "@/constants/error-codes";
 import { isLimitExceeded, windowStartFor } from "@/lib/rate-limit/window";
 
 describe("staff booking authorization", () => {
-  it("allows admin, doctor, and staff to create staff bookings", () => {
+  it("allows admin to create staff bookings", () => {
     assert.equal(canCreateStaffAppointment(USER_ROLES.ADMIN), true);
-    assert.equal(canCreateStaffAppointment(USER_ROLES.DOCTOR), true);
-    assert.equal(canCreateStaffAppointment(USER_ROLES.STAFF), true);
   });
 
-  it("rejects patients from staff booking", () => {
-    assert.equal(canCreateStaffAppointment(USER_ROLES.PATIENT), false);
+  it("rejects regular users from staff booking", () => {
+    assert.equal(canCreateStaffAppointment(USER_ROLES.USER), false);
   });
 });
 

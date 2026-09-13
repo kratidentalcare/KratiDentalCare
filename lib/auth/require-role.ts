@@ -56,7 +56,7 @@ export function assertRole(
  *
  * @example
  * await requireRole("admin");
- * await requireRole(["admin", "doctor"]);
+ * await requireRole(["admin", "user"]);
  */
 export async function requireRole(
   roles: RoleRequirement,
@@ -77,37 +77,19 @@ export async function requireAdmin(
 }
 
 /**
- * Patient portal gate.
+ * Signed-in public-site user gate (`role === user`).
+ */
+export async function requireUser(
+  options: SyncUserOptions = {},
+): Promise<AppUser> {
+  return requireRole(USER_ROLES.USER, options);
+}
+
+/**
+ * Patient portal gate — same as {@link requireUser}.
  */
 export async function requirePatient(
   options: SyncUserOptions = {},
 ): Promise<AppUser> {
-  return requireRole(USER_ROLES.PATIENT, options);
-}
-
-/**
- * Doctor portal gate (future).
- */
-export async function requireDoctor(
-  options: SyncUserOptions = {},
-): Promise<AppUser> {
-  return requireRole(USER_ROLES.DOCTOR, options);
-}
-
-/**
- * Staff portal gate (future).
- */
-export async function requireStaff(
-  options: SyncUserOptions = {},
-): Promise<AppUser> {
-  return requireRole(USER_ROLES.STAFF, options);
-}
-
-/**
- * @deprecated Prefer {@link requireStaff}. Kept as a temporary alias.
- */
-export async function requireReceptionist(
-  options: SyncUserOptions = {},
-): Promise<AppUser> {
-  return requireStaff(options);
+  return requireUser(options);
 }

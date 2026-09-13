@@ -16,13 +16,13 @@ describe("user list query parsing", () => {
 
   it("accepts role and status filters with search", () => {
     const parsed = userListQuerySchema.parse({
-      role: USER_ROLES.DOCTOR,
+      role: USER_ROLES.USER,
       status: USER_ACCESS_STATUSES.DISABLED,
       search: "rahul",
       page: "2",
       limit: "10",
     });
-    assert.equal(parsed.role, USER_ROLES.DOCTOR);
+    assert.equal(parsed.role, USER_ROLES.USER);
     assert.equal(parsed.status, USER_ACCESS_STATUSES.DISABLED);
     assert.equal(parsed.search, "rahul");
     assert.equal(parsed.page, 2);
@@ -39,8 +39,8 @@ describe("user list query parsing", () => {
     assert.equal(result.success, false);
   });
 
-  it("accepts staff role filter after consolidation", () => {
-    const parsed = userListQuerySchema.parse({ role: USER_ROLES.STAFF });
-    assert.equal(parsed.role, USER_ROLES.STAFF);
+  it("accepts user role filter", () => {
+    const parsed = userListQuerySchema.parse({ role: USER_ROLES.USER });
+    assert.equal(parsed.role, USER_ROLES.USER);
   });
 });

@@ -1,21 +1,14 @@
 "use server";
 
-import { getEnv } from "@/config/env";
-import { isAdmin } from "@/lib/auth/is-admin";
+import { canAccessStaffDashboard } from "@/lib/auth/can-access-staff-dashboard";
 
 /**
- * Soft admin check for public navbar chrome.
- * Safe to call from the client after Clerk hydrates — uses the live session
- * instead of a statically baked `isAdmin={false}`.
+ * Soft dashboard-access check for public navbar chrome.
+ * Safe to call from the client after Clerk hydrates.
+ *
+ * `true` / `false` are definitive. `null` means unknown — callers should
+ * keep the last known value instead of hiding Dashboard.
  */
-export async function resolveNavbarIsAdmin(): Promise<boolean> {
-  if (!getEnv().hasClerkKeys) {
-    return false;
-  }
-
-  try {
-    return await isAdmin({ touchLastLogin: false });
-  } catch {
-    return false;
-  }
+export async function resolveNavbarIsAdmin(): Promise<boolean | null> {
+  return canAccessStaffDashboard();
 }

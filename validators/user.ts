@@ -41,7 +41,7 @@ export const createUserSchema = z.object({
   firstName: userNameSchema,
   lastName: userNameSchema,
   phoneNumber: phoneSchema.nullable().optional(),
-  role: userRoleSchema.default(USER_ROLES.PATIENT),
+  role: userRoleSchema.default(USER_ROLES.USER),
   profileImage: profileImageSchema,
   isActive: isActiveSchema.optional(),
   emailVerified: z.boolean().optional(),

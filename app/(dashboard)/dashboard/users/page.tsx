@@ -45,7 +45,7 @@ export default async function UsersPage({ searchParams }: UsersPageProps) {
     <div className="flex flex-col gap-6 sm:gap-8">
       <PageHeader
         title="Users"
-        description="View registered users, change roles, and enable or disable dashboard access. Users are never deleted from this screen."
+        description="View registered users, switch between User and Admin, and enable or disable access. Users are never deleted from this screen."
       />
       <UsersWorkspace
         initialData={data}

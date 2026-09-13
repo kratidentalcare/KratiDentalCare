@@ -14,7 +14,7 @@ export const PERMISSIONS = {
   APPOINTMENTS_READ_OWN: "appointments:read_own",
   APPOINTMENTS_READ_ALL: "appointments:read_all",
   APPOINTMENTS_MANAGE: "appointments:manage",
-  /** Authorized clinic staff creating a visit for an existing patient. */
+  /** Clinic operators creating a visit for an existing patient. */
   APPOINTMENTS_CREATE_STAFF: "appointments:create_staff",
 
   // Slots
@@ -30,7 +30,7 @@ export const PERMISSIONS = {
   // Patients / doctors master data
   PATIENTS_READ: "patients:read",
   PATIENTS_MANAGE: "patients:manage",
-  /** Upload / delete patient medical documents (admin, doctor, staff). */
+  /** Upload / delete patient medical documents. */
   PATIENTS_DOCUMENTS_MANAGE: "patients:documents:manage",
   DOCTORS_READ: "doctors:read",
   DOCTORS_MANAGE: "doctors:manage",
@@ -45,14 +45,12 @@ export const PERMISSIONS = {
   /** Public contact-form Admin Inbox (view / read / archive / delete). */
   CONTACT_INBOX_MANAGE: "contact_inbox:manage",
 
-  /** Medicine library (admin catalog). Doctors search via PRESCRIPTIONS_ISSUE. */
+  /** Medicine library (admin catalog). */
   MEDICINES_MANAGE: "medicines:manage",
 
-  // Staff dashboards (route-shell access)
+  // Route-shell access
   DASHBOARD_ADMIN: "dashboard:admin",
-  DASHBOARD_PATIENT: "dashboard:patient",
-  DASHBOARD_DOCTOR: "dashboard:doctor",
-  DASHBOARD_STAFF: "dashboard:staff",
+  DASHBOARD_USER: "dashboard:user",
 } as const;
 
 export type Permission = (typeof PERMISSIONS)[keyof typeof PERMISSIONS];
@@ -83,50 +81,20 @@ const ADMIN_PERMISSIONS = [
   PERMISSIONS.DASHBOARD_ADMIN,
 ] as const satisfies readonly Permission[];
 
-const PATIENT_PERMISSIONS = [
+const USER_PERMISSIONS = [
   PERMISSIONS.APPOINTMENTS_BOOK,
   PERMISSIONS.APPOINTMENTS_READ_OWN,
   PERMISSIONS.SLOTS_READ,
   PERMISSIONS.PRESCRIPTIONS_READ_OWN,
-  PERMISSIONS.DASHBOARD_PATIENT,
-] as const satisfies readonly Permission[];
-
-/** Future clinical portal — reserved grants. */
-const DOCTOR_PERMISSIONS = [
-  PERMISSIONS.APPOINTMENTS_READ_OWN,
-  PERMISSIONS.APPOINTMENTS_CREATE_STAFF,
-  PERMISSIONS.SLOTS_READ,
-  PERMISSIONS.SLOTS_MANAGE,
-  PERMISSIONS.PRESCRIPTIONS_READ_OWN,
-  PERMISSIONS.PRESCRIPTIONS_ISSUE,
-  PERMISSIONS.PATIENTS_READ,
-  PERMISSIONS.PATIENTS_DOCUMENTS_MANAGE,
-  PERMISSIONS.DASHBOARD_DOCTOR,
-] as const satisfies readonly Permission[];
-
-/** Front-desk / clinic staff portal — reserved grants. */
-const STAFF_PERMISSIONS = [
-  PERMISSIONS.APPOINTMENTS_BOOK,
-  PERMISSIONS.APPOINTMENTS_READ_ALL,
-  PERMISSIONS.APPOINTMENTS_MANAGE,
-  PERMISSIONS.APPOINTMENTS_CREATE_STAFF,
-  PERMISSIONS.SLOTS_READ,
-  PERMISSIONS.PATIENTS_READ,
-  PERMISSIONS.PATIENTS_MANAGE,
-  PERMISSIONS.PATIENTS_DOCUMENTS_MANAGE,
-  PERMISSIONS.DOCTORS_READ,
-  PERMISSIONS.DASHBOARD_STAFF,
+  PERMISSIONS.DASHBOARD_USER,
 ] as const satisfies readonly Permission[];
 
 /**
  * Role → permission matrix. Source of truth for capability checks.
- * Adding a role later = add `USER_ROLES` entry + a row here.
  */
 export const ROLE_PERMISSIONS = {
   [USER_ROLES.ADMIN]: ADMIN_PERMISSIONS,
-  [USER_ROLES.PATIENT]: PATIENT_PERMISSIONS,
-  [USER_ROLES.DOCTOR]: DOCTOR_PERMISSIONS,
-  [USER_ROLES.STAFF]: STAFF_PERMISSIONS,
+  [USER_ROLES.USER]: USER_PERMISSIONS,
 } as const satisfies Record<UserRole, readonly Permission[]>;
 
 /**

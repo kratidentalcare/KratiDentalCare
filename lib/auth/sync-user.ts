@@ -269,7 +269,7 @@ async function createUserFromSyncInput(
       phoneVerified: fields.phoneVerified,
       lastLoginAt: fields.lastLoginAt ?? null,
       // Explicit defaults — never accept these from Clerk.
-      role: USER_ROLES.PATIENT,
+      role: USER_ROLES.USER,
       isActive: true,
     });
 
@@ -304,7 +304,7 @@ async function createUserFromSyncInput(
 /**
  * Idempotently synchronizes a Clerk identity into the MongoDB `users` collection.
  *
- * - Creates a patient-default row when `clerkId` is new
+ * - Creates a user-default row when `clerkId` is new
  * - Updates Clerk-owned profile fields when the row exists and is usable
  * - Rejects soft-deleted / inactive accounts as `ACCOUNT_DISABLED` (no mutation)
  * - Never overwrites application-managed fields (`role`, `isActive`, …)
@@ -362,7 +362,7 @@ export async function syncUser(
     const created = await createUserFromSyncInput(clerkId, fields);
     logger.info("User created from Clerk sync", {
       clerkId,
-      role: USER_ROLES.PATIENT,
+      role: USER_ROLES.USER,
     });
     return created;
   } catch (error) {

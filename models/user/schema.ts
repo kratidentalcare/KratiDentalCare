@@ -79,7 +79,7 @@ export const userSchema = createBaseSchema(
         values: [...USER_ROLE_VALUES],
         message: "`{VALUE}` is not a supported user role",
       },
-      default: USER_ROLES.PATIENT,
+      default: USER_ROLES.USER,
     },
     profileImage: {
       type: String,

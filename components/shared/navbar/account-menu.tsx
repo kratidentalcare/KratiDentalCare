@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useClerk, useUser } from "@clerk/nextjs";
+import { useAuth, useClerk, useUser } from "@clerk/nextjs";
 import { LayoutDashboardIcon, LogOutIcon, SettingsIcon, UserIcon } from "lucide-react";
 
 import {
@@ -17,7 +17,7 @@ import { ROUTES } from "@/constants/routes";
 import { resolveNavbarIsAdmin } from "@/lib/auth/resolve-navbar-is-admin";
 
 type AccountMenuProps = {
-  isAdmin: boolean;
+  showDashboard: boolean;
   triggerClassName: string;
   onNavigate?: () => void;
 };
@@ -26,36 +26,46 @@ type AccountMenuProps = {
  * Signed-in account control — bottom sheet on mobile, centered modal on desktop.
  */
 export function AccountMenu({
-  isAdmin: isAdminFromServer,
+  showDashboard: showDashboardFromServer,
   triggerClassName,
   onNavigate,
 }: AccountMenuProps) {
   const { signOut, openUserProfile } = useClerk();
+  const { isLoaded, isSignedIn } = useAuth();
   const { user } = useUser();
   const [open, setOpen] = useState(false);
-  const [isAdmin, setIsAdmin] = useState(isAdminFromServer);
+  const [showDashboard, setShowDashboard] = useState(showDashboardFromServer);
 
   const email = user?.primaryEmailAddress?.emailAddress ?? "";
   const displayName = getAccountDisplayName(user?.firstName, user?.lastName, email);
   const initials = getAccountInitials(user?.firstName, user?.lastName, email);
 
   useEffect(() => {
-    setIsAdmin(isAdminFromServer);
-  }, [isAdminFromServer]);
+    setShowDashboard(showDashboardFromServer);
+  }, [showDashboardFromServer]);
 
   useEffect(() => {
+    if (!isLoaded) {
+      return;
+    }
+
+    if (!isSignedIn) {
+      setShowDashboard(false);
+      return;
+    }
+
     let cancelled = false;
 
-    void resolveNavbarIsAdmin().then((admin) => {
-      if (!cancelled) {
-        setIsAdmin(admin);
+    void resolveNavbarIsAdmin().then((access) => {
+      if (!cancelled && access !== null) {
+        setShowDashboard(access);
       }
     });
 
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [isLoaded, isSignedIn]);
 
   const close = () => {
     setOpen(false);
@@ -78,7 +88,7 @@ export function AccountMenu({
 
         <AccountMenuDivider />
 
-        {isAdmin ? (
+        {showDashboard ? (
           <>
             <AccountMenuItem
               icon={LayoutDashboardIcon}

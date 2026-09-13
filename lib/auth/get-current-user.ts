@@ -6,20 +6,13 @@ import { currentUser as getClerkCurrentUser } from "@clerk/nextjs/server";
 
 import { ERROR_CODES } from "@/constants/error-codes";
 import { HTTP_STATUS } from "@/constants/http";
-import { USER_ROLE_VALUES, type UserRole } from "@/constants/roles";
+import { normalizeUserRole } from "@/constants/roles";
 import { DomainError, UnauthorizedError } from "@/lib/errors";
 import { logger } from "@/lib/logger";
 
 import { getSession } from "./get-session";
 import { syncClerkUser, type AppUser } from "./sync-user";
 import type { SyncUserOptions } from "./types";
-
-function isKnownRole(role: unknown): role is UserRole {
-  return (
-    typeof role === "string" &&
-    (USER_ROLE_VALUES as readonly string[]).includes(role)
-  );
-}
 
 function accountDisabledError(message?: string): DomainError {
   return new DomainError(
@@ -55,7 +48,8 @@ export function assertActiveAppUser(user: AppUser): AppUser {
     throw accountDisabledError();
   }
 
-  if (!isKnownRole(user.role)) {
+  const role = normalizeUserRole(user.role);
+  if (!role) {
     logger.error("App user is missing a valid role", undefined, {
       clerkId: user.clerkId,
       role: String(user.role),
@@ -63,7 +57,7 @@ export function assertActiveAppUser(user: AppUser): AppUser {
     throw userNotSyncedError("User role is missing or invalid");
   }
 
-  return user;
+  return role === user.role ? user : { ...user, role };
 }
 
 /**

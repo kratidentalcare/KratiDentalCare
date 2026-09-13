@@ -73,7 +73,7 @@ export function UserRoleDialog({
           <AlertDialogTitle>Change user role</AlertDialogTitle>
           <AlertDialogDescription>
             {user
-              ? `Update the clinic role for ${user.fullName}. This takes effect on their next protected request.`
+              ? `Update the role for ${user.fullName}. This takes effect on their next protected request.`
               : "Select a user first."}
           </AlertDialogDescription>
         </AlertDialogHeader>

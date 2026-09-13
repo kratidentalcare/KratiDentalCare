@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 
+import { USER_ROLES } from "@/constants/roles";
 import { buildUserListFilter } from "@/features/users/lib/list-filter";
 import {
   escapeRegex,
@@ -70,12 +71,12 @@ describe("user list filter builder", () => {
   it("applies role, status, and escaped search together", () => {
     const filter = buildUserListFilter({
       search: "Rahul",
-      role: "doctor",
+      role: USER_ROLES.USER,
       status: USER_ACCESS_STATUSES.ACTIVE,
     });
 
     assert.equal(filter.deletedAt, null);
-    assert.equal(filter.role, "doctor");
+    assert.equal(filter.role, USER_ROLES.USER);
     assert.equal(filter.isActive, true);
     assert.ok(filter.$or);
   });

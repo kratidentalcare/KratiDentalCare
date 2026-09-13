@@ -16,7 +16,8 @@
     "test:scheduling": "tsx --test features/scheduling/engine/generate-slots.test.ts",
     "seed": "tsx --import ./scripts/seed/preload.ts ./scripts/seed/index.ts",
     "seed:reset": "tsx --import ./scripts/seed/preload.ts ./scripts/seed/reset.ts",
-    "migrate:staff-roles": "tsx --import ./scripts/seed/preload.ts ./scripts/migrations/consolidate-staff-roles.ts"
+    "migrate:user-roles": "tsx --import ./scripts/seed/preload.ts ./scripts/migrations/consolidate-staff-roles.ts",
+    "migrate:staff-roles": "npm run migrate:user-roles"
   },
   "dependencies": {
     "@base-ui/react": "^1.6.0",

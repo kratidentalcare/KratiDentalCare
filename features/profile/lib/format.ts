@@ -8,12 +8,8 @@ export function formatUserRoleLabel(role: UserRole): string {
   switch (role) {
     case USER_ROLES.ADMIN:
       return "Admin";
-    case USER_ROLES.DOCTOR:
-      return "Doctor";
-    case USER_ROLES.STAFF:
-      return "Staff";
-    case USER_ROLES.PATIENT:
-      return "Patient";
+    case USER_ROLES.USER:
+      return "User";
     default:
       return role;
   }

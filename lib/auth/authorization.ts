@@ -114,7 +114,7 @@ export type AuthorizeOptions = (AuthorizeByRole | AuthorizeByPermission) &
  *
  * @example
  * await authorize({ roles: "admin" });
- * await authorize({ permissions: [PERMISSIONS.DASHBOARD_PATIENT] });
+ * await authorize({ permissions: [PERMISSIONS.DASHBOARD_USER] });
  */
 export async function authorize(options: AuthorizeOptions): Promise<AppUser> {
   const syncOptions: SyncUserOptions = {

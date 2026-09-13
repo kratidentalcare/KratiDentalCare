@@ -122,13 +122,13 @@ function mapErrorToResult(error: unknown): EmailActionResultView {
 }
 
 /**
- * Resolves an active admin/staff user to attribute email-link lifecycle actions.
+ * Resolves an active admin user to attribute email-link lifecycle actions.
  */
 export async function resolveEmailActionActorUserId(): Promise<string> {
   await connect();
 
   const actor = await User.findOne({
-    role: { $in: [USER_ROLES.ADMIN, USER_ROLES.STAFF] },
+    role: { $in: [USER_ROLES.ADMIN] },
     isActive: true,
     deletedAt: null,
   })
@@ -138,7 +138,7 @@ export async function resolveEmailActionActorUserId(): Promise<string> {
   if (!actor) {
     throw new DomainError(
       "EMAIL_ACTION_ACTOR_MISSING",
-      "No active admin or staff user is available to attribute this email action.",
+      "No active admin user is available to attribute this email action.",
     );
   }
 

@@ -1,6 +1,7 @@
 import "server-only";
 
 import { PAGINATION } from "@/constants";
+import { normalizeUserRole, USER_ROLES } from "@/constants/roles";
 import { buildUserDisplayName } from "@/features/users/lib/format";
 import { accessStatusFromIsActive } from "@/features/users/lib/status";
 import {
@@ -31,7 +32,7 @@ export async function listUsers(
     lastName: user.lastName,
     fullName: buildUserDisplayName(user.firstName, user.lastName, user.email),
     phoneNumber: user.phoneNumber,
-    role: user.role,
+    role: normalizeUserRole(user.role) ?? USER_ROLES.USER,
     status: accessStatusFromIsActive(user.isActive),
     isActive: user.isActive,
     profileImage: user.profileImage,

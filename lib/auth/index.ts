@@ -18,8 +18,8 @@ export {
 } from "./get-current-user";
 export { getCurrentUserRole } from "./get-current-user-role";
 export { isAdmin } from "./is-admin";
-export { isPatient } from "./is-patient";
-export { isDoctor } from "./is-doctor";
+export { canAccessStaffDashboard } from "./can-access-staff-dashboard";
+export { isPatient, isUser } from "./is-patient";
 
 // --- Clerk session gates (compat) ---
 export {
@@ -47,11 +47,9 @@ export {
   hasAnyRole,
   hasRole,
   requireAdmin,
-  requireDoctor,
   requirePatient,
-  requireReceptionist,
-  requireStaff,
   requireRole,
+  requireUser,
 } from "./require-role";
 
 export {
@@ -79,6 +77,7 @@ export {
 export {
   requireAdminPage,
   requireAppUserPage,
+  requireDashboardPage,
   requirePatientPage,
   type PageAccessOptions,
 } from "./page-access";

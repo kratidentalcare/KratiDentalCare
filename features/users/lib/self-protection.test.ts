@@ -27,7 +27,7 @@ describe("user management self-protection", () => {
           actorId,
           actorId,
           USER_ROLES.ADMIN,
-          USER_ROLES.STAFF,
+          USER_ROLES.USER,
         ),
       (error: unknown) => error instanceof ForbiddenError,
     );
@@ -50,7 +50,7 @@ describe("user management self-protection", () => {
         actorId,
         otherId,
         USER_ROLES.ADMIN,
-        USER_ROLES.DOCTOR,
+        USER_ROLES.USER,
       ),
     );
   });

@@ -8,8 +8,8 @@ import { AccountMenu } from "./account-menu";
 import { GuestAccountMenu } from "./guest-account-menu";
 
 export type AuthControlsProps = {
-  /** When true, expose the admin Dashboard link (from `isAdmin()`). */
-  isAdmin: boolean;
+  /** When true, expose the clinic Dashboard link. */
+  showDashboard: boolean;
   className?: string;
   /** Called after a nav action (e.g. close mobile drawer). */
   onNavigate?: () => void;
@@ -39,7 +39,7 @@ function AuthControlsSkeleton() {
  * - Sessions → account modal (bottom sheet on mobile)
  */
 export function AuthControls({
-  isAdmin,
+  showDashboard,
   className,
   onNavigate,
 }: AuthControlsProps) {
@@ -64,7 +64,7 @@ export function AuthControls({
 
       <Show when="signed-in">
         <AccountMenu
-          isAdmin={isAdmin}
+          showDashboard={showDashboard}
           triggerClassName={authIconClassName}
           onNavigate={onNavigate}
         />

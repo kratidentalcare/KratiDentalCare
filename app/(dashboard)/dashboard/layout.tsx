@@ -15,14 +15,14 @@ import { MobileSidebar } from "@/components/dashboard/mobile-sidebar";
 import { Sidebar } from "@/components/dashboard/sidebar";
 import { ROUTES } from "@/constants/routes";
 import { NotificationBell } from "@/features/notifications/components/notification-bell";
-import { requireAdminPage } from "@/lib/auth";
+import { requireDashboardPage } from "@/lib/auth";
 
 export const metadata: Metadata = {
   title: "Dashboard",
 };
 
 /**
- * Admin dashboard layout — auth gate + reusable shell.
+ * Clinic dashboard layout — staff gate + reusable shell.
  * Nested module pages under `/dashboard/*` inherit sidebar, header, and chrome.
  *
  * Inbox + notifications stream behind Suspense so they do not block
@@ -33,7 +33,7 @@ export default async function DashboardLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const appUser = await requireAdminPage({
+  const appUser = await requireDashboardPage({
     returnPath: ROUTES.DASHBOARD.ROOT,
     touchLastLogin: false,
   });

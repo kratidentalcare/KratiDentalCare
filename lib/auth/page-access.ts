@@ -105,6 +105,27 @@ export async function requireAppUserPage(
 }
 
 /**
+ * Clinic dashboard gate — session + active Mongo admin.
+ * Individual modules still enforce permissions.
+ */
+export async function requireDashboardPage(
+  options: PageAccessOptions = {},
+): Promise<AppUser> {
+  const returnPath = options.returnPath ?? ROUTES.DASHBOARD.ROOT;
+  const syncOptions: SyncUserOptions = {
+    touchLastLogin: options.touchLastLogin,
+  };
+
+  await requireAuthRedirect();
+
+  try {
+    return await requireAdmin(syncOptions);
+  } catch (error) {
+    return redirectForPageAccessFailure(error, returnPath);
+  }
+}
+
+/**
  * Admin console page gate — session + active Mongo user + `role === admin`.
  */
 export async function requireAdminPage(
@@ -125,7 +146,7 @@ export async function requireAdminPage(
 }
 
 /**
- * Patient portal page gate — session + active Mongo user + `role === patient`.
+ * Patient portal page gate — session + active Mongo user + `role === user`.
  */
 export async function requirePatientPage(
   options: PageAccessOptions = {},

@@ -13,9 +13,7 @@ export const userAccessStatusSchema = z.enum(USER_ACCESS_STATUS_VALUES);
 export const userRoleFilterSchema = z.enum([
   "all",
   USER_ROLES.ADMIN,
-  USER_ROLES.DOCTOR,
-  USER_ROLES.STAFF,
-  USER_ROLES.PATIENT,
+  USER_ROLES.USER,
 ]);
 
 export const userStatusFilterSchema = z.enum([

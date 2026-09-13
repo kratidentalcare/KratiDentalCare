@@ -21,7 +21,7 @@ export async function seedDoctor(ctx: SeedContext): Promise<void> {
       firstName: "Gaurav",
       lastName: "Jaiswal",
       phoneNumber: "+91 98765 43210",
-      role: USER_ROLES.DOCTOR,
+      role: USER_ROLES.USER,
       profileImage: null,
       lastLoginAt: null,
       emailVerified: true,

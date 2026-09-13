@@ -4,7 +4,7 @@ import { PageHeader } from "@/components/dashboard";
 import { ProfileWorkspace } from "@/features/profile/components/profile-workspace";
 import { toAdminProfileView } from "@/features/profile/services/map-admin-profile";
 import { ROUTES } from "@/constants/routes";
-import { requireAdminPage } from "@/lib/auth";
+import { requireDashboardPage } from "@/lib/auth";
 
 export const metadata: Metadata = {
   title: "My Profile",
@@ -14,7 +14,7 @@ export const metadata: Metadata = {
  * Admin My Profile — identity overview, editable details, Clerk security.
  */
 export default async function DashboardProfilePage() {
-  const user = await requireAdminPage({
+  const user = await requireDashboardPage({
     returnPath: ROUTES.DASHBOARD.PROFILE,
     touchLastLogin: false,
   });

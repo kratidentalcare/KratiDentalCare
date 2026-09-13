@@ -16,10 +16,10 @@ import { NavLinks } from "./nav-links";
 export type NavbarProps = {
   className?: string;
   /**
-   * Whether the signed-in app user is an admin (from `isAdmin()`).
-   * Controls Dashboard visibility in the user dropdown.
+   * Whether to show Dashboard in the signed-in account menu
+   * (`admin` Mongo role).
    */
-  isAdmin?: boolean;
+  showDashboard?: boolean;
 };
 
 const bookCtaClassName = cn(
@@ -36,7 +36,7 @@ const bookCtaClassName = cn(
  * Sticky public-site navbar: logo left, links + auth + Book CTA grouped right.
  * Text links: Home / Services / Doctors / Contact. Book and Smile is the CTA.
  */
-export function Navbar({ className, isAdmin = false }: NavbarProps) {
+export function Navbar({ className, showDashboard = false }: NavbarProps) {
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -75,7 +75,7 @@ export function Navbar({ className, isAdmin = false }: NavbarProps) {
               <NavLinks />
             </nav>
 
-            <AuthControls isAdmin={isAdmin} />
+            <AuthControls showDashboard={showDashboard} />
 
             <Link
               href={ROUTES.PUBLIC.BOOK}
