@@ -119,7 +119,7 @@ export function renderEmailLayout(input: LayoutInput): string {
         <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;background:#ffffff;border-radius:16px;overflow:hidden;border:1px solid #e2e8f0;">
           <tr>
             <td style="padding:28px 28px 12px;text-align:center;background:linear-gradient(180deg,#ecfeff 0%,#ffffff 100%);">
-              <img src="${escapeHtml(branding.logoUrl)}" alt="${escapeHtml(branding.clinicName)}" width="140" style="display:block;margin:0 auto 16px;max-width:140px;height:auto;" />
+              <img src="${escapeHtml(branding.logoUrl)}" alt="${escapeHtml(branding.clinicName)}" width="140" height="48" style="display:block;margin:0 auto 16px;max-width:140px;height:auto;border:0;" />
               <h1 style="margin:0;font-size:22px;line-height:1.3;color:#0f172a;">${escapeHtml(heading)}</h1>
               <p style="margin:12px 0 0;font-size:15px;line-height:1.5;color:#475569;">${escapeHtml(message)}</p>
             </td>

@@ -34,6 +34,11 @@ export const metadata: Metadata = {
     template: `%s | ${APP_NAME}`,
   },
   description: APP_DESCRIPTION,
+  icons: {
+    icon: [{ url: "/images/tablogo.png", type: "image/png" }],
+    shortcut: [{ url: "/images/tablogo.png", type: "image/png" }],
+    apple: [{ url: "/images/tablogo.png", type: "image/png" }],
+  },
 };
 
 export default function RootLayout({

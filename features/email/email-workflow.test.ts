@@ -10,6 +10,7 @@ import { hashActionToken } from "@/features/appointments/lib/action-token-hash";
 import { previewEmailActionPage } from "@/features/appointments/lib/email-action-preview";
 import { mapEventToEmailType } from "@/features/email/lib/map-email-type";
 import { normalizeEmailFrom } from "@/features/email/lib/from-address";
+import { resolveEmailAppBaseUrl } from "@/features/email/lib/app-base-url";
 import { buildAdminNewAppointmentEmail } from "@/features/email/templates/admin-new-appointment";
 import type { ClinicEmailBranding } from "@/features/email/lib/branding-types";
 import type { SendEmailResult } from "@/features/email/providers/types";
@@ -58,6 +59,27 @@ describe("EMAIL_FROM normalization", () => {
     );
     assert.equal(normalizeEmailFrom('""'), null);
     assert.equal(normalizeEmailFrom("not-an-email"), null);
+  });
+});
+
+describe("email app base URL", () => {
+  it("prefers EMAIL_APP_URL over localhost NEXT_PUBLIC_APP_URL", () => {
+    assert.equal(
+      resolveEmailAppBaseUrl({
+        EMAIL_APP_URL: "https://www.dentalcarejaipur.com/",
+        NEXT_PUBLIC_APP_URL: "http://localhost:3000",
+      }),
+      "https://www.dentalcarejaipur.com",
+    );
+  });
+
+  it("falls back to NEXT_PUBLIC_APP_URL", () => {
+    assert.equal(
+      resolveEmailAppBaseUrl({
+        NEXT_PUBLIC_APP_URL: "https://www.dentalcarejaipur.com",
+      }),
+      "https://www.dentalcarejaipur.com",
+    );
   });
 });
 
