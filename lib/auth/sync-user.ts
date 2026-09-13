@@ -233,6 +233,58 @@ async function findUserByClerkId(
   return query.lean<AppUser>().exec();
 }
 
+async function findUserByEmail(
+  email: string,
+  { includeDeleted = false }: { includeDeleted?: boolean } = {},
+): Promise<AppUser | null> {
+  const query = User.findOne({ email: email.trim().toLowerCase() });
+
+  if (includeDeleted) {
+    query.withDeleted();
+  }
+
+  return query.lean<AppUser>().exec();
+}
+
+/**
+ * When Clerk issues a new user id for an existing verified email (instance
+ * switch, re-created account), bind that row instead of inserting a duplicate.
+ */
+async function rebindClerkIdForEmail(
+  clerkId: string,
+  fields: MutableProfileFields,
+): Promise<AppUser | null> {
+  const byEmail = await findUserByEmail(fields.email, { includeDeleted: true });
+
+  if (!byEmail || byEmail.deletedAt != null || !byEmail.isActive) {
+    return null;
+  }
+
+  if (byEmail.clerkId === clerkId) {
+    return byEmail;
+  }
+
+  const rebound = await User.findOneAndUpdate(
+    { _id: byEmail._id, deletedAt: null },
+    { $set: { clerkId, ...fields } },
+    { returnDocument: "after", runValidators: true },
+  )
+    .lean<AppUser>()
+    .exec();
+
+  if (!rebound) {
+    return null;
+  }
+
+  logger.warn("Rebound Clerk user id onto existing email", {
+    email: fields.email,
+    previousClerkId: byEmail.clerkId,
+    clerkId,
+  });
+
+  return rebound;
+}
+
 async function updateMutableProfile(
   clerkId: string,
   fields: MutableProfileFields,
@@ -359,6 +411,11 @@ export async function syncUser(
   }
 
   try {
+    const rebound = await rebindClerkIdForEmail(clerkId, fields);
+    if (rebound) {
+      return rebound;
+    }
+
     const created = await createUserFromSyncInput(clerkId, fields);
     logger.info("User created from Clerk sync", {
       clerkId,

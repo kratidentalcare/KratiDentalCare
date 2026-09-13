@@ -41,7 +41,9 @@ export function AccountMenu({
   const initials = getAccountInitials(user?.firstName, user?.lastName, email);
 
   useEffect(() => {
-    setShowDashboard(showDashboardFromServer);
+    if (showDashboardFromServer) {
+      setShowDashboard(true);
+    }
   }, [showDashboardFromServer]);
 
   useEffect(() => {
@@ -57,15 +59,24 @@ export function AccountMenu({
     let cancelled = false;
 
     void resolveNavbarIsAdmin().then((access) => {
-      if (!cancelled && access !== null) {
-        setShowDashboard(access);
+      if (cancelled || access === null) {
+        return;
+      }
+
+      if (access) {
+        setShowDashboard(true);
+        return;
+      }
+
+      if (!showDashboardFromServer) {
+        setShowDashboard(false);
       }
     });
 
     return () => {
       cancelled = true;
     };
-  }, [isLoaded, isSignedIn]);
+  }, [isLoaded, isSignedIn, showDashboardFromServer]);
 
   const close = () => {
     setOpen(false);
