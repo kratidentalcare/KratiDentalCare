@@ -9,6 +9,7 @@ import { clerkAppearance } from "@/config/clerk-appearance";
 
 type AppProvidersProps = {
   children: ReactNode;
+  publishableKey?: string;
 };
 
 /**
@@ -16,9 +17,10 @@ type AppProvidersProps = {
  * ClerkProvider must wrap the app body tree (not `<html>`).
  * TooltipProvider + Toaster enable shared design-system affordances app-wide.
  */
-export function AppProviders({ children }: AppProvidersProps) {
+export function AppProviders({ children, publishableKey }: AppProvidersProps) {
   return (
     <ClerkProvider
+      publishableKey={publishableKey}
       appearance={clerkAppearance}
       telemetry={{ disabled: true }}
     >

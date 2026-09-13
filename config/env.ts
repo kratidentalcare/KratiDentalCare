@@ -104,6 +104,7 @@ function readRawEnv(): Record<string, string | undefined> {
     NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
     MONGODB_URI: process.env.MONGODB_URI,
     CLERK_PUBLISHABLE_KEY:
+      process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY ||
       process.env.CLERK_PUBLISHABLE_KEY,
     CLERK_SECRET_KEY: process.env.CLERK_SECRET_KEY,
     NEXT_PUBLIC_CLERK_SIGN_IN_URL: process.env.NEXT_PUBLIC_CLERK_SIGN_IN_URL,
@@ -187,7 +188,7 @@ export function requireClerkEnv(): ClerkEnv {
 
   if (!publishableKey || !secretKey) {
     throw new ConfigurationError(
-      "Clerk keys are not set. Add CLERK_PUBLISHABLE_KEY and CLERK_SECRET_KEY to .env.local.",
+      "Clerk keys are not set. Add NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY and CLERK_SECRET_KEY to .env.local.",
     );
   }
 

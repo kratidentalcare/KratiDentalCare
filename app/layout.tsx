@@ -41,6 +41,10 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const publishableKey =
+    process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY ||
+    process.env.CLERK_PUBLISHABLE_KEY;
+
   return (
     <html
       lang="en"
@@ -50,7 +54,7 @@ export default function RootLayout({
         className="flex min-h-full flex-col font-sans"
         suppressHydrationWarning
       >
-        <AppProviders>{children}</AppProviders>
+        <AppProviders publishableKey={publishableKey}>{children}</AppProviders>
       </body>
     </html>
   );
