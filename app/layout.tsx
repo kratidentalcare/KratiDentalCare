@@ -35,9 +35,9 @@ export const metadata: Metadata = {
   },
   description: APP_DESCRIPTION,
   icons: {
-    icon: [{ url: "/images/tablogo.png", type: "image/png" }],
-    shortcut: [{ url: "/images/tablogo.png", type: "image/png" }],
-    apple: [{ url: "/images/tablogo.png", type: "image/png" }],
+    icon: [{ url: "/favicon.ico", type: "image/x-icon" }],
+    shortcut: "/favicon.ico",
+    apple: [{ url: "/apple-icon", type: "image/png" }],
   },
 };
 
