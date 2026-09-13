@@ -115,7 +115,7 @@ export async function seedClinicSettings(ctx: SeedContext): Promise<void> {
       },
       phone: "+91 522 400 2000",
       secondaryPhone: "+91 98765 43210",
-      email: "care@kratidentalcare.com",
+      email: "kratidentalcarejaipur@gmail.com",
       emergencyContact: "+91 522 400 2099",
       googleMapsUrl: "https://maps.google.com/?q=Hazratganj+Lucknow",
       logoUrl: null,

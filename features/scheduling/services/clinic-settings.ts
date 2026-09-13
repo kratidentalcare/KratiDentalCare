@@ -124,7 +124,7 @@ const DEFAULT_SETTINGS_SEED = {
   },
   phone: "+910000000000",
   secondaryPhone: null as string | null,
-  email: "clinic@kratidentalcare.com",
+  email: "kratidentalcarejaipur@gmail.com",
   emergencyContact: null as string | null,
   googleMapsUrl: null as string | null,
   logoUrl: null as string | null,
