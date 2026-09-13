@@ -57,7 +57,7 @@ export async function updateFaq(
   const updated = await Faq.findByIdAndUpdate(
     id,
     { $set },
-    { new: true, runValidators: true },
+    { returnDocument: "after", runValidators: true },
   ).lean<LeanFaq>();
 
   if (!updated) {

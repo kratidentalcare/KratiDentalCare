@@ -40,7 +40,7 @@ export async function markNotificationRead(
         readAt: new Date(),
       },
     },
-    { new: true },
+    { returnDocument: "after" },
   ).lean<LeanNotification | null>();
 
   if (!updated) {

@@ -57,7 +57,7 @@ export async function updateMedicine(
         updatedByUserId: new Types.ObjectId(actorUserId),
       },
     },
-    { new: true, runValidators: true },
+    { returnDocument: "after", runValidators: true },
   ).lean<LeanMedicine>();
 
   if (!updated) {

@@ -152,7 +152,7 @@ export async function updatePrescriptionById(
     const updated = await Prescription.findOneAndUpdate(
       { _id: new Types.ObjectId(id), deletedAt: null },
       { $set: data },
-      { new: true, runValidators: true },
+      { returnDocument: "after", runValidators: true },
     ).lean<LeanPrescription>();
 
     if (!updated) {

@@ -28,7 +28,7 @@ export async function updateContactMessageStatus(
   const updated = await ContactMessage.findByIdAndUpdate(
     id,
     { $set: { status } },
-    { new: true, runValidators: true },
+    { returnDocument: "after", runValidators: true },
   ).lean<LeanContactMessage | null>();
 
   if (!updated) {

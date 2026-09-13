@@ -35,7 +35,7 @@ async function setMedicineStatus(
         updatedByUserId: new Types.ObjectId(actorUserId),
       },
     },
-    { new: true, runValidators: true },
+    { returnDocument: "after", runValidators: true },
   ).lean<LeanMedicine>();
 
   if (!updated) {

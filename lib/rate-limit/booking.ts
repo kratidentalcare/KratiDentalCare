@@ -43,7 +43,7 @@ async function consumeBucket(
       $inc: { count: 1 },
       $setOnInsert: { expiresAt },
     },
-    { upsert: true, new: true },
+    { upsert: true, returnDocument: "after" },
   );
 
   const count = hit?.count ?? 1;

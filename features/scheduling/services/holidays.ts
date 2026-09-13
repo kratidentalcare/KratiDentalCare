@@ -144,7 +144,7 @@ export async function updateHoliday(
     const updated = await Holiday.findByIdAndUpdate(
       id,
       { $set },
-      { new: true, runValidators: true },
+      { returnDocument: "after", runValidators: true },
     ).lean<LeanHoliday>();
 
     if (!updated) {

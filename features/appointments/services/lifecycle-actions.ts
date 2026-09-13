@@ -115,7 +115,7 @@ async function approveAppointment(
     {
       $set: { status: APPOINTMENT_STATUSES.CONFIRMED },
     },
-    { new: true },
+    { returnDocument: "after" },
   ).lean<LeanAppointment>();
 
   if (!updated) {
@@ -162,7 +162,7 @@ async function cancelAppointment(
         activePatientHold: null,
       },
     },
-    { new: true },
+    { returnDocument: "after" },
   ).lean<LeanAppointment>();
 
   if (!updated) {
@@ -210,7 +210,7 @@ async function completeAppointment(
         activePatientHold: null,
       },
     },
-    { new: true },
+    { returnDocument: "after" },
   ).lean<LeanAppointment>();
 
   if (!updated) {
@@ -267,7 +267,7 @@ async function rescheduleAppointment(
           rescheduledFromEndsAt: previous.endsAt,
         },
       },
-      { new: true },
+      { returnDocument: "after" },
     ).lean<LeanAppointment>();
 
     if (!updated) {

@@ -244,7 +244,7 @@ export async function updatePatientRecord(
     const query = Patient.findOneAndUpdate(
       { _id: new MongooseTypes.ObjectId(id), deletedAt: null },
       { $set: updates },
-      { new: true, runValidators: true },
+      { returnDocument: "after", runValidators: true },
     );
     if (session) {
       query.session(session);

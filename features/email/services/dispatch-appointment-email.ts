@@ -209,7 +209,7 @@ export async function dispatchAppointmentEmail(
         lastError: null,
       },
     },
-    { new: true },
+    { returnDocument: "after" },
   ).lean<LeanNotificationOutbox>();
 
   if (!claimed) {

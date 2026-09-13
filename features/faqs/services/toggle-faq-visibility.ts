@@ -30,7 +30,7 @@ export async function toggleFaqVisibility(
         updatedByUserId: new Types.ObjectId(updatedByUserId),
       },
     },
-    { new: true, runValidators: true },
+    { returnDocument: "after", runValidators: true },
   ).lean<LeanFaq>();
 
   if (!updated) {

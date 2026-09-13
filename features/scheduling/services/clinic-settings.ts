@@ -403,7 +403,7 @@ export async function updateClinicAvailability(
         updatedByUserId: new Types.ObjectId(updatedByUserId),
       },
     },
-    { new: true },
+    { returnDocument: "after" },
   ).lean<LeanClinicSettings>();
 
   if (!updated) {
@@ -547,7 +547,7 @@ export async function updateClinicSettings(
         "socialLinks.linkedin": 1,
       },
     },
-    { new: true, runValidators: true },
+    { returnDocument: "after", runValidators: true },
   ).lean<LeanClinicSettings>();
 
   if (!updated) {

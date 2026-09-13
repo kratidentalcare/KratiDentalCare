@@ -64,7 +64,7 @@ export async function updateUserRoleRecord(
   const query = User.findOneAndUpdate(
     { _id: new MongooseTypes.ObjectId(id), deletedAt: null },
     { $set: { role } },
-    { new: true, runValidators: true },
+    { returnDocument: "after", runValidators: true },
   );
   if (session) {
     query.session(session);
@@ -85,7 +85,7 @@ export async function updateUserAccessRecord(
   const query = User.findOneAndUpdate(
     { _id: new MongooseTypes.ObjectId(id), deletedAt: null },
     { $set: { isActive } },
-    { new: true, runValidators: true },
+    { returnDocument: "after", runValidators: true },
   );
   if (session) {
     query.session(session);
