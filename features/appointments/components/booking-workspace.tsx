@@ -15,10 +15,12 @@ import {
   CheckCircle2Icon,
   Clock3Icon,
   Loader2Icon,
+  PhoneCallIcon,
   UserRoundIcon,
 } from "lucide-react";
 import { toast } from "sonner";
 import { z } from "zod";
+import Link from "next/link";
 
 import { FormField } from "@/components/shared/form-field";
 import { Badge } from "@/components/ui/badge";
@@ -33,6 +35,10 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { GENDERS } from "@/constants/patient";
+import { ERROR_CODES } from "@/constants/error-codes";
+import {
+  ACTIVE_BOOKING_CONFLICT_MESSAGE,
+} from "@/constants/appointments";
 import { ROUTES } from "@/constants/routes";
 import { DatePickerField } from "@/features/scheduling/components/date-picker-field";
 import { formatCivilDateLabel } from "@/features/scheduling/lib/civil-date";
@@ -56,6 +62,7 @@ const bookingFormSchema = z.object({
   ageYears: bookingAgeYearsSchema,
   gender: genderSchema,
   reason: nonEmptyStringSchema.max(500),
+  website: z.string().max(200).optional(),
 });
 
 type BookingFormValues = z.infer<typeof bookingFormSchema>;
@@ -144,6 +151,7 @@ export function BookingWorkspace({ initialDate }: BookingWorkspaceProps) {
   const [isLoadingSlots, startLoadSlots] = useTransition();
   const [isSubmitting, startSubmit] = useTransition();
   const [hasFetchedSlots, setHasFetchedSlots] = useState(false);
+  const [duplicateConflict, setDuplicateConflict] = useState(false);
 
   const form = useForm<BookingFormValues>({
     resolver: zodResolver(bookingFormSchema),
@@ -154,6 +162,7 @@ export function BookingWorkspace({ initialDate }: BookingWorkspaceProps) {
       ageYears: undefined,
       gender: undefined,
       reason: "",
+      website: "",
     },
   });
 
@@ -229,8 +238,13 @@ export function BookingWorkspace({ initialDate }: BookingWorkspaceProps) {
         });
         const result = await response.json();
         if (!result.success) {
+          if (result.error?.code === ERROR_CODES.ACTIVE_BOOKING_EXISTS) {
+            setDuplicateConflict(true);
+            return;
+          }
           throw new Error(result.error?.message ?? "Booking failed");
         }
+        setDuplicateConflict(false);
         setConfirmation(result.data);
         toast.success("Appointment request submitted");
       } catch (error) {
@@ -531,6 +545,38 @@ export function BookingWorkspace({ initialDate }: BookingWorkspaceProps) {
                 className="rounded-xl border-brand-blue/15 bg-brand-surface"
               />
             </FormField>
+
+            <div className="absolute -left-[9999px] h-0 w-0 overflow-hidden" aria-hidden="true">
+              <label htmlFor="website">Website</label>
+              <input
+                id="website"
+                type="text"
+                tabIndex={-1}
+                autoComplete="off"
+                {...form.register("website")}
+              />
+            </div>
+
+            {duplicateConflict ? (
+              <div
+                role="alert"
+                className="rounded-2xl border border-brand-blue/15 bg-brand-surface p-4 text-sm"
+              >
+                <p className="font-medium text-brand-dark">
+                  You already have an upcoming appointment with us.
+                </p>
+                <p className="mt-1 leading-relaxed text-brand-muted">
+                  {ACTIVE_BOOKING_CONFLICT_MESSAGE}
+                </p>
+                <Link
+                  href={ROUTES.PUBLIC.CONTACT}
+                  className="mt-3 inline-flex h-10 items-center rounded-full bg-brand-blue px-4 text-sm font-semibold text-white hover:bg-brand-hover"
+                >
+                  <PhoneCallIcon className="mr-2 size-4" />
+                  Contact clinic
+                </Link>
+              </div>
+            ) : null}
 
             <Button
               type="submit"

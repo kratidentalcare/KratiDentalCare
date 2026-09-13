@@ -10,6 +10,18 @@ export const BLOCKING_APPOINTMENT_STATUSES: readonly AppointmentStatus[] = [
   APPOINTMENT_STATUSES.NO_SHOW,
 ];
 
+/**
+ * Open visit statuses that occupy a patient's public booking hold.
+ * Distinct from occupancy blocking (which includes COMPLETED / NO_SHOW).
+ */
+export const BOOKING_HOLD_STATUSES: readonly AppointmentStatus[] = [
+  APPOINTMENT_STATUSES.PENDING,
+  APPOINTMENT_STATUSES.CONFIRMED,
+  APPOINTMENT_STATUSES.CHECKED_IN,
+];
+
+const BOOKING_HOLD_STATUS_SET = new Set<AppointmentStatus>(BOOKING_HOLD_STATUSES);
+
 /** Admin-facing lifecycle transitions. */
 const ALLOWED_TRANSITIONS: Record<
   AppointmentStatus,
@@ -65,4 +77,18 @@ export function isTerminalAppointmentStatus(status: AppointmentStatus): boolean 
     status === APPOINTMENT_STATUSES.NO_SHOW ||
     status === APPOINTMENT_STATUSES.ARCHIVED
   );
+}
+
+/**
+ * True when this visit should prevent another public self-service booking.
+ * Unclosed PENDING / CONFIRMED / CHECKED_IN rows block until staff closes them.
+ */
+export function isAppointmentBlockingNewBooking(input: {
+  status: AppointmentStatus;
+  deletedAt?: Date | null;
+}): boolean {
+  if (input.deletedAt != null) {
+    return false;
+  }
+  return BOOKING_HOLD_STATUS_SET.has(input.status);
 }

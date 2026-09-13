@@ -6,8 +6,12 @@ import { evaluateBookingPolicy } from "@/features/appointments/lib/booking-polic
 import {
   canRescheduleAppointment,
   canTransitionAppointmentStatus,
+  isAppointmentBlockingNewBooking,
 } from "@/features/appointments/lib/lifecycle";
-import { buildOccupancyKey } from "@/features/appointments/lib/occupancy";
+import {
+  buildActivePatientHold,
+  buildOccupancyKey,
+} from "@/features/appointments/lib/occupancy";
 
 describe("appointment lifecycle", () => {
   it("allows pending to confirmed and cancelled", () => {
@@ -106,5 +110,72 @@ describe("occupancy key", () => {
     const startsAt = new Date("2026-07-18T09:30:00.000Z");
     const key = buildOccupancyKey("507f1f77bcf86cd799439011", startsAt);
     assert.match(key, /^507f1f77bcf86cd799439011:\d+$/);
+  });
+
+  it("builds a patient hold from the patient id", () => {
+    assert.equal(
+      buildActivePatientHold("507f1f77bcf86cd799439011"),
+      "507f1f77bcf86cd799439011",
+    );
+  });
+});
+
+describe("booking hold statuses", () => {
+  it("blocks pending, confirmed, and checked-in visits", () => {
+    assert.equal(
+      isAppointmentBlockingNewBooking({
+        status: APPOINTMENT_STATUSES.PENDING,
+      }),
+      true,
+    );
+    assert.equal(
+      isAppointmentBlockingNewBooking({
+        status: APPOINTMENT_STATUSES.CONFIRMED,
+      }),
+      true,
+    );
+    assert.equal(
+      isAppointmentBlockingNewBooking({
+        status: APPOINTMENT_STATUSES.CHECKED_IN,
+      }),
+      true,
+    );
+  });
+
+  it("allows cancelled, completed, no-show, and archived visits", () => {
+    assert.equal(
+      isAppointmentBlockingNewBooking({
+        status: APPOINTMENT_STATUSES.CANCELLED,
+      }),
+      false,
+    );
+    assert.equal(
+      isAppointmentBlockingNewBooking({
+        status: APPOINTMENT_STATUSES.COMPLETED,
+      }),
+      false,
+    );
+    assert.equal(
+      isAppointmentBlockingNewBooking({
+        status: APPOINTMENT_STATUSES.NO_SHOW,
+      }),
+      false,
+    );
+    assert.equal(
+      isAppointmentBlockingNewBooking({
+        status: APPOINTMENT_STATUSES.ARCHIVED,
+      }),
+      false,
+    );
+  });
+
+  it("ignores soft-deleted rows even if status is pending", () => {
+    assert.equal(
+      isAppointmentBlockingNewBooking({
+        status: APPOINTMENT_STATUSES.PENDING,
+        deletedAt: new Date(),
+      }),
+      false,
+    );
   });
 });

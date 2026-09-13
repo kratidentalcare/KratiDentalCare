@@ -1353,7 +1353,7 @@ Consistency reduces review friction, enables safe search/replace, and keeps feat
 | Constants | `SCREAMING_SNAKE` or namespaced objects | `APP_NAME`, `ROUTES.ADMIN` |
 | Enums | `PascalCase` name; `SCREAMING_SNAKE` members | `AppointmentStatus.CONFIRMED` |
 | Interfaces / Types | `PascalCase`; props suffix `Props`; results `ActionResult` | `BookAppointmentInput` |
-| Environment variables | `SCREAMING_SNAKE`; `NEXT_PUBLIC_` only if client-safe | `MONGODB_URI`, `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` |
+| Environment variables | `SCREAMING_SNAKE`; `NEXT_PUBLIC_` only if client-safe | `MONGODB_URI`, `CLERK_PUBLISHABLE_KEY` |
 | Database fields | `camelCase` in Mongoose/TS documents | `patientId`, `startsAt`, `pdfUrl` |
 | Routes | `kebab-case` URL segments | `/admin/prescriptions`, `/sign-in` |
 

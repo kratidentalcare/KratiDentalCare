@@ -68,6 +68,7 @@ export const createAppointmentSchema = z
       .default(BOOKING_SOURCES.STAFF),
     bookingReference: z.string().trim().max(128).nullable().optional(),
     occupancyKey: z.string().trim().max(128).nullable().optional(),
+    activePatientHold: z.string().trim().max(64).nullable().optional(),
     rescheduledFromStartsAt: z.coerce.date().nullable().optional(),
     rescheduledFromEndsAt: z.coerce.date().nullable().optional(),
     startsAt: z.coerce.date(),

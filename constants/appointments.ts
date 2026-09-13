@@ -77,3 +77,13 @@ export const ADMIN_APPOINTMENT_STATUS_FILTER_VALUES = [
   "CANCELLED",
   "NO_SHOW",
 ] as const;
+
+/** Public duplicate-booking copy — no appointment details. */
+export const ACTIVE_BOOKING_CONFLICT_MESSAGE =
+  "You already have an upcoming appointment with us. Please contact the clinic if you need to reschedule or cancel.";
+
+export const BOOKING_RATE_LIMIT_MESSAGE =
+  "Too many booking attempts. Please wait a few minutes and try again.";
+
+export const STAFF_ACTIVE_BOOKING_CONFIRMATION_MESSAGE =
+  "This patient already has an active appointment. Continue and create another appointment?";

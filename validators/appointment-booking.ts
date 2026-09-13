@@ -56,6 +56,13 @@ export const publicBookingSchema = z
     startAt: z.string().datetime({ offset: true }),
     endAt: z.string().datetime({ offset: true }),
     bookingReference: z.string().trim().min(8).max(128).optional(),
+    /**
+     * Honeypot — genuine clients leave this empty.
+     * Must stay in the schema so bots cannot be stripped before the server check.
+     */
+    website: z.string().max(200).optional(),
+    /** Reserved Turnstile/CAPTCHA seam. Ignored until a provider is configured. */
+    captchaToken: z.string().trim().max(2048).optional(),
   })
   .superRefine((value, ctx) => {
     const window = appointmentTimeWindowSchema.safeParse({
@@ -127,7 +134,34 @@ export const appointmentActionSchema = z.discriminatedUnion("action", [
   rescheduleAppointmentSchema,
 ]);
 
+export const staffBookingSchema = z
+  .object({
+    patientId: objectIdSchema,
+    doctorId: objectIdSchema,
+    date: civilDateSchema,
+    startAt: z.string().datetime({ offset: true }),
+    endAt: z.string().datetime({ offset: true }),
+    reason: nonEmptyStringSchema.max(500),
+    notes: z.string().trim().max(5000).optional(),
+    confirmMultipleActiveAppointments: z.boolean().optional().default(false),
+  })
+  .superRefine((value, ctx) => {
+    const window = appointmentTimeWindowSchema.safeParse({
+      startsAt: value.startAt,
+      endsAt: value.endAt,
+    });
+    if (!window.success) {
+      for (const issue of window.error.issues) {
+        ctx.addIssue({
+          ...issue,
+          path: issue.path[0] === "startsAt" ? ["startAt"] : ["endAt"],
+        });
+      }
+    }
+  });
+
 export type PublicBookingInput = z.infer<typeof publicBookingSchema>;
+export type StaffBookingInput = z.infer<typeof staffBookingSchema>;
 export type BookingAvailabilityQuery = z.infer<
   typeof bookingAvailabilityQuerySchema
 >;

@@ -2,14 +2,17 @@ import "server-only";
 
 import type { ClientSession } from "mongoose";
 
+import { normalizeEmail } from "@/features/patients/lib/email";
 import {
-  normalizePhone,
+  phonesShareIdentity,
+  toCanonicalPhone,
   toDisplayPhone,
 } from "@/features/patients/lib/phone";
 import { dateOfBirthFromAgeYears } from "@/features/patients/lib/age";
 import {
   createPatientRecord,
   findPatientByEmailExcludingId,
+  findPatientByNormalizedEmail,
   findPatientsByPhoneIdentity,
   updatePatientRecord,
 } from "@/features/patients/repositories/patient-repository";
@@ -17,17 +20,9 @@ import type { ResolvePatientInput } from "@/features/patients/types";
 import { ConflictError } from "@/lib/errors";
 import type { LeanPatient } from "@/models/patient";
 
-function normalizeEmail(email: string | null | undefined): string | null {
-  if (email == null) {
-    return null;
-  }
-  const trimmed = email.trim().toLowerCase();
-  return trimmed === "" ? null : trimmed;
-}
-
 /**
- * Atomically resolves a patient by canonical phone for booking flows.
- * Updates supplied current contact and demographic fields; rejects email owned by another chart.
+ * Resolves a patient by normalized phone OR email for booking flows.
+ * Does not merge two existing charts when identifiers point at different rows.
  */
 export async function resolveOrCreatePatient(
   input: ResolvePatientInput,
@@ -35,7 +30,7 @@ export async function resolveOrCreatePatient(
 ): Promise<LeanPatient> {
   const fullName = input.fullName.trim();
   const displayPhone = toDisplayPhone(input.phone);
-  const canonicalPhone = normalizePhone(input.phone);
+  const canonicalPhone = toCanonicalPhone(input.phone);
   const email = normalizeEmail(input.email);
   const gender = input.gender ?? null;
   const dateOfBirth =
@@ -47,8 +42,23 @@ export async function resolveOrCreatePatient(
     throw new ConflictError("A valid phone number is required");
   }
 
-  const matches = await findPatientsByPhoneIdentity(displayPhone, session);
-  const existing = matches[0] ?? null;
+  const phoneMatches = await findPatientsByPhoneIdentity(displayPhone, session);
+  const phoneMatch = phoneMatches[0] ?? null;
+  const emailMatch = email
+    ? await findPatientByNormalizedEmail(email, session)
+    : null;
+
+  if (
+    phoneMatch &&
+    emailMatch &&
+    String(phoneMatch._id) !== String(emailMatch._id)
+  ) {
+    throw new ConflictError(
+      "This email and phone belong to different patient records",
+    );
+  }
+
+  const existing = phoneMatch ?? emailMatch;
 
   if (!existing) {
     return createPatientRecord(
@@ -72,6 +82,22 @@ export async function resolveOrCreatePatient(
     if (emailOwner) {
       throw new ConflictError(
         "Another patient already uses this email address",
+      );
+    }
+  }
+
+  const existingPhone = existing.canonicalPhone || existing.phone;
+  if (
+    !phonesShareIdentity(existingPhone, input.phone) &&
+    canonicalPhone !== existing.canonicalPhone
+  ) {
+    const phoneOwners = await findPatientsByPhoneIdentity(displayPhone, session);
+    const otherOwner = phoneOwners.find(
+      (patient) => String(patient._id) !== String(existing._id),
+    );
+    if (otherOwner) {
+      throw new ConflictError(
+        "Another patient already uses this phone number",
       );
     }
   }

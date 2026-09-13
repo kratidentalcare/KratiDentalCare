@@ -3,6 +3,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import { ERROR_CODES } from "@/constants/error-codes";
 import { HTTP_STATUS } from "@/constants/http";
 import { ROUTES } from "@/constants/routes";
+import { assertPublicBookingBotProtection } from "@/features/appointments/lib/bot-protection";
 import { createPublicBooking } from "@/features/appointments/services/create-booking";
 import {
   errorResponse,
@@ -11,6 +12,8 @@ import {
   toActionResult,
   validationErrorResponse,
 } from "@/lib/api-response";
+import { logger } from "@/lib/logger";
+import { enforcePublicBookingRateLimit } from "@/lib/rate-limit";
 import { publicBookingSchema } from "@/validators/appointment-booking";
 
 /**
@@ -38,6 +41,19 @@ export async function POST(request: NextRequest) {
   }
 
   try {
+    try {
+      assertPublicBookingBotProtection(parsed.data);
+    } catch (error) {
+      logger.warn("booking_honeypot_rejected");
+      throw error;
+    }
+
+    await enforcePublicBookingRateLimit({
+      headers: request.headers,
+      email: parsed.data.email,
+      phone: parsed.data.phone,
+    });
+
     const data = await createPublicBooking(parsed.data);
     const result = successResponse(data, { status: 201 });
     return NextResponse.json(

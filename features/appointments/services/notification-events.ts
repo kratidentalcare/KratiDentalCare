@@ -209,3 +209,25 @@ export async function onAppointmentRescheduled(
   });
   await enqueueAndDispatch(appointment, APPOINTMENT_EVENT_TYPES.RESCHEDULED);
 }
+
+/**
+ * Staff-created visits skip the admin-approval email (already CONFIRMED).
+ */
+export async function onStaffAppointmentCreated(
+  appointment: LeanAppointment,
+  actorUserId: string,
+): Promise<void> {
+  await recordAppointmentEvent({
+    appointmentId: String(appointment._id),
+    eventType: APPOINTMENT_EVENT_TYPES.CREATED,
+    actorUserId,
+    payload: {
+      bookingSource: appointment.bookingSource ?? BOOKING_SOURCES.STAFF,
+      startsAt: appointment.startsAt.toISOString(),
+      endsAt: appointment.endsAt.toISOString(),
+    },
+  });
+
+  await notifyNewAppointment(appointment);
+  await onAppointmentConfirmed(appointment, actorUserId);
+}

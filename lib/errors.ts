@@ -108,6 +108,17 @@ export class ConfigurationError extends AppError {
   }
 }
 
+export class RateLimitError extends AppError {
+  constructor(message = "Too many requests. Please wait and try again.") {
+    super({
+      code: ERROR_CODES.RATE_LIMITED,
+      message,
+      status: HTTP_STATUS.TOO_MANY_REQUESTS,
+    });
+    this.name = "RateLimitError";
+  }
+}
+
 export function isAppError(error: unknown): error is AppError {
   return error instanceof AppError;
 }

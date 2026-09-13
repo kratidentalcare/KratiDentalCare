@@ -6,7 +6,7 @@ import { getOrCreateClinicSettings } from "@/features/scheduling/services/clinic
 import { generateAvailableSlots } from "@/features/scheduling/services/generate-available-slots";
 import { DomainError } from "@/lib/errors";
 import type { BookingAvailabilityResult } from "@/features/appointments/types";
-import { resolveDefaultDoctor } from "@/features/appointments/services/default-doctor";
+import { getDoctorByIdOrThrow, resolveDefaultDoctor } from "@/features/appointments/services/default-doctor";
 
 function applyBookingPolicyToAvailability(
   result: AvailabilityResult,
@@ -121,6 +121,50 @@ export async function assertSlotAvailableForBooking(input: {
   });
 
   if (availability.status !== "available") {
+    throw new DomainError(
+      "SLOT_UNAVAILABLE",
+      availability.reason ?? "Selected time is no longer available",
+    );
+  }
+
+  const match = availability.slots.find(
+    (slot) =>
+      new Date(slot.startAt).getTime() === input.startAt.getTime() &&
+      new Date(slot.endAt).getTime() === input.endAt.getTime(),
+  );
+
+  if (!match) {
+    throw new DomainError(
+      "SLOT_UNAVAILABLE",
+      "Selected time is no longer available",
+    );
+  }
+
+  return { label: match.label, timezone: availability.timezone };
+}
+
+/**
+ * Staff booking slot check — uses the scheduling engine without public lead-time policy.
+ * Occupancy uniqueness still applies at write time.
+ */
+export async function assertSlotAvailableForStaffBooking(input: {
+  date: string;
+  doctorId: string;
+  startAt: Date;
+  endAt: Date;
+  now?: Date;
+}): Promise<{ label: string; timezone: string }> {
+  const settings = await getOrCreateClinicSettings();
+  await getDoctorByIdOrThrow(input.doctorId);
+
+  const availability = await generateAvailableSlots(input.date, {
+    doctorId: input.doctorId,
+    durationMinutes: settings.appointmentDurationMinutes,
+    includePastTimes: false,
+    now: input.now,
+  });
+
+  if (availability.status !== "available" && availability.slots.length === 0) {
     throw new DomainError(
       "SLOT_UNAVAILABLE",
       availability.reason ?? "Selected time is no longer available",

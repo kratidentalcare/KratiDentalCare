@@ -5,10 +5,13 @@ import { Types as MongooseTypes } from "mongoose";
 
 import type { Gender } from "@/constants/patient";
 import { PATIENT_STATUSES } from "@/constants/statuses";
+import { normalizeEmail } from "@/features/patients/lib/email";
 import {
   escapeRegex,
-  normalizePhone,
+  phoneIdentityKeys,
   phoneSearchDigits,
+  phonesShareIdentity,
+  toCanonicalPhone,
   toDisplayPhone,
 } from "@/features/patients/lib/phone";
 import { mongoStatusFilter } from "@/features/patients/lib/status";
@@ -105,24 +108,23 @@ export async function findPatientByIdOrThrow(
 }
 
 /**
- * Locates a patient by canonical phone, with legacy phone fallbacks.
+ * Locates a patient by canonical phone, with Indian-mobile and legacy fallbacks.
  * Throws when multiple active charts collide on the same identity.
  */
 export async function findPatientsByPhoneIdentity(
   phone: string,
   session?: ClientSession,
 ): Promise<LeanPatient[]> {
-  const canonicalPhone = normalizePhone(phone);
+  const keys = phoneIdentityKeys(phone);
   const displayPhone = toDisplayPhone(phone);
   const compactPhone = phone.replace(/\s+/g, "").trim();
+  const lookupKeys = [...new Set([...keys, displayPhone, compactPhone].filter(Boolean))];
 
   const query = Patient.find({
     deletedAt: null,
     $or: [
-      { canonicalPhone },
-      { phone: displayPhone },
-      { phone: compactPhone },
-      { phone: canonicalPhone },
+      { canonicalPhone: { $in: lookupKeys } },
+      { phone: { $in: lookupKeys } },
     ],
   }).sort({ createdAt: 1 });
 
@@ -135,11 +137,9 @@ export async function findPatientsByPhoneIdentity(
     return matches;
   }
 
-  const sameIdentity = matches.filter((patient) => {
-    const existingCanonical =
-      patient.canonicalPhone || normalizePhone(patient.phone);
-    return existingCanonical === canonicalPhone;
-  });
+  const sameIdentity = matches.filter((patient) =>
+    phonesShareIdentity(patient.canonicalPhone || patient.phone, phone),
+  );
 
   if (sameIdentity.length > 1) {
     throw new ConflictError(
@@ -148,6 +148,25 @@ export async function findPatientsByPhoneIdentity(
   }
 
   return sameIdentity.length === 1 ? sameIdentity : matches.slice(0, 1);
+}
+
+export async function findPatientByNormalizedEmail(
+  email: string,
+  session?: ClientSession,
+): Promise<LeanPatient | null> {
+  const normalized = normalizeEmail(email);
+  if (!normalized) {
+    return null;
+  }
+
+  const query = Patient.findOne({
+    email: normalized,
+    deletedAt: null,
+  });
+  if (session) {
+    query.session(session);
+  }
+  return query.lean<LeanPatient>();
 }
 
 export async function findPatientByEmailExcludingId(
@@ -177,7 +196,7 @@ export async function createPatientRecord(
   session?: ClientSession,
 ): Promise<LeanPatient> {
   const displayPhone = toDisplayPhone(input.phone);
-  const canonicalPhone = normalizePhone(input.phone);
+  const canonicalPhone = toCanonicalPhone(input.phone);
 
   try {
     const [created] = await Patient.create(

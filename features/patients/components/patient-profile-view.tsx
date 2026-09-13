@@ -11,6 +11,7 @@ import {
   PillIcon,
 } from "lucide-react";
 import { AppointmentStatusBadge } from "@/features/appointments/components/appointment-status-badge";
+import { StaffBookingLauncher } from "@/features/appointments/components/staff-booking-launcher";
 import { PatientDocumentsSection } from "@/features/patient-documents/components/patient-documents-section";
 import type { PatientDocumentListResult } from "@/features/patient-documents/types";
 import type { PatientDocumentType } from "@/constants/patient-documents";
@@ -118,6 +119,15 @@ export function PatientProfileView({
             </div>
           </div>
           <div className="flex flex-wrap gap-2">
+            <StaffBookingLauncher
+              initialPatient={{
+                id: profile.id,
+                fullName: profile.fullName,
+                phone: profile.phone,
+                email: profile.email,
+              }}
+              size="sm"
+            />
             <Button
               type="button"
               variant="outline"

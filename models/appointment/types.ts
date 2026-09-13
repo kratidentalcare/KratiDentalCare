@@ -52,6 +52,11 @@ export type AppointmentFields = {
   bookingReference: string | null;
   /** Minute-level occupancy guard for concurrent booking prevention. */
   occupancyKey: string | null;
+  /**
+   * Patient-level open-booking hold (`patientId` string) for public creates.
+   * Null on terminal visits and authorized staff overrides.
+   */
+  activePatientHold: string | null;
   rescheduledFromStartsAt: Date | null;
   rescheduledFromEndsAt: Date | null;
   /** Snapshot of slot.startAt at booking (immutable visit time). */

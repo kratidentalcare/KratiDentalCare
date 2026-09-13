@@ -18,6 +18,7 @@ import {
 import { DOCTOR_MODEL_NAME } from "@/models/doctor";
 import { PATIENT_MODEL_NAME } from "@/models/patient";
 import { APPOINTMENT_MODEL_NAME, SLOT_MODEL_NAME } from "@/models/slot";
+import { BOOKING_HOLD_STATUSES } from "@/features/appointments/lib/lifecycle";
 import { USER_MODEL_NAME } from "@/models/user/constants";
 
 const REASON_MAX = 500;
@@ -31,6 +32,7 @@ const MAX_SPECIALTIES = 20;
 const MIN_DURATION_MS = 5 * 60 * 1000;
 const BOOKING_REFERENCE_MAX = 128;
 const OCCUPANCY_KEY_MAX = 128;
+const ACTIVE_PATIENT_HOLD_MAX = 64;
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PHONE_PATTERN = /^[+]?[\d\s()-]+$/;
@@ -245,6 +247,17 @@ export const appointmentSchema = createBaseSchema(
       maxlength: [OCCUPANCY_KEY_MAX, "occupancyKey is too long"],
       set: emptyToNull,
     },
+    /**
+     * One-open-appointment hold for public (and non-override staff) bookings.
+     * Unique while status is PENDING / CONFIRMED / CHECKED_IN.
+     */
+    activePatientHold: {
+      type: String,
+      default: null,
+      trim: true,
+      maxlength: [ACTIVE_PATIENT_HOLD_MAX, "activePatientHold is too long"],
+      set: emptyToNull,
+    },
     rescheduledFromStartsAt: {
       type: Date,
       default: null,
@@ -324,6 +337,12 @@ appointmentSchema.pre("validate", function validateAppointmentInvariants() {
         "occupancyKey must be cleared when CANCELLED",
       );
     }
+    if (this.get("activePatientHold") != null) {
+      this.invalidate(
+        "activePatientHold",
+        "activePatientHold must be cleared when CANCELLED",
+      );
+    }
   }
 
   if (
@@ -351,6 +370,18 @@ appointmentSchema.pre("validate", function validateAppointmentInvariants() {
 
   if (status === APPOINTMENT_STATUSES.COMPLETED && completedAt == null) {
     this.invalidate("completedAt", "completedAt is required when COMPLETED");
+  }
+
+  if (
+    (status === APPOINTMENT_STATUSES.COMPLETED ||
+      status === APPOINTMENT_STATUSES.NO_SHOW ||
+      status === APPOINTMENT_STATUSES.ARCHIVED) &&
+    this.get("activePatientHold") != null
+  ) {
+    this.invalidate(
+      "activePatientHold",
+      "activePatientHold must be cleared when the visit is no longer open",
+    );
   }
 
 });
@@ -425,5 +456,20 @@ appointmentSchema.index({ status: 1, startsAt: 1 });
 appointmentSchema.index({ bookedByUserId: 1, createdAt: -1 });
 appointmentSchema.index({ startsAt: 1, endsAt: 1 });
 appointmentSchema.index({ cancelledByUserId: 1, cancelledAt: -1 });
+
+// One open public/staff hold per patient (staff override leaves this null).
+appointmentSchema.index(
+  { activePatientHold: 1 },
+  {
+    unique: true,
+    partialFilterExpression: {
+      deletedAt: null,
+      activePatientHold: { $type: "string" },
+      status: {
+        $in: [...BOOKING_HOLD_STATUSES],
+      },
+    },
+  },
+);
 
 export { APPOINTMENT_MODEL_NAME };

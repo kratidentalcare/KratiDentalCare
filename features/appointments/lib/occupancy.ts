@@ -13,6 +13,16 @@ export function buildOccupancyKey(
   return `${doctor}:${minuteEpoch}`;
 }
 
+/**
+ * Patient-level open-booking hold.
+ * Format: `{patientId}` — unique while the visit is PENDING / CONFIRMED / CHECKED_IN.
+ */
+export function buildActivePatientHold(
+  patientId: string | Types.ObjectId,
+): string {
+  return String(patientId);
+}
+
 export function slotsMatchExactly(
   aStart: string,
   aEnd: string,

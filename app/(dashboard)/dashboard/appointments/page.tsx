@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 
 import { PageHeader } from "@/components/dashboard";
 import { AppointmentsWorkspace } from "@/features/appointments/components/appointments-workspace";
+import { StaffBookingLauncher } from "@/features/appointments/components/staff-booking-launcher";
 import { listAppointments } from "@/features/appointments/services/list-appointments";
 import { PAGINATION } from "@/constants";
 import type { AppointmentListQuery } from "@/validators/appointment-booking";
@@ -40,6 +41,7 @@ export default async function AppointmentsPage({
       <PageHeader
         title="Appointments"
         description="Review bookings, approve requests, and manage the appointment lifecycle."
+        actions={<StaffBookingLauncher />}
       />
       <AppointmentsWorkspace initialData={data} />
     </div>

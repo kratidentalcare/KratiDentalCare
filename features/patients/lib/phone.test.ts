@@ -3,8 +3,12 @@ import { describe, it } from "node:test";
 
 import {
   escapeRegex,
+  indianMobileDigits,
   normalizePhone,
+  phoneIdentityKeys,
   phoneSearchDigits,
+  phonesShareIdentity,
+  toCanonicalPhone,
   toDisplayPhone,
 } from "@/features/patients/lib/phone";
 
@@ -31,5 +35,17 @@ describe("patient phone normalization", () => {
 
   it("escapes regex metacharacters in search terms", () => {
     assert.equal(escapeRegex("a+b.c"), "a\\+b\\.c");
+  });
+
+  it("treats 10-digit and +91 formatted Indian mobiles as the same identity", () => {
+    assert.equal(indianMobileDigits("9876543210"), "9876543210");
+    assert.equal(indianMobileDigits("+91 98765 43210"), "9876543210");
+    assert.equal(toCanonicalPhone("9876543210"), "+919876543210");
+    assert.equal(toCanonicalPhone("+91 98765 43210"), "+919876543210");
+    assert.equal(
+      phonesShareIdentity("9876543210", "+91 98765 43210"),
+      true,
+    );
+    assert.ok(phoneIdentityKeys("9876543210").includes("+919876543210"));
   });
 });

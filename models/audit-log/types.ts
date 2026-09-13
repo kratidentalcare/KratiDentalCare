@@ -11,6 +11,9 @@ export type AuditLogSnapshot = {
   name?: string;
   type?: string;
   cloudinaryPublicId?: string;
+  hadActiveAppointment?: boolean;
+  overrideUsed?: boolean;
+  existingAppointmentId?: string;
 };
 
 export type AuditLogFields = {

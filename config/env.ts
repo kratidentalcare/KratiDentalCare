@@ -3,13 +3,17 @@ import "server-only";
 import { z } from "zod";
 
 import { PATIENT_DOCUMENT_DEFAULT_MAX_BYTES } from "@/constants/patient-documents";
+import {
+  BOOKING_RATE_LIMIT_DEFAULTS,
+  type BookingRateLimitConfig,
+} from "@/config/booking-rate-limit";
 import { ConfigurationError } from "@/lib/errors";
 
 const optionalNonEmpty = z.string().trim().min(1).optional();
 
 const clerkPublishableKeySchema = optionalNonEmpty.refine(
   (value) => value === undefined || value.startsWith("pk_"),
-  "NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY must start with pk_",
+  "CLERK_PUBLISHABLE_KEY must start with pk_",
 );
 
 const clerkSecretKeySchema = optionalNonEmpty.refine(
@@ -22,6 +26,14 @@ const clerkSecretKeySchema = optionalNonEmpty.refine(
  * Clerk and Mongo keys are validated when present; required helpers
  * (`requireClerkEnv`, `requireMongoUri`) enforce presence at use sites.
  */
+const optionalPositiveInt = z.preprocess((value) => {
+  if (value === undefined || value === null || value === "") {
+    return undefined;
+  }
+  const parsed = Number(value);
+  return Number.isFinite(parsed) && parsed > 0 ? Math.floor(parsed) : undefined;
+}, z.number().int().positive().optional());
+
 const envSchema = z.object({
   NODE_ENV: z
     .enum(["development", "test", "production"])
@@ -33,7 +45,7 @@ const envSchema = z.object({
 
   MONGODB_URI: optionalNonEmpty,
 
-  NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: clerkPublishableKeySchema,
+  CLERK_PUBLISHABLE_KEY: clerkPublishableKeySchema,
   CLERK_SECRET_KEY: clerkSecretKeySchema,
   NEXT_PUBLIC_CLERK_SIGN_IN_URL: z.string().min(1).default("/sign-in"),
   /**
@@ -58,13 +70,14 @@ const envSchema = z.object({
    * Max patient document upload size in bytes.
    * Defaults to 15 MB when unset or invalid.
    */
-  PATIENT_DOCUMENT_MAX_BYTES: z.preprocess((value) => {
-    if (value === undefined || value === null || value === "") {
-      return undefined;
-    }
-    const parsed = Number(value);
-    return Number.isFinite(parsed) && parsed > 0 ? Math.floor(parsed) : undefined;
-  }, z.number().int().positive().optional()),
+  PATIENT_DOCUMENT_MAX_BYTES: optionalPositiveInt,
+
+  BOOKING_RATE_LIMIT_IP_MAX: optionalPositiveInt,
+  BOOKING_RATE_LIMIT_IP_WINDOW_SEC: optionalPositiveInt,
+  BOOKING_RATE_LIMIT_EMAIL_MAX: optionalPositiveInt,
+  BOOKING_RATE_LIMIT_EMAIL_WINDOW_SEC: optionalPositiveInt,
+  BOOKING_RATE_LIMIT_PHONE_MAX: optionalPositiveInt,
+  BOOKING_RATE_LIMIT_PHONE_WINDOW_SEC: optionalPositiveInt,
 });
 
 export type Env = z.infer<typeof envSchema>;
@@ -77,7 +90,7 @@ export type ServerEnv = Env & {
 };
 
 export type ClerkEnv = {
-  NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: string;
+  CLERK_PUBLISHABLE_KEY: string;
   CLERK_SECRET_KEY: string;
   NEXT_PUBLIC_CLERK_SIGN_IN_URL: string;
   NEXT_PUBLIC_CLERK_SIGN_UP_URL?: string;
@@ -90,8 +103,8 @@ function readRawEnv(): Record<string, string | undefined> {
     NODE_ENV: process.env.NODE_ENV,
     NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
     MONGODB_URI: process.env.MONGODB_URI,
-    NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY:
-      process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY,
+    CLERK_PUBLISHABLE_KEY:
+      process.env.CLERK_PUBLISHABLE_KEY,
     CLERK_SECRET_KEY: process.env.CLERK_SECRET_KEY,
     NEXT_PUBLIC_CLERK_SIGN_IN_URL: process.env.NEXT_PUBLIC_CLERK_SIGN_IN_URL,
     NEXT_PUBLIC_CLERK_SIGN_UP_URL: process.env.NEXT_PUBLIC_CLERK_SIGN_UP_URL,
@@ -103,6 +116,14 @@ function readRawEnv(): Record<string, string | undefined> {
     CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY,
     CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET,
     PATIENT_DOCUMENT_MAX_BYTES: process.env.PATIENT_DOCUMENT_MAX_BYTES,
+    BOOKING_RATE_LIMIT_IP_MAX: process.env.BOOKING_RATE_LIMIT_IP_MAX,
+    BOOKING_RATE_LIMIT_IP_WINDOW_SEC: process.env.BOOKING_RATE_LIMIT_IP_WINDOW_SEC,
+    BOOKING_RATE_LIMIT_EMAIL_MAX: process.env.BOOKING_RATE_LIMIT_EMAIL_MAX,
+    BOOKING_RATE_LIMIT_EMAIL_WINDOW_SEC:
+      process.env.BOOKING_RATE_LIMIT_EMAIL_WINDOW_SEC,
+    BOOKING_RATE_LIMIT_PHONE_MAX: process.env.BOOKING_RATE_LIMIT_PHONE_MAX,
+    BOOKING_RATE_LIMIT_PHONE_WINDOW_SEC:
+      process.env.BOOKING_RATE_LIMIT_PHONE_WINDOW_SEC,
   };
 }
 
@@ -127,7 +148,7 @@ export function getEnv(): ServerEnv {
   }
 
   const data = parsed.data;
-  const publishableKey = data.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY?.trim();
+  const publishableKey = data.CLERK_PUBLISHABLE_KEY?.trim();
   const secretKey = data.CLERK_SECRET_KEY?.trim();
 
   cachedEnv = {
@@ -161,17 +182,17 @@ export function requireMongoUri(): string {
  */
 export function requireClerkEnv(): ClerkEnv {
   const env = getEnv();
-  const publishableKey = env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY?.trim();
+  const publishableKey = env.CLERK_PUBLISHABLE_KEY?.trim();
   const secretKey = env.CLERK_SECRET_KEY?.trim();
 
   if (!publishableKey || !secretKey) {
     throw new ConfigurationError(
-      "Clerk keys are not set. Add NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY and CLERK_SECRET_KEY to .env.local.",
+      "Clerk keys are not set. Add CLERK_PUBLISHABLE_KEY and CLERK_SECRET_KEY to .env.local.",
     );
   }
 
   return {
-    NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: publishableKey,
+    CLERK_PUBLISHABLE_KEY: publishableKey,
     CLERK_SECRET_KEY: secretKey,
     NEXT_PUBLIC_CLERK_SIGN_IN_URL: env.NEXT_PUBLIC_CLERK_SIGN_IN_URL,
     ...(env.NEXT_PUBLIC_CLERK_SIGN_UP_URL
@@ -193,4 +214,32 @@ export function resetEnvCache(): void {
 export function getPatientDocumentMaxBytes(): number {
   const env = getEnv();
   return env.PATIENT_DOCUMENT_MAX_BYTES ?? PATIENT_DOCUMENT_DEFAULT_MAX_BYTES;
+}
+
+export function getBookingRateLimitConfig(): BookingRateLimitConfig {
+  const env = getEnv();
+  return {
+    ip: {
+      max: env.BOOKING_RATE_LIMIT_IP_MAX ?? BOOKING_RATE_LIMIT_DEFAULTS.IP_MAX,
+      windowSec:
+        env.BOOKING_RATE_LIMIT_IP_WINDOW_SEC ??
+        BOOKING_RATE_LIMIT_DEFAULTS.IP_WINDOW_SEC,
+    },
+    email: {
+      max:
+        env.BOOKING_RATE_LIMIT_EMAIL_MAX ??
+        BOOKING_RATE_LIMIT_DEFAULTS.EMAIL_MAX,
+      windowSec:
+        env.BOOKING_RATE_LIMIT_EMAIL_WINDOW_SEC ??
+        BOOKING_RATE_LIMIT_DEFAULTS.EMAIL_WINDOW_SEC,
+    },
+    phone: {
+      max:
+        env.BOOKING_RATE_LIMIT_PHONE_MAX ??
+        BOOKING_RATE_LIMIT_DEFAULTS.PHONE_MAX,
+      windowSec:
+        env.BOOKING_RATE_LIMIT_PHONE_WINDOW_SEC ??
+        BOOKING_RATE_LIMIT_DEFAULTS.PHONE_WINDOW_SEC,
+    },
+  };
 }

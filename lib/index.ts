@@ -21,6 +21,7 @@ export {
   DomainError,
   ForbiddenError,
   NotFoundError,
+  RateLimitError,
   UnauthorizedError,
   ValidationError,
   isAppError,

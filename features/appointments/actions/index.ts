@@ -6,6 +6,11 @@ import { ROUTES } from "@/constants/routes";
 import { getRescheduleAvailability } from "@/features/appointments/services/lifecycle-actions";
 import { listAppointments } from "@/features/appointments/services/list-appointments";
 import { getAppointmentDetail } from "@/features/appointments/services/list-appointments";
+import {
+  createStaffBooking,
+  getPatientActiveBookingHold,
+} from "@/features/appointments/services/create-staff-booking";
+import { listBookableDoctors } from "@/features/appointments/services/list-doctors";
 import { performAppointmentAction } from "@/features/appointments/services/lifecycle-actions";
 import { PERMISSIONS, requirePermission } from "@/lib/auth";
 import {
@@ -19,6 +24,7 @@ import {
   appointmentActionSchema,
   appointmentListQuerySchema,
   bookingAvailabilityQuerySchema,
+  staffBookingSchema,
 } from "@/validators/appointment-booking";
 import { objectIdSchema } from "@/validators/common";
 import { z } from "zod";
@@ -113,6 +119,55 @@ export async function getRescheduleAvailabilityAction(
       parsed.data.appointmentId,
       parsed.data.date,
     );
+    return toActionResult(successResponse(data));
+  } catch (error) {
+    return toActionResult(fromUnknownError(error));
+  }
+}
+
+export async function createStaffBookingAction(
+  input: unknown,
+): Promise<ActionResult<Awaited<ReturnType<typeof createStaffBooking>>>> {
+  try {
+    const user = await requirePermission(PERMISSIONS.APPOINTMENTS_CREATE_STAFF);
+    const parsed = staffBookingSchema.safeParse(input);
+    if (!parsed.success) {
+      return toActionResult(validationErrorResponse(parsed.error));
+    }
+
+    const data = await createStaffBooking(parsed.data, String(user._id));
+    revalidateAppointments();
+    return toActionResult(successResponse(data, { status: 201 }));
+  } catch (error) {
+    return toActionResult(fromUnknownError(error));
+  }
+}
+
+export async function getPatientActiveBookingHoldAction(
+  input: unknown,
+): Promise<
+  ActionResult<Awaited<ReturnType<typeof getPatientActiveBookingHold>>>
+> {
+  try {
+    await requirePermission(PERMISSIONS.APPOINTMENTS_CREATE_STAFF);
+    const parsed = z.object({ patientId: objectIdSchema }).safeParse(input);
+    if (!parsed.success) {
+      return toActionResult(validationErrorResponse(parsed.error));
+    }
+
+    const data = await getPatientActiveBookingHold(parsed.data.patientId);
+    return toActionResult(successResponse(data));
+  } catch (error) {
+    return toActionResult(fromUnknownError(error));
+  }
+}
+
+export async function listBookableDoctorsAction(): Promise<
+  ActionResult<Awaited<ReturnType<typeof listBookableDoctors>>>
+> {
+  try {
+    await requirePermission(PERMISSIONS.APPOINTMENTS_CREATE_STAFF);
+    const data = await listBookableDoctors();
     return toActionResult(successResponse(data));
   } catch (error) {
     return toActionResult(fromUnknownError(error));

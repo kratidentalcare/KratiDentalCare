@@ -24,3 +24,4 @@ export * from "./testimonial";
 export * from "./faq";
 export * from "./medicine";
 export * from "./contact-message";
+export * from "./rate-limit-hit";

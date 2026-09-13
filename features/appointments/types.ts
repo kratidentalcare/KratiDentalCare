@@ -8,6 +8,12 @@ export type BookingAvailabilityResult = AvailabilityResult & {
   doctorName: string;
 };
 
+export type DoctorOption = {
+  id: string;
+  fullName: string;
+  specialties: string[];
+};
+
 export type PublicBookingConfirmation = {
   reference: string;
   status: AppointmentStatus;

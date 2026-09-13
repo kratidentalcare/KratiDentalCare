@@ -3,12 +3,9 @@ import "server-only";
 import { DOCTOR_STATUSES } from "@/constants/statuses";
 import { connect } from "@/lib/db";
 import { Doctor, type LeanDoctor } from "@/models/doctor";
+import type { DoctorOption } from "@/features/appointments/types";
 
-export type DoctorOption = {
-  id: string;
-  fullName: string;
-  specialties: string[];
-};
+export type { DoctorOption };
 
 /**
  * Lists active, available doctors for clinic settings default-doctor picker.

@@ -166,10 +166,12 @@ export {
   appointmentListQuerySchema,
   publicBookingSchema,
   rescheduleAppointmentSchema,
+  staffBookingSchema,
   type AppointmentActionInput,
   type AppointmentListQuery,
   type BookingAvailabilityQuery,
   type PublicBookingInput,
+  type StaffBookingInput,
 } from "./appointment-booking";
 
 export {

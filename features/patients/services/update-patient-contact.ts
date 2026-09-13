@@ -1,7 +1,7 @@
 import "server-only";
 
 import {
-  normalizePhone,
+  toCanonicalPhone,
   toDisplayPhone,
 } from "@/features/patients/lib/phone";
 import {
@@ -24,7 +24,7 @@ export async function updatePatientContact(
   await findPatientByIdOrThrow(id);
   const fullName = input.fullName.trim();
   const displayPhone = toDisplayPhone(input.phone);
-  const canonicalPhone = normalizePhone(input.phone);
+  const canonicalPhone = toCanonicalPhone(input.phone);
   const email = input.email;
 
   if (!canonicalPhone || canonicalPhone.replace(/\D/g, "").length < 7) {

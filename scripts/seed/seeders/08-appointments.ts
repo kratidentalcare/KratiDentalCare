@@ -2,7 +2,11 @@ import type { Types } from "mongoose";
 
 import { BOOKING_SOURCES } from "@/constants/appointments";
 import { APPOINTMENT_STATUSES } from "@/constants/statuses";
-import { buildOccupancyKey } from "@/features/appointments/lib/occupancy";
+import { BOOKING_HOLD_STATUSES } from "@/features/appointments/lib/lifecycle";
+import {
+  buildActivePatientHold,
+  buildOccupancyKey,
+} from "@/features/appointments/lib/occupancy";
 import { Appointment } from "@/models/appointment";
 
 import { SEED_APPOINTMENT_REASONS, SEED_COUNTS, SEED_IDS } from "../config";
@@ -65,6 +69,7 @@ export async function seedAppointments(ctx: SeedContext): Promise<void> {
 
   const statuses = buildStatusPlan();
   const completedIds: Types.ObjectId[] = [];
+  const patientsWithHold = new Set<string>();
 
   for (let i = 0; i < SEED_COUNTS.appointments; i += 1) {
     const status = statuses[i]!;
@@ -75,6 +80,14 @@ export async function seedAppointments(ctx: SeedContext): Promise<void> {
     const reason = seedFaker.helpers.arrayElement([...SEED_APPOINTMENT_REASONS]);
     const isCancelled = status === APPOINTMENT_STATUSES.CANCELLED;
     const isCompleted = status === APPOINTMENT_STATUSES.COMPLETED;
+    const isOpenHold = (BOOKING_HOLD_STATUSES as readonly string[]).includes(
+      status,
+    );
+    const patientKey = String(patient._id);
+    const shouldHold = isOpenHold && !patientsWithHold.has(patientKey);
+    if (shouldHold) {
+      patientsWithHold.add(patientKey);
+    }
 
     const checkedInAt = isCompleted
       ? new Date(startsAt.getTime() - 10 * 60 * 1000)
@@ -102,6 +115,9 @@ export async function seedAppointments(ctx: SeedContext): Promise<void> {
         occupancyKey: isCancelled
           ? null
           : buildOccupancyKey(ctx.doctor._id, startsAt),
+        activePatientHold: shouldHold
+          ? buildActivePatientHold(patient._id)
+          : null,
         rescheduledFromStartsAt: null,
         rescheduledFromEndsAt: null,
         startsAt,
