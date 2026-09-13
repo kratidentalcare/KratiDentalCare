@@ -9,6 +9,7 @@ import {
 import { hashActionToken } from "@/features/appointments/lib/action-token-hash";
 import { previewEmailActionPage } from "@/features/appointments/lib/email-action-preview";
 import { mapEventToEmailType } from "@/features/email/lib/map-email-type";
+import { normalizeEmailFrom } from "@/features/email/lib/from-address";
 import { buildAdminNewAppointmentEmail } from "@/features/email/templates/admin-new-appointment";
 import type { ClinicEmailBranding } from "@/features/email/lib/branding-types";
 import type { SendEmailResult } from "@/features/email/providers/types";
@@ -44,6 +45,21 @@ async function sendViaConsole(input: {
   assert.ok(input.text.length > 0);
   return { ok: true, messageId, error: null };
 }
+
+describe("EMAIL_FROM normalization", () => {
+  it("strips wrapping quotes and accepts named from addresses", () => {
+    assert.equal(
+      normalizeEmailFrom('"Krati Dental Care <hello@dentalcarejaipur.com>"'),
+      "Krati Dental Care <hello@dentalcarejaipur.com>",
+    );
+    assert.equal(
+      normalizeEmailFrom("hello@dentalcarejaipur.com"),
+      "hello@dentalcarejaipur.com",
+    );
+    assert.equal(normalizeEmailFrom('""'), null);
+    assert.equal(normalizeEmailFrom("not-an-email"), null);
+  });
+});
 
 describe("appointment email mapping", () => {
   it("maps lifecycle events to email types", () => {

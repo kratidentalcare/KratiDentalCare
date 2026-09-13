@@ -3,6 +3,7 @@ import "server-only";
 import { Resend } from "resend";
 
 import { EMAIL_PROVIDERS } from "@/constants/email";
+import { normalizeEmailFrom } from "@/features/email/lib/from-address";
 
 import type { EmailProvider, SendEmailInput, SendEmailResult } from "./types";
 
@@ -12,12 +13,13 @@ export function createResendEmailProvider(apiKey: string): EmailProvider {
   return {
     name: EMAIL_PROVIDERS.RESEND,
     async send(input: SendEmailInput): Promise<SendEmailResult> {
-      const from = process.env.EMAIL_FROM?.trim();
+      const from = normalizeEmailFrom(process.env.EMAIL_FROM);
       if (!from) {
         return {
           ok: false,
           messageId: null,
-          error: "EMAIL_FROM is not configured",
+          error:
+            "EMAIL_FROM is missing or invalid. Use email@domain.com or Name <email@domain.com>.",
         };
       }
 

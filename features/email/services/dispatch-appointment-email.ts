@@ -196,11 +196,18 @@ export async function dispatchAppointmentEmail(
   const appointmentId = String(appointment._id);
   const idempotencyKey = `${appointmentId}:${eventType}:${NOTIFICATION_CHANNELS.EMAIL}`;
 
+  const staleBefore = new Date(Date.now() - 30_000);
   const claimed = await NotificationOutbox.findOneAndUpdate(
     {
       idempotencyKey,
       channel: NOTIFICATION_CHANNELS.EMAIL,
-      status: NOTIFICATION_STATUSES.PENDING,
+      $or: [
+        { status: NOTIFICATION_STATUSES.PENDING },
+        {
+          status: NOTIFICATION_STATUSES.SENDING,
+          updatedAt: { $lt: staleBefore },
+        },
+      ],
     },
     {
       $set: {

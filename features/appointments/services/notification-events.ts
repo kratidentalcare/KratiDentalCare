@@ -116,8 +116,9 @@ async function enqueueAndDispatch(
     });
   }
 
-  // Fire-and-forget so booking / lifecycle mutations are never blocked on SMTP/API latency.
-  void bestEffortDispatchAppointmentEmail(appointment, eventType);
+  // Await so Next.js cannot freeze the request before Resend finishes.
+  // Booking still succeeds if send fails (bestEffort swallows errors).
+  await bestEffortDispatchAppointmentEmail(appointment, eventType);
 }
 
 export async function onAppointmentCreated(
