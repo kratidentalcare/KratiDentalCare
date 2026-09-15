@@ -6,7 +6,7 @@ export const APP_NAME = "Krati Dental Care";
 
 /** Public marketing description — used by the public layout + page SEO. */
 export const APP_DESCRIPTION =
-  "Modern, compassionate dental care for the whole family — checkups, cosmetics, root canals, and easy online booking at Krati Dental Care.";
+  "Modern, compassionate dental care for the whole family in Jaipur — checkups, cosmetics, root canals, and easy online booking at Krati Dental Care.";
 
 /** Default public site key for website_settings singleton. */
 export const WEBSITE_SETTINGS_KEY = "default";

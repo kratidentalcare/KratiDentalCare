@@ -14,7 +14,7 @@ export async function seedAdmin(ctx: SeedContext): Promise<void> {
     email: SEED_IDS.adminEmail,
     firstName: "Clinic",
     lastName: "Admin",
-    phoneNumber: "+91 522 400 1000",
+    phoneNumber: "+91 141 400 1000",
     role: USER_ROLES.ADMIN,
     profileImage: null,
     lastLoginAt: null,

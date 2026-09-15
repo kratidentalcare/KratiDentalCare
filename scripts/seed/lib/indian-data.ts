@@ -15,25 +15,25 @@ seedFaker.seed(20_01);
 
 const INDIAN_CITIES: readonly { city: string; state: string; postal: string }[] =
   [
-    { city: "Lucknow", state: "Uttar Pradesh", postal: "226001" },
-    { city: "Kanpur", state: "Uttar Pradesh", postal: "208001" },
-    { city: "Noida", state: "Uttar Pradesh", postal: "201301" },
-    { city: "Ghaziabad", state: "Uttar Pradesh", postal: "201001" },
-    { city: "Varanasi", state: "Uttar Pradesh", postal: "221001" },
-    { city: "Prayagraj", state: "Uttar Pradesh", postal: "211001" },
-    { city: "Agra", state: "Uttar Pradesh", postal: "282001" },
-    { city: "Meerut", state: "Uttar Pradesh", postal: "250001" },
+    { city: "Jaipur", state: "Rajasthan", postal: "302001" },
+    { city: "Jodhpur", state: "Rajasthan", postal: "342001" },
+    { city: "Udaipur", state: "Rajasthan", postal: "313001" },
+    { city: "Kota", state: "Rajasthan", postal: "324001" },
+    { city: "Ajmer", state: "Rajasthan", postal: "305001" },
+    { city: "Bikaner", state: "Rajasthan", postal: "334001" },
+    { city: "Alwar", state: "Rajasthan", postal: "301001" },
+    { city: "Sikar", state: "Rajasthan", postal: "332001" },
   ];
 
 const STREET_PREFIXES = [
-  "Sector",
-  "Gomti Nagar",
-  "Indira Nagar",
-  "Aliganj",
-  "Hazratganj",
-  "Aminabad",
-  "Chowk",
-  "Mahanagar",
+  "C-Scheme",
+  "Malviya Nagar",
+  "Vaishali Nagar",
+  "Mansarovar",
+  "Durgapura",
+  "Raja Park",
+  "Bani Park",
+  "Jagatpura",
 ] as const;
 
 export function indianMobile(index: number): string {

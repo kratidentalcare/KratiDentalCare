@@ -110,6 +110,6 @@ export const SEED_FAQS: readonly SeedFaq[] = [
     category: "location",
     question: "Where is the clinic located and is parking available?",
     answer:
-      "Krati Dental Care is based in Lucknow, Uttar Pradesh. Street parking and nearby paid parking options are usually available; call ahead if you need directions.",
+      "Krati Dental Care is based in Durgapura, Jaipur, Rajasthan, on Tonk Road behind Khandaka Hospital. Street parking and nearby paid parking options are usually available; call ahead if you need directions.",
   },
 ] as const;

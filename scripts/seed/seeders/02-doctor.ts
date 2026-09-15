@@ -50,7 +50,7 @@ export async function seedDoctor(ctx: SeedContext): Promise<void> {
       registrationNumber: SEED_IDS.doctorRegistration,
       yearsOfExperience: 16,
       consultationFee: 500,
-      bio: "Compassionate dental care with a focus on painless treatments, preventive dentistry, and long-term oral health for families in Lucknow.",
+      bio: "Compassionate dental care with a focus on painless treatments, preventive dentistry, and long-term oral health for families in Jaipur.",
       languages: ["Hindi", "English"],
       workingDays: [
         WEEKDAYS.MONDAY,
