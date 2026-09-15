@@ -11,7 +11,7 @@ export function SliderHandle({ className }: SliderHandleProps) {
   return (
     <span
       className={cn(
-        "pointer-events-none flex size-11 items-center justify-center rounded-full",
+        "pointer-events-none flex size-9 items-center justify-center rounded-full",
         "border-[3px] border-white bg-brand-blue text-white",
         "ring-2 ring-brand-red/80 ring-offset-2 ring-offset-white",
         "shadow-[0_8px_24px_color-mix(in_srgb,var(--brand-blue)_35%,transparent)]",
@@ -23,7 +23,7 @@ export function SliderHandle({ className }: SliderHandleProps) {
       <svg
         viewBox="0 0 24 24"
         fill="none"
-        className="size-5"
+        className="size-4 sm:size-5"
         aria-hidden
       >
         <path

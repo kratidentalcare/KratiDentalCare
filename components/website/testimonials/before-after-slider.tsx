@@ -87,7 +87,7 @@ export function BeforeAfterSlider({
   };
 
   return (
-    <div className={cn("relative w-full px-8", className)}>
+    <div className={cn("relative w-full sm:px-8", className)}>
       <div
         ref={containerRef}
         role="slider"
@@ -124,7 +124,7 @@ export function BeforeAfterSlider({
             fill
             sizes="(max-width: 768px) 100vw, 720px"
             className={cn(
-              "object-cover transition-opacity duration-500 ease-out",
+              "object-cover scale-[1.08] transition-opacity duration-500 ease-out sm:scale-100",
               imageReady ? "opacity-100" : "opacity-0"
             )}
             onLoad={() => setImageReady(true)}
@@ -143,7 +143,7 @@ export function BeforeAfterSlider({
               fill
               sizes="(max-width: 768px) 100vw, 720px"
               className={cn(
-                "object-cover transition-opacity duration-500 ease-out",
+                "object-cover scale-[1.08] transition-opacity duration-500 ease-out sm:scale-100",
                 imageReady ? "opacity-100" : "opacity-0"
               )}
               draggable={false}
