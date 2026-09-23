@@ -256,6 +256,10 @@
 .clerk-auth-footer,
 .clerk-modal-content .cl-footer,
 .clerk-modal-content .clerk-card-box .clerk-auth-footer {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
   margin: 0 !important;
   background: #ffffff !important;
   background-color: #ffffff !important;
@@ -263,6 +267,24 @@
   box-shadow: none !important;
   border-top: 1px solid #e2e8f0 !important;
   padding: 0.85rem 1.25rem 1rem !important;
+  text-align: center !important;
+}
+
+.clerk-auth-footer > *,
+.cl-footer > * {
+  align-self: center !important;
+  margin-inline: auto !important;
+  justify-content: center !important;
+  text-align: center !important;
+}
+
+.clerk-auth-footer a[href*="clerk.com"],
+.cl-footer a[href*="clerk.com"] {
+  display: flex !important;
+  width: 100% !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
 }
 
 .clerk-auth-footer-action {

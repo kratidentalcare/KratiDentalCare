@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Montserrat, Playfair_Display } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 
 import { APP_DESCRIPTION, APP_NAME } from "@/constants";
 import { AppProviders } from "@/providers";
@@ -60,6 +61,7 @@ export default function RootLayout({
         suppressHydrationWarning
       >
         <AppProviders publishableKey={publishableKey}>{children}</AppProviders>
+        <Analytics />
       </body>
     </html>
   );

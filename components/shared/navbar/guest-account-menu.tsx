@@ -35,7 +35,9 @@ export function GuestAccountMenu({
     if (mode === "sign-in") {
       openSignIn({
         appearance: clerkAppearance,
+        withSignUp: true,
         fallbackRedirectUrl: AUTH_CONFIG.afterSignInUrl,
+        signUpFallbackRedirectUrl: AUTH_CONFIG.afterSignUpUrl,
       });
     } else {
       openSignUp({

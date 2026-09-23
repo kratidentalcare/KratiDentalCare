@@ -173,21 +173,47 @@ function requireEmail(email: string | null): string {
 }
 
 /**
+ * Email/password sign-up can exist in Clerk before `primaryEmailAddress` is
+ * set (verification still pending). Google sign-in always has a primary email.
+ * Fall back to the first address so the Mongo row is still created.
+ */
+function resolveClerkEmail(user: ClerkUser) {
+  if (user.primaryEmailAddress?.emailAddress) {
+    return user.primaryEmailAddress;
+  }
+
+  return (
+    user.emailAddresses.find((address) => address.emailAddress.trim() !== "") ??
+    null
+  );
+}
+
+function resolveClerkPhone(user: ClerkUser) {
+  if (user.primaryPhoneNumber?.phoneNumber) {
+    return user.primaryPhoneNumber;
+  }
+
+  return (
+    user.phoneNumbers.find((phone) => phone.phoneNumber.trim() !== "") ?? null
+  );
+}
+
+/**
  * Maps a Clerk `User` into the sync DTO — Clerk-owned fields only.
  */
 export function toClerkUserSyncInput(user: ClerkUser): ClerkUserSyncInput {
-  const primaryEmail = user.primaryEmailAddress;
-  const primaryPhone = user.primaryPhoneNumber;
+  const emailAddress = resolveClerkEmail(user);
+  const phoneNumber = resolveClerkPhone(user);
 
   return {
     clerkId: user.id,
-    email: primaryEmail?.emailAddress ?? null,
+    email: emailAddress?.emailAddress ?? null,
     firstName: user.firstName ?? null,
     lastName: user.lastName ?? null,
-    phoneNumber: primaryPhone?.phoneNumber ?? null,
+    phoneNumber: phoneNumber?.phoneNumber ?? null,
     profileImage: user.imageUrl ?? null,
-    emailVerified: primaryEmail?.verification?.status === "verified",
-    phoneVerified: primaryPhone?.verification?.status === "verified",
+    emailVerified: emailAddress?.verification?.status === "verified",
+    phoneVerified: phoneNumber?.verification?.status === "verified",
   };
 }
 

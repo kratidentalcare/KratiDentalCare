@@ -7,6 +7,8 @@ import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { clerkAppearance } from "@/config/clerk-appearance";
 
+import { SyncUserOnSignIn } from "./sync-user-on-sign-in";
+
 type AppProvidersProps = {
   children: ReactNode;
   publishableKey?: string;
@@ -25,6 +27,7 @@ export function AppProviders({ children, publishableKey }: AppProvidersProps) {
       telemetry={{ disabled: true }}
     >
       <TooltipProvider>
+        <SyncUserOnSignIn />
         {children}
         <Toaster position="top-center" richColors closeButton />
       </TooltipProvider>
