@@ -43,6 +43,16 @@ function isAcknowledgedSyncError(error: unknown): boolean {
   return isAppError(error) && ACKNOWLEDGED_SYNC_CODES.has(error.code);
 }
 
+function revalidateUsersList(): void {
+  try {
+    revalidatePath(ROUTES.DASHBOARD.USERS);
+  } catch (error) {
+    logger.warn("Clerk webhook user list revalidation failed", {
+      message: error instanceof Error ? error.message : "Unknown error",
+    });
+  }
+}
+
 /**
  * POST /api/webhooks/clerk
  *
@@ -78,7 +88,7 @@ export async function POST(request: Request) {
   try {
     if (isUserUpsert(event)) {
       await syncUser(toClerkWebhookUserSyncInput(event.data));
-      revalidatePath(ROUTES.DASHBOARD.USERS);
+      revalidateUsersList();
     } else if (event.type === "user.deleted") {
       const clerkId = event.data.id;
 
@@ -95,7 +105,7 @@ export async function POST(request: Request) {
 
       const deactivated = await deactivateUserByClerkId(clerkId);
       if (deactivated) {
-        revalidatePath(ROUTES.DASHBOARD.USERS);
+        revalidateUsersList();
       }
     }
 
@@ -112,9 +122,10 @@ export async function POST(request: Request) {
     logger.error("Clerk webhook persist failed", error, {
       eventType: event.type,
     });
+    const cause = error instanceof Error ? error.message : "Unknown error";
     const result = errorResponse(
       ERROR_CODES.INTERNAL_ERROR,
-      "Unable to persist Clerk user event",
+      `Unable to persist Clerk user event: ${cause}`,
       { status: HTTP_STATUS.INTERNAL_SERVER_ERROR },
     );
     return NextResponse.json(toActionResult(result), { status: result.status });

@@ -480,23 +480,33 @@ export async function deactivateUserByClerkId(
   await ensureDatabase();
 
   const id = parseClerkId(clerkId);
-  const existing = await User.findOne({ clerkId: id }).withDeleted().exec();
+  const now = new Date();
 
-  if (!existing) {
-    logger.info("Clerk user delete had no Mongo row", { clerkId: id });
+  // `save()` revalidates the whole document and runs the soft-delete
+  // update filter, which rejects the write once `deletedAt` is set.
+  // Update the row directly, including already-soft-deleted documents.
+  const result = await User.updateOne(
+    {
+      clerkId: id,
+      $or: [{ deletedAt: null }, { isActive: true }],
+    },
+    { $set: { isActive: false, deletedAt: now, updatedAt: now } },
+  ).withDeleted();
+
+  if (result.matchedCount === 0) {
+    const existing = await User.findOne({ clerkId: id })
+      .withDeleted()
+      .select({ _id: 1 })
+      .lean()
+      .exec();
+
+    if (!existing) {
+      logger.info("Clerk user delete had no Mongo row", { clerkId: id });
+    }
+
     return false;
   }
 
-  if (existing.deletedAt != null && !existing.isActive) {
-    return false;
-  }
-
-  existing.isActive = false;
-  if (existing.deletedAt == null) {
-    existing.deletedAt = new Date();
-  }
-
-  await existing.save();
   logger.info("Soft-deleted app user from Clerk", { clerkId: id });
   return true;
 }
