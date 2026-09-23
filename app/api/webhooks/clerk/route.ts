@@ -29,12 +29,6 @@ function jsonResult(
   return NextResponse.json(toActionResult(result), { status: result.status });
 }
 
-function isUserUpsert(
-  event: WebhookEvent,
-): event is Extract<WebhookEvent, { type: "user.created" | "user.updated" }> {
-  return event.type === "user.created" || event.type === "user.updated";
-}
-
 /**
  * Non-retryable identity outcomes (disabled account, email clash, missing email)
  * are acknowledged so Clerk does not retry forever.
@@ -86,7 +80,12 @@ export async function POST(request: Request) {
   }
 
   try {
-    if (isUserUpsert(event)) {
+    if (event.type === "user.created") {
+      await syncUser(toClerkWebhookUserSyncInput(event.data), {
+        allowRestore: true,
+      });
+      revalidateUsersList();
+    } else if (event.type === "user.updated") {
       await syncUser(toClerkWebhookUserSyncInput(event.data));
       revalidateUsersList();
     } else if (event.type === "user.deleted") {

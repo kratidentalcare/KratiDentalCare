@@ -30,8 +30,13 @@ export type SyncUserOptions = {
    * Defaults to false — pass true only on an intentional login bump.
    */
   touchLastLogin?: boolean;
+  /**
+   * When true, a Clerk `user.created` event may clear `deletedAt` and
+   * reactivate a previously removed row. Login sync leaves this off so a
+   * disabled account cannot revive itself by loading a page.
+   */
+  allowRestore?: boolean;
 };
 
 /** One or more roles accepted by `requireRole` / `hasAnyRole`. */
 export type RoleRequirement = UserRole | readonly UserRole[];
-

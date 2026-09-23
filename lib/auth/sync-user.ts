@@ -272,6 +272,62 @@ async function findUserByEmail(
   return query.lean<AppUser>().exec();
 }
 
+function roleForWrite(storedRole: string | undefined): string | undefined {
+  if (typeof storedRole !== "string") {
+    return undefined;
+  }
+
+  if ((LEGACY_USER_ROLES as readonly string[]).includes(storedRole)) {
+    return USER_ROLES.USER;
+  }
+
+  return storedRole;
+}
+
+/**
+ * Clears a Clerk delete and rewrites a legacy `patient` role.
+ * Uses the driver directly so the narrowed role enum cannot reject the write.
+ */
+async function restoreUserDocument(
+  userId: AppUser["_id"],
+  clerkId: string,
+  fields: MutableProfileFields,
+  storedRole: string | undefined,
+): Promise<AppUser> {
+  const role = roleForWrite(storedRole);
+  const now = new Date();
+
+  await User.collection.updateOne(
+    { _id: userId },
+    {
+      $set: {
+        clerkId,
+        email: fields.email,
+        firstName: fields.firstName,
+        lastName: fields.lastName,
+        profileImage: fields.profileImage,
+        emailVerified: fields.emailVerified,
+        phoneVerified: fields.phoneVerified,
+        ...(fields.phoneNumber !== undefined
+          ? { phoneNumber: fields.phoneNumber }
+          : {}),
+        ...(fields.lastLoginAt ? { lastLoginAt: fields.lastLoginAt } : {}),
+        isActive: true,
+        deletedAt: null,
+        updatedAt: now,
+        ...(typeof role === "string" ? { role } : {}),
+      },
+    },
+  );
+
+  const restored = await User.findById(userId).lean<AppUser>().exec();
+  if (!restored) {
+    throw userNotSyncedError("User disappeared during restore");
+  }
+
+  return restored;
+}
+
 /**
  * When Clerk issues a new user id for an existing verified email (instance
  * switch, re-created account), bind that row instead of inserting a duplicate.
@@ -279,10 +335,32 @@ async function findUserByEmail(
 async function rebindClerkIdForEmail(
   clerkId: string,
   fields: MutableProfileFields,
+  options: SyncUserOptions,
 ): Promise<AppUser | null> {
   const byEmail = await findUserByEmail(fields.email, { includeDeleted: true });
 
-  if (!byEmail || byEmail.deletedAt != null || !byEmail.isActive) {
+  if (!byEmail) {
+    return null;
+  }
+
+  if (byEmail.deletedAt != null) {
+    if (!options.allowRestore) {
+      return null;
+    }
+
+    const restored = await restoreUserDocument(
+      byEmail._id,
+      clerkId,
+      fields,
+      byEmail.role,
+    );
+    logger.info("Restored soft-deleted user for recreated Clerk account", {
+      clerkId,
+    });
+    return restored;
+  }
+
+  if (!byEmail.isActive) {
     return null;
   }
 
@@ -385,7 +463,8 @@ async function createUserFromSyncInput(
  * - Creates a user-default row when `clerkId` is new
  * - Updates Clerk-owned profile fields when the row exists and is usable
  * - Rejects soft-deleted / inactive accounts as `ACCOUNT_DISABLED` (no mutation)
- * - Never overwrites application-managed fields (`role`, `isActive`, …)
+ * - When `allowRestore` is set, a soft-deleted row is shown in the user list again
+ * - Never overwrites an active account's role from Clerk
  */
 export async function syncUser(
   input: ClerkUserSyncInput,
@@ -398,8 +477,13 @@ export async function syncUser(
 
   const existing = await findUserByClerkId(clerkId, { includeDeleted: true });
 
-  // Soft-deleted / inactive accounts must not be mutated during sync.
+  // Soft-deleted / inactive accounts must not be mutated during login sync.
+  // Clerk `user.created` may restore a row hidden from the dashboard.
   if (existing?.deletedAt != null) {
+    if (options.allowRestore) {
+      return restoreUserDocument(existing._id, clerkId, fields, existing.role);
+    }
+
     logger.warn("Rejected soft-deleted app user during sync", { clerkId });
     throw accountDisabledError(
       "This account has been deactivated and cannot be synchronized",
@@ -437,7 +521,7 @@ export async function syncUser(
   }
 
   try {
-    const rebound = await rebindClerkIdForEmail(clerkId, fields);
+    const rebound = await rebindClerkIdForEmail(clerkId, fields, options);
     if (rebound) {
       return rebound;
     }
