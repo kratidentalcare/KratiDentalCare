@@ -9,14 +9,13 @@ import { syncCurrentUserSession } from "@/lib/auth/sync-current-user-action";
 const RETRY_DELAY_MS = 500;
 
 /**
- * Persists a user created by the sign-in/sign-up modal.
- * Skips the initial load when the server layout already synced the session.
+ * Persists the Clerk session into Mongo.
+ * Runs for modal sign-in and for full-page loads that are already signed in.
  */
 export function SyncUserOnSignIn() {
   const { isLoaded, isSignedIn, userId } = useAuth();
   const { user } = useUser();
   const router = useRouter();
-  const sawSignedOut = useRef(false);
   const syncedKey = useRef<string | null>(null);
 
   const email =
@@ -30,11 +29,7 @@ export function SyncUserOnSignIn() {
     }
 
     if (!isSignedIn || !userId) {
-      sawSignedOut.current = true;
-      return;
-    }
-
-    if (!sawSignedOut.current) {
+      syncedKey.current = null;
       return;
     }
 

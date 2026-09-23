@@ -467,3 +467,36 @@ export async function syncClerkUser(
 ): Promise<AppUser> {
   return syncUser(toClerkUserSyncInput(user), options);
 }
+
+/**
+ * Soft-disables the Mongo user for a Clerk `user.deleted` event.
+ * Missing rows are a no-op. Clinical data is left in place.
+ *
+ * @returns Whether a row was newly deactivated.
+ */
+export async function deactivateUserByClerkId(
+  clerkId: string,
+): Promise<boolean> {
+  await ensureDatabase();
+
+  const id = parseClerkId(clerkId);
+  const existing = await User.findOne({ clerkId: id }).withDeleted().exec();
+
+  if (!existing) {
+    logger.info("Clerk user delete had no Mongo row", { clerkId: id });
+    return false;
+  }
+
+  if (existing.deletedAt != null && !existing.isActive) {
+    return false;
+  }
+
+  existing.isActive = false;
+  if (existing.deletedAt == null) {
+    existing.deletedAt = new Date();
+  }
+
+  await existing.save();
+  logger.info("Soft-deleted app user from Clerk", { clerkId: id });
+  return true;
+}

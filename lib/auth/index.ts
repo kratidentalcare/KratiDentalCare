@@ -32,7 +32,9 @@ export {
 export { requireCurrentUser } from "./current-user";
 
 // --- Sync ---
+export { toClerkWebhookUserSyncInput } from "./map-clerk-webhook-user";
 export {
+  deactivateUserByClerkId,
   syncClerkUser,
   syncUser,
   toClerkUserSyncInput,
