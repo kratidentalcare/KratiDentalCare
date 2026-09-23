@@ -2,7 +2,7 @@ import "server-only";
 
 import type { User as ClerkUser } from "@clerk/nextjs/server";
 
-import { USER_ROLES } from "@/constants/roles";
+import { LEGACY_USER_ROLES, USER_ROLES } from "@/constants/roles";
 import { ERROR_CODES } from "@/constants/error-codes";
 import { HTTP_STATUS } from "@/constants/http";
 import { connect } from "@/lib/db";
@@ -482,30 +482,48 @@ export async function deactivateUserByClerkId(
   const id = parseClerkId(clerkId);
   const now = new Date();
 
-  // `save()` revalidates the whole document and runs the soft-delete
-  // update filter, which rejects the write once `deletedAt` is set.
-  // Update the row directly, including already-soft-deleted documents.
-  const result = await User.updateOne(
-    {
-      clerkId: id,
-      $or: [{ deletedAt: null }, { isActive: true }],
-    },
-    { $set: { isActive: false, deletedAt: now, updatedAt: now } },
-  ).withDeleted();
+  // Native collection write skips Mongoose validators. Rows created before
+  // the role enum narrowed still store `patient`, and `save()` rejects them.
+  const users = User.collection;
+  const existing = await users.findOne<{
+    _id: unknown;
+    role?: string;
+    isActive?: boolean;
+    deletedAt?: Date | null;
+  }>({ clerkId: id });
 
-  if (result.matchedCount === 0) {
-    const existing = await User.findOne({ clerkId: id })
-      .withDeleted()
-      .select({ _id: 1 })
-      .lean()
-      .exec();
-
-    if (!existing) {
-      logger.info("Clerk user delete had no Mongo row", { clerkId: id });
-    }
-
+  if (!existing) {
+    logger.info("Clerk user delete had no Mongo row", { clerkId: id });
     return false;
   }
+
+  const storedRole = existing.role;
+  const role =
+    typeof storedRole === "string" &&
+    (LEGACY_USER_ROLES as readonly string[]).includes(storedRole)
+      ? USER_ROLES.USER
+      : storedRole;
+
+  const alreadyDeactivated =
+    existing.deletedAt != null &&
+    existing.isActive === false &&
+    role === storedRole;
+
+  if (alreadyDeactivated) {
+    return false;
+  }
+
+  await users.updateOne(
+    { _id: existing._id },
+    {
+      $set: {
+        isActive: false,
+        deletedAt: existing.deletedAt ?? now,
+        updatedAt: now,
+        ...(typeof role === "string" ? { role } : {}),
+      },
+    },
+  );
 
   logger.info("Soft-deleted app user from Clerk", { clerkId: id });
   return true;
