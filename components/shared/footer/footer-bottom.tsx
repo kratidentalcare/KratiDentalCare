@@ -16,27 +16,63 @@ export const DEFAULT_LEGAL_LINKS: readonly FooterLegalLink[] = [
   { label: "Terms & Conditions", href: ROUTES.PUBLIC.TERMS },
 ] as const;
 
-const CREDIT_HREF = "https://adityajain-os.vercel.app/";
-const CREDIT_NAME = "Aditya Jain";
+const DESIGNER_HREF = "https://www.linkedin.com/in/unnati-singhal-b636b2327/";
+const DESIGNER_NAME = "Unnati Singhal";
+const DEVELOPER_HREF = "https://adityajain-os.vercel.app/";
+const DEVELOPER_NAME = "Aditya Jain";
+
+function CreditLink({
+  href,
+  name,
+  label,
+}: {
+  href: string;
+  name: string;
+  label: string;
+}) {
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label={`${label} ${name}`}
+      className={cn(
+        "group/credit inline-flex items-center gap-0.5 font-semibold text-white",
+        "transition-colors duration-200 hover:text-white/85",
+        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/50 focus-visible:ring-offset-2 focus-visible:ring-offset-brand-navy",
+      )}
+    >
+      {name}
+      <ArrowUpRight
+        className="size-3 shrink-0 text-white/70 transition-transform duration-200 group-hover/credit:translate-x-px group-hover/credit:-translate-y-px group-hover/credit:text-white"
+        aria-hidden
+      />
+    </a>
+  );
+}
 
 export type FooterBottomProps = {
   copyrightOwner?: string;
   year?: number;
   legalLinks?: readonly FooterLegalLink[];
-  creditHref?: string;
-  creditName?: string;
+  designerHref?: string;
+  designerName?: string;
+  developerHref?: string;
+  developerName?: string;
   className?: string;
 };
 
 /**
- * Bottom bar: copyright + legal + designer credit — brand navy strip.
+ * Bottom bar: copyright + legal + designer/developer credit — brand navy strip.
  */
 export function FooterBottom({
   copyrightOwner = APP_NAME,
   year = new Date().getFullYear(),
   legalLinks = DEFAULT_LEGAL_LINKS,
-  creditHref = CREDIT_HREF,
-  creditName = CREDIT_NAME,
+  designerHref = DESIGNER_HREF,
+  designerName = DESIGNER_NAME,
+  developerHref = DEVELOPER_HREF,
+  developerName = DEVELOPER_NAME,
   className,
 }: FooterBottomProps) {
   return (
@@ -50,8 +86,8 @@ export function FooterBottom({
       <div
         className={cn(
           "public-container-x mx-auto max-w-[var(--container-max-xl)]",
-          "flex flex-col items-center gap-5 py-6",
-          "sm:flex-row sm:items-center sm:justify-between sm:gap-6 sm:py-5",
+          "flex flex-col items-center gap-4 py-5",
+          "sm:flex-row sm:flex-wrap sm:items-center sm:justify-between sm:gap-x-6 sm:gap-y-3 sm:py-4",
         )}
       >
         <p className="text-center text-[0.8125rem] leading-relaxed text-white/70 sm:text-left sm:text-sm">
@@ -84,31 +120,33 @@ export function FooterBottom({
           ))}
         </ul>
 
-        <a
-          href={creditHref}
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label={`Designed and developed by ${creditName}`}
+        <p
           className={cn(
-            "group inline-flex items-center gap-2 rounded-full",
-            "border border-white/15 bg-white/[0.06] px-3.5 py-2",
-            "text-[0.75rem] text-white/65 transition-all duration-200",
-            "hover:border-white/30 hover:bg-white/10 hover:text-white/90",
-            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/50 focus-visible:ring-offset-2 focus-visible:ring-offset-brand-navy",
-            "sm:text-[0.8125rem]",
+            "flex flex-wrap items-center justify-center gap-x-2 gap-y-1",
+            "text-[0.75rem] leading-snug text-white/60",
+            "sm:justify-end sm:text-[0.8125rem]",
           )}
         >
-          <span>
-            Designed &amp; developed by{" "}
-            <span className="font-semibold text-white transition-colors group-hover:text-white">
-              {creditName}
-            </span>
+          <span className="inline-flex items-center gap-1.5 whitespace-nowrap">
+            Designed by
+            <CreditLink
+              href={designerHref}
+              name={designerName}
+              label="Designed by"
+            />
           </span>
-          <ArrowUpRight
-            className="size-3.5 shrink-0 text-white/80 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-white"
-            aria-hidden
-          />
-        </a>
+          <span className="text-white/30" aria-hidden>
+            ·
+          </span>
+          <span className="inline-flex items-center gap-1.5 whitespace-nowrap">
+            Developed by
+            <CreditLink
+              href={developerHref}
+              name={developerName}
+              label="Developed by"
+            />
+          </span>
+        </p>
       </div>
     </div>
   );
